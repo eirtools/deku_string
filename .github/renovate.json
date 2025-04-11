@@ -1,0 +1,35 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "branchPrefix": "renovate/",
+  "bumpVersion": "prerelease",
+  "configMigration": true,
+  "customManagers": [
+    {
+      "customType": "jsonata",
+      "datasourceTemplate": "crate",
+      "description": "CI Tools (tool=version or tool={version, [datasource]})",
+      "fileFormat": "toml",
+      "fileMatch": [
+        "(^|/)\\.github/ci-tools\\.toml$"
+      ],
+      "matchStrings": [
+        "$reduce(\n    $each($, function($section) {\n        $each($section, function($v, $k) { \n            $type($v)= \"object\" ? {\n                \"depName\": $k,\n                \"currentValue\": $v.version,\n                \"datasource\": $v.datasource? $v.datasource: \"crate\",\n                \"versioning\": $v.versioning? $v.versioning: undefined\n            }: $type($v)= \"string\" ? {\n                \"depName\": $k,\n                \"currentValue\": $v\n            }: undefined\n        })\n    }),\n    $append\n)"
+      ],
+      "versioningTemplate": "semver"
+    }
+  ],
+  "enabled": true,
+  "extends": [
+    "config:recommended"
+  ],
+  "osvVulnerabilityAlerts": true,
+  "pre-commit": {
+    "enabled": true
+  },
+  "separateMajorMinor": true,
+  "separateMinorPatch": true,
+  "separateMultipleMajor": true,
+  "vulnerabilityAlerts": {
+    "enabled": true
+  }
+}
