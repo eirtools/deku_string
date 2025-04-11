@@ -1,0 +1,22 @@
+---
+name: Wait all checks
+
+on:
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  wait-all-checks:
+    runs-on: ubuntu-latest
+    permissions:
+      checks: read
+    steps:
+    - name: Wait all GitHub checks
+      uses: poseidon/wait-for-status-checks@v0.6.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        ignore: wait-all-checks / wait-all-checks
