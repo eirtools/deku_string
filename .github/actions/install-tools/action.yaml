@@ -1,0 +1,64 @@
+---
+name: Install Cargo Tools (with binstall)
+description: Installs cargo tools listed in a TOML file using cargo-binstall
+author: you
+
+inputs:
+  tools-file:
+    description: Path to the TOML file containing tool versions
+    required: false
+    default: .github/ci-tools.toml
+  section:
+    description: Section to use (e.g. "tools", "tools.dev")
+    required: false
+    default: tools
+  force:
+    type: boolean
+    description: Force reinstall tool even if already installed
+    required: false
+    default: false
+  dry-run:
+    type: boolean
+    description: Don't actually install anything
+    required: false
+    default: false
+  quiet:
+    type: boolean
+    description: Minimize output
+    required: false
+    default: false
+  default-datasource:
+    description: Default tool datasource
+    required: true
+runs:
+  using: composite
+  steps:
+  - name: Install cargo-binstall
+    uses: cargo-bins/cargo-binstall@v1.12.3
+
+  - name: Install tools from tools file using cargo-binstall
+    shell: bash
+    run: |
+      case "${{ inputs.force }}" in
+      true) force_flag=_;;
+      *) unset force_flag;;
+      esac
+
+      case "${{ inputs.dry-run }}" in
+      true) dry_run=_;;
+      *) unset dry_run;;
+      esac
+
+      case "${{ inputs.quiet }}" in
+      true) quiet=_;;
+      *) unset quiet;;
+      esac
+
+      python "${{ github.action_path }}/entrypoint.py" \
+        -f "${{ inputs.tools-file }}" \
+        -s "${{ inputs.section }}" \
+        --default-datasource "${{ inputs.default-datasource }}"
+        ${force_flag:+--force} \
+        ${dry_run:+--dry-run} \
+        ${quiet:+--quiet} \
+        ${RUNNER_DEBUG:+--debug}

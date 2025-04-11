@@ -1,0 +1,119 @@
+---
+name: CI checks
+
+on:
+  workflow_dispatch:
+    inputs:
+      source:
+        description: Source ref used to build bindings. Uses `github.ref`` by default.
+        required: false
+      sha:
+        description: Source SHA used to build bindings. Uses `github.sha`` by default.
+        required: false
+      run-mutants:
+        type: boolean
+        description: Run cargo-mutants
+        required: false
+        default: false
+      debug-files:
+        type: boolean
+        description: Print file list at the end
+        required: false
+        default: false
+  push:
+    branches:
+    - main
+    paths:
+    - Cargo.toml
+    - Cargo.lock
+    - src
+    - .config/nextest.toml
+    - .github/workflows/ci.yaml
+    - .github/ci-tools.toml
+  pull_request:
+    paths:
+    - Cargo.toml
+    - Cargo.lock
+    - src
+    - .config/nextest.toml
+    - .github/workflows/ci.yaml
+    - .github/ci-tools.toml
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  COLOR: yes
+  FORCE_COLOR: 1
+  CARGO_TERM_COLOR: always
+  CARGO_TERM_PROGRESS_WHEN: never
+  CARGO_INCREMENTAL: 0
+  RUST_BACKTRACE: 1
+  CARGO_NET_RETRY: 10
+  BINSTALL_DISABLE_TELEMETRY: true
+
+permissions: {}
+jobs:
+  build:
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
+    name: Build and test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Rust version
+      run: |
+        rustc --version
+        cargo --version
+
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.source || github.ref || github.event.ref }}
+
+    - name: Cache Cargo
+      uses: ./.github/actions/cache
+
+    - name: Install CLI tools
+      uses: ./.github/actions/install-tools
+      with:
+        default-datasource: crate
+
+    - name: Run tests
+      run: |
+        cargo llvm-cov --no-report nextest --tests --lib -P ci
+
+    - name: Collect coverage
+      if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+      run: |
+        cargo llvm-cov report --cobertura --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs
+
+    - name: Publish coverage report
+      uses: orgoro/coverage@v3.2
+      if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        coverageFile: target/lcov.xml
+
+    - name: Report tests
+      uses: mikepenz/action-junit-report@v5
+      if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+      with:
+        comment: true
+        include_passed: true
+        report_paths: |
+          target/nextest/all-features/junit.xml
+          target/nextest/no-features/junit.xml
+        check_name: |
+          All features enabled
+          All features disabled
+
+    - name: Run cargo-mutants
+      if: ${{ inputs.run-mutants }}
+      run: cargo mutants --test-tool=nextest --colors=always
+
+    - name: find files
+      if: ${{ runner.debug }}
+      run: fd . --color=always

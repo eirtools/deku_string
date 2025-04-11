@@ -1,0 +1,9 @@
+[tools]
+cargo-nextest = "0.9.94"
+# cargo-machete = "0.6.0"
+fd-find = { version = "10.2.0", "versioning" = "cargo" }
+cargo-mutants = "25.0.0"
+cargo-llvm-cov = "0.6.16"
+
+[tools-quality]
+taplo-cli = "0.9.3"
