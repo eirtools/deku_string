@@ -1,0 +1,77 @@
+---
+name: Style checks
+
+on:
+  workflow_dispatch:
+
+  pull_request:
+    types: [assigned, opened, synchronize, reopened]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.sha }}
+  cancel-in-progress: true
+
+env:
+  COLOR: yes
+  FORCE_COLOR: 1
+  CARGO_TERM_COLOR: always
+  CARGO_TERM_PROGRESS_WHEN: never
+  CARGO_INCREMENTAL: 0
+  RUST_BACKTRACE: 1
+  CARGO_NET_RETRY: 10
+  BINSTALL_DISABLE_TELEMETRY: true
+
+jobs:
+  cargo-format:
+    name: Check formatting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+    - name: Run style checks
+      run: cargo fmt --all --check
+
+  toml-format:
+    name: Check toml formatting
+    runs-on: ubuntu-latest
+    steps:
+    - name: Rust version
+      run: |
+        rustc --version
+        cargo --version
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Cache Cargo
+      uses: ./.github/actions/cache
+      with:
+        cache-key: rust-quality
+
+    - name: Install CLI tools
+      uses: ./.github/actions/install-tools
+      with:
+        default-datasource: crate
+        section: tools-quality
+
+    - name: taplo format check
+      run: taplo fmt --check --diff --colors always
+
+  pre-commit:
+    name: Pre-commit checks
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+        cache: pip
+    - name: Install dependencies
+      run: |
+        pip install -U pip setuptools wheel
+        pip install -r .github/requirements.txt
+    - uses: actions/cache@v4
+      with:
+        path: ~/.cache/pre-commit/
+        key: pre-commit-4|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
+    - name: Run pre-commit hooks
+      run: pre-commit run --all-files --show-diff-on-failure
