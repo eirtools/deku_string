@@ -1,0 +1,45 @@
+[package]
+name = "deku_string"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+readme = "README.md"
+description = "String encoding/decoding helpers for Deku, supporting UTF-8/UTF-16 in fixed, Pascal, and C-style formats."
+repository = "https://github.com/eirtools/deku_string"
+keywords = ["deku", "binary", "serialization", "string", "no_std"]
+categories = ["encoding", "no-std", "parsing"]
+exclude = ["/.github", "/examples", "/*.md"]
+
+[dependencies]
+deku = { version = "0.18.1" }
+
+[dev-dependencies]
+rstest = { version = "0.25.0" }
+pastey = { version = "0.1.0" }
+
+[[test]]
+name = "rw-utf8"
+path = "tests/utf8.rs"
+
+[[test]]
+name = "rw-utf-16"
+path = "tests/utf16.rs"
+
+[[test]]
+name = "write_rejected"
+path = "tests/write_rejected.rs"
+
+[[test]]
+name = "read_rejected-utf-8"
+path = "tests/utf8_rejected.rs"
+
+[[test]]
+name = "read_rejected-utf-16"
+path = "tests/utf16_rejected.rs"
+
+[[test]]
+name = "deku_derive"
+path = "tests/deku_derive.rs"
+
+[badges]
+maintenance = { status = "actively-developed" }

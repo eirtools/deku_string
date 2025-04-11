@@ -1,0 +1,14 @@
+[profile.default]
+fail-fast = false
+threads-required = "num-cpus"
+
+[profile.ci.junit]
+path = "junit.xml"
+report-name = "deku_string"
+
+[profile.mutants]
+fail-fast = true
+
+[profile.default-miri]
+fail-fast = true
+success-output = "final"
