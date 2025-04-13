@@ -37,7 +37,7 @@ macro_rules! rejected_check {
 
 #[macro_export]
 macro_rules! create_test_impl_read_accepted {
-    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $( ($case:ident, $original_bytes:expr, $string_value:expr) ),+ $(,)?) => {
+    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $( ($case:ident, $original_bytes:expr, $string_value:expr) ),+ $(,)?) => {
         paste! {
             #[rstest]
             $(
@@ -49,7 +49,7 @@ macro_rules! create_test_impl_read_accepted {
             ) {
                 let mut cursor = std::io::Cursor::new(raw_data);
                 let mut deku_reader = Reader::new(&mut cursor);
-                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $variant);
+                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $layout);
 
                 match StringDeku::from_reader_with_ctx(&mut deku_reader, ctx) {
                     Err(err) => assert!(false, "Unable to read data: {err:#?}"),
@@ -62,7 +62,7 @@ macro_rules! create_test_impl_read_accepted {
 
 #[macro_export]
 macro_rules! create_test_impl_write_accepted {
-    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $( ($case:ident, $string_value:expr, $target_bytes:expr) ),+ $(,)?) => {
+    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $( ($case:ident, $string_value:expr, $target_bytes:expr) ),+ $(,)?) => {
         paste! {
             #[rstest]
             $(
@@ -77,7 +77,7 @@ macro_rules! create_test_impl_write_accepted {
                 let mut output = Vec::new();
                 let mut cursor = no_std_io::Cursor::new(&mut output);
                 let mut deku_writer = Writer::new(&mut cursor);
-                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $variant);
+                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $layout);
 
                 match raw_data.to_writer(&mut deku_writer, ctx){
                     Err(err) =>assert!(false, "Unable to write data: {err:#?}"),
@@ -93,26 +93,26 @@ macro_rules! create_test_impl_write_accepted {
 
 #[macro_export]
 macro_rules! create_test_impl_rw_accepted {
-    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $( ($case:ident, $original_bytes: expr, $string_value:expr, $target_bytes:expr) ),+ $(,)?) => {
+    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $( ($case:ident, $original_bytes: expr, $string_value:expr, $target_bytes:expr) ),+ $(,)?) => {
          create_test_impl_read_accepted!(
-            $fn, endian: $endian, encoding: $encoding, $variant, $(($case, $original_bytes, $string_value)),+
+            $fn, endian: $endian, encoding: $encoding, $layout, $(($case, $original_bytes, $string_value)),+
         );
 
         create_test_impl_write_accepted!(
-            $fn, endian: $endian, encoding: $encoding, $variant, $(($case, $string_value, $target_bytes)),+
+            $fn, endian: $endian, encoding: $encoding, $layout, $(($case, $string_value, $target_bytes)),+
         );
      };
 
-    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $( ($case:ident, $original_bytes: expr, $string_value:expr) ),+ $(,)?) => {
+    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $( ($case:ident, $original_bytes: expr, $string_value:expr) ),+ $(,)?) => {
         create_test_impl_rw_accepted!(
-            $fn, endian: $endian, encoding: $encoding, $variant, $(($case, $original_bytes, $string_value, $original_bytes)),+
+            $fn, endian: $endian, encoding: $encoding, $layout, $(($case, $original_bytes, $string_value, $original_bytes)),+
         );
     };
 }
 
 #[macro_export]
 macro_rules! create_test_impl_read_rejected {
-    ( $fn:ident, endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $match_expr: pat, $( ($case:ident, $original_bytes:expr) ),+ $(,)?) => {
+    ( $fn:ident, endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $match_expr: pat, $( ($case:ident, $original_bytes:expr) ),+ $(,)?) => {
         paste! {
             #[rstest]
             $(
@@ -123,7 +123,7 @@ macro_rules! create_test_impl_read_rejected {
             ) {
                 let mut cursor = std::io::Cursor::new(raw_data);
                 let mut deku_reader = Reader::new(&mut cursor);
-                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $variant);
+                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $layout);
 
                 match StringDeku::from_reader_with_ctx(&mut deku_reader, ctx) {
                     Ok(value) => assert!(false, "Error was expected, data has been read: {value:#?}"),
@@ -136,14 +136,14 @@ macro_rules! create_test_impl_read_rejected {
 
 #[macro_export]
 macro_rules! create_test_impl_write_rejected {
-    ($fn:ident, $variant:expr, $( ($case:ident, $string_value:expr) ),+ $(,)?) => {
-        create_test_impl_write_rejected!($fn, endian: little, encoding: utf_8, $variant, $( ($case, $string_value) ), +);
-        create_test_impl_write_rejected!($fn, endian: big, encoding: utf_8, $variant, $( ($case, $string_value) ), +);
-        create_test_impl_write_rejected!($fn, endian: little, encoding: utf_16, $variant, $( ($case, $string_value) ), +);
-        create_test_impl_write_rejected!($fn, endian: big, encoding: utf_16, $variant, $( ($case, $string_value) ), +);
+    ($fn:ident, $layout:expr, $( ($case:ident, $string_value:expr) ),+ $(,)?) => {
+        create_test_impl_write_rejected!($fn, endian: little, encoding: utf_8, $layout, $( ($case, $string_value) ), +);
+        create_test_impl_write_rejected!($fn, endian: big, encoding: utf_8, $layout, $( ($case, $string_value) ), +);
+        create_test_impl_write_rejected!($fn, endian: little, encoding: utf_16, $layout, $( ($case, $string_value) ), +);
+        create_test_impl_write_rejected!($fn, endian: big, encoding: utf_16, $layout, $( ($case, $string_value) ), +);
     };
 
-    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $( ($case:ident, $string_value:expr) ),+ $(,)?) => {
+    ($fn:ident, endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $( ($case:ident, $string_value:expr) ),+ $(,)?) => {
         paste! {
             #[rstest]
             $(
@@ -157,7 +157,7 @@ macro_rules! create_test_impl_write_rejected {
                 let mut output = Vec::new();
                 let mut cursor = no_std_io::Cursor::new(&mut output);
                 let mut deku_writer = Writer::new(&mut cursor);
-                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $variant);
+                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $layout);
 
                 match raw_data.to_writer(&mut deku_writer, ctx) {
                     Ok(_) => assert!(false, "Error was expected, data has been written: {string:#?}"),
@@ -170,14 +170,14 @@ macro_rules! create_test_impl_write_rejected {
 
 #[macro_export]
 macro_rules! create_test_impl_write_io_rejected {
-    ($fn:ident, $variant:expr, $(,)?) => {
-        create_test_impl_write_io_rejected!($fn, endian: little, encoding: utf_8, $variant,);
-        create_test_impl_write_io_rejected!($fn, endian: big, encoding: utf_8, $variant,);
-        create_test_impl_write_io_rejected!($fn, endian: little, encoding: utf_16, $variant,);
-        create_test_impl_write_io_rejected!($fn, endian: big, encoding: utf_16, $variant,);
+    ($fn:ident, $layout:expr, $(,)?) => {
+        create_test_impl_write_io_rejected!($fn, endian: little, encoding: utf_8, $layout,);
+        create_test_impl_write_io_rejected!($fn, endian: big, encoding: utf_8, $layout,);
+        create_test_impl_write_io_rejected!($fn, endian: little, encoding: utf_16, $layout,);
+        create_test_impl_write_io_rejected!($fn, endian: big, encoding: utf_16, $layout,);
     };
 
-    ($fn:ident,  endian: $endian: ident, encoding: $encoding: ident, $variant:expr, $(,)?) => {
+    ($fn:ident,  endian: $endian: ident, encoding: $encoding: ident, $layout:expr, $(,)?) => {
         paste! {
             #[rstest]
             fn [<write_ $encoding _ $fn _ $endian _io_rejected>] () {
@@ -185,7 +185,7 @@ macro_rules! create_test_impl_write_io_rejected {
 
                 let mut output: InvalidBufferType = InvalidBufferType{};
                 let mut deku_writer = Writer::new(&mut output);
-                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $variant);
+                let ctx = (ctx_endian!(endian: $endian), ctx_encoding!(encoding: $encoding), $layout);
 
                 match raw_data.to_writer(&mut deku_writer, ctx) {
                     Ok(_) => assert!(false, "Error was expected, data has been written"),
