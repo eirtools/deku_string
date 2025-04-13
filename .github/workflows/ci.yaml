@@ -10,16 +10,6 @@ on:
       sha:
         description: Source SHA used to build bindings. Uses `github.sha`` by default.
         required: false
-      run-mutants:
-        type: boolean
-        description: Run cargo-mutants
-        required: false
-        default: false
-      debug-files:
-        type: boolean
-        description: Print file list at the end
-        required: false
-        default: false
   push:
     branches:
     - main
@@ -55,12 +45,12 @@ env:
 
 permissions: {}
 jobs:
-  build:
+  ci-build:
+    name: Build and test
+
     permissions:
       contents: read
-      checks: write
-      pull-requests: write
-    name: Build and test
+
     runs-on: ubuntu-latest
     steps:
     - name: Rust version
@@ -88,32 +78,83 @@ jobs:
     - name: Collect coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
       run: |
-        cargo llvm-cov report --cobertura --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs
+        cargo llvm-cov report --output-path target/lcov.info --ignore-filename-regex=src/lib.rs --lcov &
+        cargo llvm-cov report --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs --cobertura &
+        wait $(jobs -p)
 
-    - name: Publish coverage report
-      uses: orgoro/coverage@v3.2
+    - name: Publish test results and coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+      uses: actions/upload-artifact@v4
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        coverageFile: target/lcov.xml
+        name: target
+        path: |
+          target/lcov.info
+          target/lcov.xml
+          target/nextest/ci/junit.xml
+        compression-level: 9
+        retention-days: 1
 
-    - name: Report tests
+  report-test-results:
+    name: Report test results
+    permissions:
+      pull-requests: write  # Comment PR
+
+    needs: ci-build
+    if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v4
+
+    - name: Report test results
       uses: mikepenz/action-junit-report@v5
-      if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
       with:
         comment: true
         include_passed: true
         report_paths: |
-          target/nextest/all-features/junit.xml
-          target/nextest/no-features/junit.xml
+          ${{ github.workspace }}/target/nextest/ci/junit.xml
         check_name: |
-          All features enabled
-          All features disabled
+          Deku String
+        annotate_only: true
 
+  report-coverage:
+    name: Report coverage
+    permissions:
+      pull-requests: write  # Comment PR
+      contents: read        # Read list of modified files
+
+    needs: ci-build
+    if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/download-artifact@v4
+    - name: Publish coverage report
+      uses: orgoro/coverage@v3.2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        coverageFile: ${{ github.workspace }}/target/lcov.xml
+
+  build-mutants:
+    name: Run mutants tests
+    permissions:
+      contents: read
+
+    needs: ci-build
+
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.inputs.source || github.ref || github.event.ref }}
+
+    - name: Cache Cargo
+      uses: ./.github/actions/cache
+
+    - name: Install CLI tools
+      uses: ./.github/actions/install-tools
+      with:
+        default-datasource: crate
     - name: Run cargo-mutants
-      if: ${{ inputs.run-mutants }}
       run: cargo mutants --test-tool=nextest --colors=always
-
-    - name: find files
-      if: ${{ runner.debug }}
-      run: fd . --color=always
