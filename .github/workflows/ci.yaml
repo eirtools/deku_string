@@ -27,6 +27,7 @@ on:
     - Cargo.toml
     - Cargo.lock
     - src
+    - tests
     - .config/nextest.toml
     - .github/workflows/ci.yaml
     - .github/ci-tools.toml
@@ -35,6 +36,7 @@ on:
     - Cargo.toml
     - Cargo.lock
     - src
+    - tests
     - .config/nextest.toml
     - .github/workflows/ci.yaml
     - .github/ci-tools.toml
