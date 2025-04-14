@@ -18,24 +18,16 @@ rstest = { version = "0.25.0" }
 pastey = { version = "0.1.0" }
 
 [[test]]
-name = "rw-utf8"
-path = "tests/utf8.rs"
+name = "rw-accepted"
+path = "tests/rw_accepted.rs"
 
 [[test]]
-name = "rw-utf-16"
-path = "tests/utf16.rs"
+name = "read_rejected"
+path = "tests/read_rejected.rs"
 
 [[test]]
 name = "write_rejected"
 path = "tests/write_rejected.rs"
-
-[[test]]
-name = "read_rejected-utf-8"
-path = "tests/utf8_rejected.rs"
-
-[[test]]
-name = "read_rejected-utf-16"
-path = "tests/utf16_rejected.rs"
 
 [[test]]
 name = "deku_derive"

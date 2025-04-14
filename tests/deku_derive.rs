@@ -11,62 +11,86 @@ struct SampleModel {
     // fixed length buffer, null  character is required to be inside
     // "012345678\x00" is allowed
     // "0123456789" is NOT allowed
+    //
+    // byte length with empty string is 10
     #[deku(ctx = "Encoding::Utf8, Layout::fixed_length(10)")]
     utf8_fixed_value_force_zero: StringDeku,
 
     // fixed length buffer, null byte is allowed to be inside,
     // both "012345678\x00" and "0123456789" are allowed
+    //
+    // byte length with empty string is 10
     #[deku(ctx = "Encoding::Utf8, Layout::FixedLength{size: 10, allow_no_null: true}")]
     utf8_fixed_value: StringDeku,
 
     // length (1 byte) then string, null character is NOT allowed inside
     // b"\0x501234"
+    //
+    // byte length with empty string is 1
     #[deku(ctx = "Encoding::Utf8, Layout::LengthPrefix(Size::U8)")]
     utf8_prefixed_u8: StringDeku,
 
     // length (2 byte) then string, null character is NOT allowed inside
     // b"\0x5\x0001234"
+    //
+    // byte length with empty string is 2
     #[deku(ctx = "Encoding::Utf8, Layout::LengthPrefix(Size::U16)")]
     utf8_prefixed_u16: StringDeku,
 
     // length (4 byte) then string, null character is NOT allowed inside
     // b"\0x5\x00\x00\x0001234"
+    //
+    // byte length with empty string is 4
     #[deku(ctx = "Encoding::Utf8, Layout::LengthPrefix(Size::U32)")]
     utf8_prefixed_u32: StringDeku,
 
     // String with null byte at the end
     // b"012345\x00"
+    //
+    // byte length with empty string is 1
     #[deku(ctx = "Encoding::Utf8, Layout::ZeroEnded")]
     utf8_zero_ended: StringDeku,
 
     // fixed length buffer, null  character is required to be inside
     // "012345678\x00" is allowed
     // "0123456789" is NOT allowed
+    //
+    // byte length with empty string is 20
     #[deku(ctx = "Encoding::Utf16, Layout::fixed_length(10)")]
     utf16_fixed_value_force_zero: StringDeku,
 
     // fixed length buffer, null byte is allowed to be inside,
     // both "012345678\x00" and "0123456789" are allowed
+    //
+    // byte length with empty string is 20
     #[deku(ctx = "Encoding::Utf16, Layout::FixedLength{size: 10, allow_no_null: true}")]
     utf16_fixed_value: StringDeku,
 
     // length (1 byte) then string, null character is NOT allowed inside
     // b"\0x501234"
+    //
+    // byte length with empty string is 1
     #[deku(ctx = "Encoding::Utf16, Layout::LengthPrefix(Size::U8)")]
     utf16_prefixed_u8: StringDeku,
 
     // length (2 byte) then string, null character is NOT allowed inside
     // b"\0x5\x0001234"
+    //
+    // byte length with empty string is 2
     #[deku(ctx = "Encoding::Utf16, Layout::LengthPrefix(Size::U16)")]
     utf16_prefixed_u16: StringDeku,
 
     // length (4 byte) then string, null character is NOT allowed inside
     // b"\0x5\x00\x00\x0001234"
+    //
+    // byte length with empty string is 4
     #[deku(ctx = "Encoding::Utf16, Layout::LengthPrefix(Size::U32)")]
     utf16_prefixed_u32: StringDeku,
 
     // String with null byte at the end
     // b"012345\x00"
+    //
+    // byte length with empty string is 1
     #[deku(ctx = "Encoding::Utf16, Layout::ZeroEnded")]
     utf16_zero_ended: StringDeku,
 }
