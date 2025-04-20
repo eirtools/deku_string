@@ -36,17 +36,17 @@ struct SampleModel {
     // fixed length buffer, null  character is required to be inside
     // "012345678\x00" is allowed
     // "0123456789" is NOT allowed
-    #[deku(ctx = "Encoding::Utf8, Layout::fixed_length(10)")]
+    #[deku(ctx = "Encoding::Utf8, StringLayout::fixed_length(10)")]
     fixed_value: StringDeku,
 
     // length (1 byte) then string, null character is NOT allowed inside
     // b"\0x501234"
-    #[deku(ctx = "Encoding::Utf8, Layout::LengthPrefix(Size::U8)")]
+    #[deku(ctx = "Encoding::Utf8, StringLayout::LengthPrefix(Size::U8)")]
     prefixed_u8: StringDeku,
 
     // String with null byte at the end
     // b"012345\x00"
-    #[deku(ctx = "Encoding::Utf8, Layout::ZeroEnded")]
+    #[deku(ctx = "Encoding::Utf8, StringLayout::ZeroEnded")]
     zero_ended: StringDeku,
 }
 ```
