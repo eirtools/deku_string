@@ -16,8 +16,8 @@ on:
     paths:
     - Cargo.toml
     - Cargo.lock
-    - src
-    - tests
+    - src/**
+    - tests/**
     - .config/nextest.toml
     - .github/workflows/ci.yaml
     - .github/ci-tools.toml
@@ -25,8 +25,8 @@ on:
     paths:
     - Cargo.toml
     - Cargo.lock
-    - src
-    - tests
+    - src/**
+    - tests/**
     - .config/nextest.toml
     - .github/workflows/ci.yaml
     - .github/ci-tools.toml
