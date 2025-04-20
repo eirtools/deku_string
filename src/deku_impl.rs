@@ -5,19 +5,16 @@ use deku::{no_std_io, reader::Reader, writer::Writer, DekuError, DekuReader, Dek
 
 use crate::{Encoding, Size, StringDeku, StringLayout};
 
-impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
-    ///
-    /// Read string from reader
-    ///
-    fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
+impl StringDeku {
+    pub(self) fn from_reader_with_ctx_impl<R>(
         reader: &mut Reader<R>,
-        ctx: (Endian, Encoding, StringLayout),
+        endian: Endian,
+        encoding: Encoding,
+        layout: StringLayout,
     ) -> Result<Self, DekuError>
     where
-        Self: Sized,
+        R: no_std_io::Read + no_std_io::Seek,
     {
-        let (endian, encoding, layout) = ctx;
-
         let (null_requirement, limit_u8, limit_u16): ReadRequirements =
             read_requirements(reader, endian, layout)?;
 
@@ -38,6 +35,56 @@ impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
             }
         }
     }
+    pub(self) fn to_writer_impl<W: no_std_io::Write + no_std_io::Seek>(
+        &self,
+        writer: &mut Writer<W>,
+        endian: Endian,
+        encoding: Encoding,
+        layout: StringLayout,
+    ) -> Result<(), DekuError> {
+        match encoding {
+            Encoding::Utf8 => {
+                let mut buf = self.0.as_bytes().to_vec();
+                write_string(writer, endian, layout, &mut buf, 0u8)
+            }
+            Encoding::Utf16 => {
+                let mut buf = self.0.encode_utf16().collect::<Vec<u16>>();
+                write_string(writer, endian, layout, &mut buf, 0u16)
+            }
+        }
+    }
+}
+
+impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
+    ///
+    /// Read string from reader
+    ///
+    fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
+        reader: &mut Reader<R>,
+        ctx: (Endian, Encoding, StringLayout),
+    ) -> Result<Self, DekuError>
+    where
+        Self: Sized,
+    {
+        let (endian, encoding, layout) = ctx;
+        Self::from_reader_with_ctx_impl(reader, endian, encoding, layout)
+    }
+}
+
+impl DekuReader<'_, (Endian, (Encoding, StringLayout))> for StringDeku {
+    ///
+    /// Read string from reader
+    ///
+    fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
+        reader: &mut Reader<R>,
+        ctx: (Endian, (Encoding, StringLayout)),
+    ) -> Result<Self, DekuError>
+    where
+        Self: Sized,
+    {
+        let (endian, (encoding, layout)) = ctx;
+        Self::from_reader_with_ctx_impl(reader, endian, encoding, layout)
+    }
 }
 
 impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
@@ -50,17 +97,21 @@ impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
         ctx: (Endian, Encoding, StringLayout),
     ) -> Result<(), DekuError> {
         let (endian, encoding, layout) = ctx;
+        self.to_writer_impl(writer, endian, encoding, layout)
+    }
+}
 
-        match encoding {
-            Encoding::Utf8 => {
-                let mut buf = self.0.as_bytes().to_vec();
-                write_string(writer, endian, layout, &mut buf, 0u8)
-            }
-            Encoding::Utf16 => {
-                let mut buf = self.0.encode_utf16().collect::<Vec<u16>>();
-                write_string(writer, endian, layout, &mut buf, 0u16)
-            }
-        }
+impl DekuWriter<(Endian, (Encoding, StringLayout))> for StringDeku {
+    ///
+    /// Write string to the writer.
+    ///
+    fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
+        &self,
+        writer: &mut Writer<W>,
+        ctx: (Endian, (Encoding, StringLayout)),
+    ) -> Result<(), DekuError> {
+        let (endian, (encoding, layout)) = ctx;
+        self.to_writer_impl(writer, endian, encoding, layout)
     }
 }
 
