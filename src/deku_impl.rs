@@ -3,23 +3,23 @@ use std::borrow::Cow;
 use deku::ctx::{Endian, Limit};
 use deku::{no_std_io, reader::Reader, writer::Writer, DekuError, DekuReader, DekuWriter};
 
-use crate::{Encoding, Layout, Size, StringDeku};
+use crate::{Encoding, Size, StringDeku, StringLayout};
 
-impl DekuReader<'_, (Endian, Encoding, Layout)> for StringDeku {
+impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
     ///
     /// Read string from reader
     ///
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
-        ctx: (Endian, Encoding, Layout),
+        ctx: (Endian, Encoding, StringLayout),
     ) -> Result<Self, DekuError>
     where
         Self: Sized,
     {
-        let (endian, encoding, variant) = ctx;
+        let (endian, encoding, layout) = ctx;
 
         let (null_requirement, limit_u8, limit_u16): ReadRequirements =
-            read_requirements(reader, endian, variant)?;
+            read_requirements(reader, endian, layout)?;
 
         if limit_u8 == Limit::Count(0) {
             // if requested length is 0, skip the data
@@ -40,25 +40,25 @@ impl DekuReader<'_, (Endian, Encoding, Layout)> for StringDeku {
     }
 }
 
-impl DekuWriter<(Endian, Encoding, Layout)> for StringDeku {
+impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
     ///
     /// Write string to the writer.
     ///
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
-        ctx: (Endian, Encoding, Layout),
+        ctx: (Endian, Encoding, StringLayout),
     ) -> Result<(), DekuError> {
-        let (endian, encoding, variant) = ctx;
+        let (endian, encoding, layout) = ctx;
 
         match encoding {
             Encoding::Utf8 => {
                 let mut buf = self.0.as_bytes().to_vec();
-                write_string(writer, endian, variant, &mut buf, 0u8)
+                write_string(writer, endian, layout, &mut buf, 0u8)
             }
             Encoding::Utf16 => {
                 let mut buf = self.0.encode_utf16().collect::<Vec<u16>>();
-                write_string(writer, endian, variant, &mut buf, 0u16)
+                write_string(writer, endian, layout, &mut buf, 0u16)
             }
         }
     }
@@ -76,15 +76,15 @@ type ReadRequirements = (
 );
 
 ///
-/// Read limit and null placement requirements from variant and reader (if prefixed)
+/// Read limit and null placement requirements from layout and reader (if prefixed)
 ///
 fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     reader: &mut Reader<R>,
     endian: Endian,
-    variant: Layout,
+    layout: StringLayout,
 ) -> Result<ReadRequirements, DekuError> {
-    match variant {
-        Layout::FixedLength {
+    match layout {
+        StringLayout::FixedLength {
             size,
             allow_no_null,
         } => {
@@ -95,13 +95,13 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             };
             Ok((null, Limit::from(size), Limit::from(size)))
         }
-        Layout::ZeroEnded => Ok((
+        StringLayout::ZeroEnded => Ok((
             // zero is already at the end by how deku reads data
             NullRequirement::Accepted,
             Limit::new_until(|v: &u8| *v == 0),
             Limit::new_until(|v: &u16| *v == 0),
         )),
-        Layout::LengthPrefix(prefix) => {
+        StringLayout::LengthPrefix(prefix) => {
             let size: usize = match prefix {
                 Size::U8 => <u8>::from_reader_with_ctx(reader, endian)? as usize,
                 Size::U16 => <u16>::from_reader_with_ctx(reader, endian)? as usize,
@@ -165,7 +165,7 @@ where
 fn write_string<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
-    variant: Layout,
+    layout: StringLayout,
     buf: &mut Vec<T>,
     zero: T,
 ) -> Result<(), DekuError>
@@ -182,8 +182,8 @@ where
         )));
     }
 
-    match variant {
-        Layout::LengthPrefix(prefix) => {
+    match layout {
+        StringLayout::LengthPrefix(prefix) => {
             let max_size: usize = match prefix {
                 Size::U8 => u8::MAX as usize,
                 Size::U16 => u16::MAX as usize,
@@ -204,12 +204,12 @@ where
 
             buf.to_writer(writer, endian)
         }
-        Layout::ZeroEnded => {
+        StringLayout::ZeroEnded => {
             buf.to_writer(writer, endian)?;
             zero.to_writer(writer, endian)
         }
 
-        Layout::FixedLength {
+        StringLayout::FixedLength {
             size,
             allow_no_null,
         } => {
