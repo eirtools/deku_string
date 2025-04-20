@@ -19,19 +19,19 @@ pastey = { version = "0.1.0" }
 
 [[test]]
 name = "rw-accepted"
-path = "tests/rw_accepted.rs"
+path = "tests/string/rw_accepted.rs"
 
 [[test]]
 name = "read_rejected"
-path = "tests/read_rejected.rs"
+path = "tests/string/read_rejected.rs"
 
 [[test]]
 name = "write_rejected"
-path = "tests/write_rejected.rs"
+path = "tests/string/write_rejected.rs"
 
 [[test]]
 name = "deku_derive"
-path = "tests/deku_derive.rs"
+path = "tests/string/deku_derive.rs"
 
 [badges]
 maintenance = { status = "actively-developed" }
