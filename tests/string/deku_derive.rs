@@ -91,9 +91,7 @@ struct SampleModel {
     // b"012345\x00"
     //
     // byte length with empty string is 1
-    //
-    // tuple here is to test StringDeku as nested structure
-    #[deku(ctx = "(Encoding::Utf16, StringLayout::ZeroEnded)")]
+    #[deku(ctx = "Encoding::Utf16, StringLayout::ZeroEnded")]
     utf16_zero_ended: StringDeku,
 }
 

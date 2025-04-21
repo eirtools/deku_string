@@ -205,7 +205,7 @@ where
                 )));
             }
         }
-    };
+    }
 
     convert(&buf[..first_null]).map(Into::into)
 }

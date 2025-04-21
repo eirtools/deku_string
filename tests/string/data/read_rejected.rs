@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use super::layouts::FIXED_LENGTH;
 
 /// Raw data size
@@ -54,7 +53,7 @@ pub(crate) const UTF_8_FIXED_FORCE_ZERO_BIG_NO_ZERO_INSIDE: &[u8; UTF_8_FIXED_LE
 pub(crate) const UTF_8_PREFIX_U8_LITTLE_ZERO_IN_MIDDLE: &[u8; 3] = b"\x02\x00a";
 pub(crate) const UTF_8_PREFIX_U16_LITTLE_ZERO_IN_MIDDLE: &[u8; 4] = b"\x02\x00\x00a";
 pub(crate) const UTF_8_PREFIX_U32_LITTLE_ZERO_IN_MIDDLE: &[u8; 6] = b"\x02\x00\x00\x00\x00a";
-// pub(crate) const ZERO_ENDED_LITTLE_ZERO_IN_MIDDLE — is accepted
+// pub(crate) const UTF_8_ZERO_ENDED_LITTLE_ZERO_IN_MIDDLE- is accepted
 
 // pub(crate) const FIXED_FORCE_ZERO_BIG_IN_MIDDLE — is accepted
 // pub(crate) const FIXED_ALLOW_NO_ZERO_BIG_ZERO_IN_MIDDLE — is accepted

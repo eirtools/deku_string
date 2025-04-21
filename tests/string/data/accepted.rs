@@ -1,4 +1,3 @@
-#![allow(dead_code)]
 use super::layouts::FIXED_LENGTH;
 
 /// Raw data size

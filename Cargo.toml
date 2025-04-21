@@ -18,19 +18,19 @@ rstest = { version = "0.25.0" }
 pastey = { version = "0.1.0" }
 
 [[test]]
-name = "rw-accepted"
+name = "str_rw_accepted"
 path = "tests/string/rw_accepted.rs"
 
 [[test]]
-name = "read_rejected"
+name = "str_read_rejected"
 path = "tests/string/read_rejected.rs"
 
 [[test]]
-name = "write_rejected"
+name = "str_write_rejected"
 path = "tests/string/write_rejected.rs"
 
 [[test]]
-name = "deku_derive"
+name = "str_deku_derive"
 path = "tests/string/deku_derive.rs"
 
 [badges]

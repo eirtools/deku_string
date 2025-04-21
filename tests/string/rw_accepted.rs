@@ -2,7 +2,7 @@
 //! Accepted read and write tests for UTF-8 & UTF-16 strings
 //!
 mod data;
-mod test_gen_macro;
+mod macros;
 
 use pastey::paste;
 use rstest::rstest;
@@ -16,6 +16,9 @@ use data::accepted::*;
 use data::layouts::*;
 use deku_string::{Encoding, StringDeku};
 
+#[allow(unused_imports)]
+use macros::accepted;
+
 // --------------------------------------
 // ---------- TESTS: Parse --------------
 // --------------------------------------
@@ -25,7 +28,7 @@ create_test_impl_rw_accepted! {
     all_encodings,
     (empty, in_str_in),
     (valid, in_str_in),
-    (zero_in_middle, in_str_out)
+    (zero_in_middle, in_str_out),
 }
 
 create_test_impl_rw_accepted! {
@@ -34,33 +37,33 @@ create_test_impl_rw_accepted! {
     (empty, in_str_in),
     (valid, in_str_in),
     (zero_in_middle, in_str_out),
-    (no_zero_inside, in_str_in)
+    (no_zero_inside, in_str_in),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u8,
     all_encodings,
     (empty, in_str_in),
-    (valid, in_str_in)
+    (valid, in_str_in),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u16,
     all_encodings,
     (empty, in_str_in),
-    (valid, in_str_in)
+    (valid, in_str_in),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u32,
     all_encodings,
     (empty, in_str_in),
-    (valid, in_str_in)
+    (valid, in_str_in),
 }
 
 create_test_impl_rw_accepted! {
     zero_ended,
     all_encodings,
     (empty, in_str_in),
-    (valid, in_str_in)
+    (valid, in_str_in),
 }
