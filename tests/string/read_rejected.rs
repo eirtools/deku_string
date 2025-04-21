@@ -1,19 +1,21 @@
 //!
 //! Rejected read tests for UTF-8 & UTF-16 strings
-//!
 mod data;
-mod test_gen_macro;
+mod macros;
 
 use pastey::paste;
 use rstest::rstest;
 
+use deku::DekuReader as _;
 use deku::ctx::Endian;
 use deku::reader::Reader;
-use deku::DekuReader as _;
 
 use data::layouts::*;
-use data::rejected::*;
+use data::read_rejected::*;
 use deku_string::{Encoding, StringDeku};
+
+#[allow(unused_imports)]
+use macros::write_rejected;
 
 // --------------------------------------
 // ---------- TESTS: Parse --------------
@@ -21,10 +23,40 @@ use deku_string::{Encoding, StringDeku};
 
 // ---------- Parse
 create_test_impl_read_rejected! {
+    fixed_force_zero,
     error: parse,
     (invalid_utf),
 }
 
+create_test_impl_read_rejected! {
+    fixed_allow_no_zero,
+    error: parse,
+    (invalid_utf),
+}
+
+create_test_impl_read_rejected! {
+    prefix_u8,
+    error: parse,
+    (invalid_utf),
+}
+
+create_test_impl_read_rejected! {
+    prefix_u16,
+    error: parse,
+    (invalid_utf),
+}
+
+create_test_impl_read_rejected! {
+    prefix_u32,
+    error: parse,
+    (invalid_utf),
+}
+
+create_test_impl_read_rejected! {
+    zero_ended,
+    error: parse,
+    (invalid_utf),
+}
 // --------------------------------------
 // ---------- TESTS: Assertion ----------
 // --------------------------------------

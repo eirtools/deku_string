@@ -2,16 +2,16 @@
 #![deny(missing_debug_implementations)]
 
 //!
-//! Simple wrapper around String to implement DekuReader and DekuWriter
+//! Simple wrapper around String to implement `DekuReader` and `DekuWriter`
 //!
 //! This implementation requires following context:
 //!  * Endian — little or big
 //!  * Encoding — UTF-8 or UTF-16
-//!  * StringLayout — how string is represented in binary
+//!  * `StringLayout` — how string is represented in binary
 //!
 //! Pick your favorite combination
 //!
-//! Example usage od StringDeku with UTF-8 strings:
+//! Example usage od `StringDeku` with UTF-8 strings:
 //!
 //! ```rust,ignore
 //! use ::deku_string::{StringDeku, Encoding, StringLayout, Size};
@@ -51,7 +51,6 @@
 //!     zero_ended: StringDeku,
 //! }
 //! ```
-//!
 
 mod deku_impl;
 mod std_impl;
@@ -78,7 +77,6 @@ mod std_impl;
 ///
 /// While content is hidden, `to_string`, `into` and equality functions and operators provide
 /// convenient way to make operations easier.
-///
 #[derive(Clone, Default, PartialEq, PartialOrd, Eq, Ord)]
 pub struct StringDeku(pub(crate) String);
 
@@ -88,7 +86,7 @@ pub struct StringDeku(pub(crate) String);
 pub enum StringLayout {
     /// Fixed length string
     FixedLength {
-        /// How many items should be there.
+        /// How many (exact) items should be there.
         size: usize,
 
         /// If null character absence is allowed in the buffer.
@@ -104,6 +102,7 @@ pub enum StringLayout {
 
 impl StringLayout {
     /// Construct fixed length variant with given size and no null isn't allowed.
+    #[must_use]
     pub fn fixed_length(size: usize) -> Self {
         Self::FixedLength {
             size,

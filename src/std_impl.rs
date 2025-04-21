@@ -1,6 +1,5 @@
 //!
-//! "Transparency" shim implementations for StringDeku.
-//!
+//! "Transparency" shim implementations for `StringDeku`.
 use crate::StringDeku;
 
 impl core::fmt::Display for StringDeku {
@@ -45,7 +44,7 @@ impl From<StringDeku> for String {
 
 impl std::hash::Hash for StringDeku {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.hash(state)
+        self.0.hash(state);
     }
 }
 
@@ -93,7 +92,8 @@ impl PartialEq<StringDeku> for String {
 
 #[cfg(test)]
 mod test {
-    use std::{borrow::Cow, cmp::Ordering};
+    use std::borrow::Cow;
+    use std::cmp::Ordering;
 
     use crate::StringDeku;
     use rstest::rstest;
@@ -102,7 +102,7 @@ mod test {
     fn display() {
         let str = "from str";
         let str_deku: StringDeku = str.into();
-        let formatted = format!("{}", str_deku);
+        let formatted = format!("{str_deku}");
         assert_eq!(formatted, str);
     }
 
@@ -110,7 +110,7 @@ mod test {
     fn debug() {
         let str = "from str";
         let str_deku: StringDeku = str.into();
-        let formatted = format!("{:?}", str_deku);
+        let formatted = format!("{str_deku:?}");
         let expected = format!("{str:?}");
         assert_eq!(formatted, expected);
     }
