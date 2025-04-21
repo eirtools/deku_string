@@ -1,6 +1,5 @@
 //!
 //! "Transparency" shim implementations for `StringDeku`.
-//!
 use crate::StringDeku;
 
 impl core::fmt::Display for StringDeku {
@@ -93,7 +92,8 @@ impl PartialEq<StringDeku> for String {
 
 #[cfg(test)]
 mod test {
-    use std::{borrow::Cow, cmp::Ordering};
+    use std::borrow::Cow;
+    use std::cmp::Ordering;
 
     use crate::StringDeku;
     use rstest::rstest;

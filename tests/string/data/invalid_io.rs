@@ -1,9 +1,6 @@
-use std::io::ErrorKind;
-use std::io::Result;
+use std::io::{ErrorKind, Result};
 
-use deku::no_std_io::Seek;
-use deku::no_std_io::SeekFrom;
-use deku::no_std_io::Write;
+use deku::no_std_io::{Seek, SeekFrom, Write};
 
 pub struct InvalidBufferType {
     size: u64,
@@ -51,18 +48,18 @@ impl Seek for InvalidBufferType {
 
                 if new_pos >= 0 && new_pos as u64 <= self.size {
                     self.pos = new_pos as u64;
-                    return Ok(self.pos)
+                    return Ok(self.pos);
                 }
                 Err(ErrorKind::BrokenPipe.into())
             }
             SeekFrom::End(offset) => {
                 if offset > 0 {
-                    return Err(ErrorKind::BrokenPipe.into())
+                    return Err(ErrorKind::BrokenPipe.into());
                 }
 
-                let offset =  (-offset) as u64;
+                let offset = (-offset) as u64;
                 if offset > self.size {
-                    return Err(ErrorKind::BrokenPipe.into())
+                    return Err(ErrorKind::BrokenPipe.into());
                 }
                 self.pos = self.size - offset;
                 Ok(offset)

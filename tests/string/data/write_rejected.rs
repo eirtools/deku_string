@@ -3,7 +3,6 @@ pub const ASSERTION_NO_ZERO_INSIDE: &str = "invalid test case zero?";
 pub const ASSERTION_ZERO_INSIDE_STR: &str = "invalid test\x00with garbage";
 ///
 /// A 65536+ bytes (64KB)-long string to test out-of-bound checks on write.
-///
 pub const ASSERTION_TOO_BIG_DATA: &str = include_str!("../../64k_data");
 
 pub const IO_DATA: &str = "valid test case w zero";

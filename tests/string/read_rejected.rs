@@ -1,15 +1,14 @@
 //!
 //! Rejected read tests for UTF-8 & UTF-16 strings
-//!
 mod data;
 mod macros;
 
 use pastey::paste;
 use rstest::rstest;
 
+use deku::DekuReader as _;
 use deku::ctx::Endian;
 use deku::reader::Reader;
-use deku::DekuReader as _;
 
 use data::layouts::*;
 use data::read_rejected::*;

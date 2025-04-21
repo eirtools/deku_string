@@ -1,9 +1,9 @@
 #[macro_export]
 macro_rules! _create_test_impl_write_rejected_size {
-    (error: io, $layout: ident, $case: ident) => {
-        paste!{[<IO_ $layout:upper _ $case:upper _SIZE>]}
+    (error: io, $layout:ident, $case:ident) => {
+        paste! {[<IO_ $layout:upper _ $case:upper _SIZE>]}
     };
-    (error: $error: ident, $layout: ident, $case: ident) => {
+    (error: $error:ident, $layout:ident, $case:ident) => {
         999999
     };
 }

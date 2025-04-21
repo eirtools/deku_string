@@ -1,6 +1,5 @@
 //!
 //! Accepted read and write tests for UTF-8 & UTF-16 strings
-//!
 mod data;
 mod macros;
 
@@ -10,7 +9,7 @@ use rstest::rstest;
 use deku::ctx::Endian;
 use deku::reader::Reader;
 use deku::writer::Writer;
-use deku::{no_std_io, DekuReader as _, DekuWriter as _};
+use deku::{DekuReader as _, DekuWriter as _, no_std_io};
 
 use data::accepted::*;
 use data::layouts::*;

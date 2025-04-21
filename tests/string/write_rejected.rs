@@ -1,15 +1,14 @@
 //!
 //! Rejected write tests
-//!
 mod data;
 mod macros;
 
 use pastey::paste;
 use rstest::rstest;
 
+use deku::DekuWriter as _;
 use deku::ctx::Endian;
 use deku::writer::Writer;
-use deku::DekuWriter as _;
 
 use deku_string::{Encoding, StringDeku};
 
@@ -19,7 +18,6 @@ use data::write_rejected::*;
 
 #[allow(unused_imports)]
 use macros::write_rejected;
-
 
 create_test_impl_write_rejected! {
     fixed_force_zero,
@@ -65,7 +63,6 @@ create_test_impl_write_rejected! {
 }
 
 // -------
-
 
 create_test_impl_write_rejected! {
     fixed_force_zero,

@@ -1,11 +1,12 @@
 //!
 //! Integration test with Deku derives and example how to use.
-//!
 use ::deku_string::{Encoding, Size, StringDeku, StringLayout};
 use deku::{DekuContainerRead, DekuContainerWrite};
 use rstest::rstest;
 
-#[derive(Default, Debug, Clone, PartialEq, PartialOrd, ::deku::DekuRead, ::deku::DekuWrite)]
+#[derive(
+    Default, Debug, Clone, PartialEq, PartialOrd, ::deku::DekuRead, ::deku::DekuWrite,
+)]
 #[deku(endian = "little")]
 struct SampleModel {
     // fixed length buffer, null  character is required to be inside
@@ -20,7 +21,8 @@ struct SampleModel {
     // both "012345678\x00" and "0123456789" are allowed
     //
     // byte length with empty string is 10
-    #[deku(ctx = "Encoding::Utf8, StringLayout::FixedLength{size: 10, allow_no_null: true}")]
+    #[deku(ctx = "Encoding::Utf8, StringLayout::FixedLength{size: 10, \
+                  allow_no_null: true}")]
     utf8_fixed_value: StringDeku,
 
     // length (1 byte) then string, null character is NOT allowed inside
@@ -63,7 +65,8 @@ struct SampleModel {
     // both "012345678\x00" and "0123456789" are allowed
     //
     // byte length with empty string is 20
-    #[deku(ctx = "Encoding::Utf16, StringLayout::FixedLength{size: 10, allow_no_null: true}")]
+    #[deku(ctx = "Encoding::Utf16, StringLayout::FixedLength{size: 10, \
+                  allow_no_null: true}")]
     utf16_fixed_value: StringDeku,
 
     // length (1 byte) then string, null character is NOT allowed inside

@@ -51,7 +51,6 @@
 //!     zero_ended: StringDeku,
 //! }
 //! ```
-//!
 
 mod deku_impl;
 mod std_impl;
@@ -78,7 +77,6 @@ mod std_impl;
 ///
 /// While content is hidden, `to_string`, `into` and equality functions and operators provide
 /// convenient way to make operations easier.
-///
 #[derive(Clone, Default, PartialEq, PartialOrd, Eq, Ord)]
 pub struct StringDeku(pub(crate) String);
 
@@ -104,7 +102,8 @@ pub enum StringLayout {
 
 impl StringLayout {
     /// Construct fixed length variant with given size and no null isn't allowed.
-    #[must_use] pub fn fixed_length(size: usize) -> Self {
+    #[must_use]
+    pub fn fixed_length(size: usize) -> Self {
         Self::FixedLength {
             size,
             allow_no_null: false,
