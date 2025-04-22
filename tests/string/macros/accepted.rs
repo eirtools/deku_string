@@ -134,16 +134,20 @@ macro_rules! _create_test_impl_rw_accepted_internal{
 }
 
 #[macro_export]
-macro_rules! _impl_value_in {
+macro_rules! _rw_accepted_naming_impl {
     (_in_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
         paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _IN>] }
     };
 
-    (_str_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
+    (_data_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
         paste! { [<$layout:upper _ $case:upper _STR>] }
     };
 
-    (_out_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
+    (in_data_in, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
+        paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _IN>] }
+    };
+
+    (in_data_out, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
         paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _OUT>] }
     };
 }
@@ -162,75 +166,34 @@ macro_rules! create_test_impl_rw_accepted {
             $layout, endian: $endian, encoding: $encoding, $($out)+
         );
     };
-    // Handle case: in -> str -> in (last)
-    (@accum $layout:ident, endian: $endian: ident, encoding: $encoding: ident, ($($out:tt)*), ($case:ident, in_str_in) $(,)?) => {
+    // Handle case: in -> data -> in/out (last)
+    (@accum $layout:ident, endian: $endian: ident, encoding: $encoding: ident, ($($out:tt)*), ($case:ident, $variant:ident) $(,)?) => {
         create_test_impl_rw_accepted!(
             @accum $layout, endian: $endian, encoding: $encoding,
             ($($out)* (
                 $case,
-                _impl_value_in!(_in_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_str_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_in_, $layout, $endian, $encoding, $case)
+                _rw_accepted_naming_impl!(_in_, $layout, $endian, $encoding, $case),
+                _rw_accepted_naming_impl!(_data_, $layout, $endian, $encoding, $case),
+                _rw_accepted_naming_impl!($variant, $layout, $endian, $encoding, $case)
             ),)
         );
     };
-    // Handle case: in -> str -> in, (rest)
+    // Handle case: in -> data -> in/out, (rest)
     (
         @accum $layout:ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
         ($($out:tt)*),
-        ($case:ident, in_str_in),
+        ($case:ident, $variant:ident),
         $($rest:tt)+
     ) => {
         create_test_impl_rw_accepted!(
             @accum $layout, endian: $endian, encoding: $encoding,
             ($($out)* (
                 $case,
-                _impl_value_in!(_in_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_str_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_in_, $layout, $endian, $encoding, $case)
-            ),),
-            $($rest)*
-        );
-    };
-
-    // Handle case: in -> str -> out (last)
-    (
-        @accum $layout:ident,
-        endian: $endian: ident,
-        encoding: $encoding: ident,
-        ($($out:tt)*),
-        ($case:ident, in_str_out)
-        $(,)?
-    ) => {
-        create_test_impl_rw_accepted!(
-            @accum $layout, endian: $endian, encoding: $encoding,
-            ($($out)* (
-                $case,
-                _impl_value_in!(_in_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_str_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_out_, $layout, $endian, $encoding, $case)
-            ))
-        );
-    };
-
-    // Handle case: in -> str -> out, (rest)
-    (
-        @accum $layout:ident,
-        endian: $endian: ident,
-        encoding: $encoding: ident,
-        ($($out:tt)*),
-        ($case:ident, in_str_out),
-        $($rest:tt)+
-    ) => {
-        create_test_impl_rw_accepted!(
-            @accum $layout, endian: $endian, encoding: $encoding,
-            ($($out)* (
-                $case,
-                _impl_value_in!(_in_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_str_, $layout, $endian, $encoding, $case),
-                _impl_value_in!(_out_, $layout, $endian, $encoding, $case)
+                _rw_accepted_naming_impl!(_in_, $layout, $endian, $encoding, $case),
+                _rw_accepted_naming_impl!(_data_, $layout, $endian, $encoding, $case),
+                _rw_accepted_naming_impl!($variant, $layout, $endian, $encoding, $case)
             ),),
             $($rest)*
         );

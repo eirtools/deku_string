@@ -1,5 +1,5 @@
-//!
 //! "Transparency" shim implementations for `StringDeku`.
+
 use crate::StringDeku;
 
 impl core::fmt::Display for StringDeku {

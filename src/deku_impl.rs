@@ -27,13 +27,13 @@ impl StringDeku {
 
         match encoding {
             Encoding::Utf8 => {
-                read_string(reader, null_requirement, 0u8, limit_u8, endian, |buf| {
+                read_string(reader, &null_requirement, limit_u8, endian, |buf| {
                     String::from_utf8(buf.to_vec())
                         .map_err(|_| DekuError::Parse("Invalid UTF-8".into()))
                 })
             }
             Encoding::Utf16 => {
-                read_string(reader, null_requirement, 0u16, limit_u16, endian, |buf| {
+                read_string(reader, &null_requirement, limit_u16, endian, |buf| {
                     String::from_utf16(buf)
                         .map_err(|_| DekuError::Parse("Invalid UTF-16".into()))
                 })
@@ -51,18 +51,17 @@ impl StringDeku {
         match encoding {
             Encoding::Utf8 => {
                 let mut buf = self.0.as_bytes().to_vec();
-                write_string(writer, endian, layout, &mut buf, 0u8)
+                write_string(writer, endian, layout, &mut buf)
             }
             Encoding::Utf16 => {
                 let mut buf = self.0.encode_utf16().collect::<Vec<u16>>();
-                write_string(writer, endian, layout, &mut buf, 0u16)
+                write_string(writer, endian, layout, &mut buf)
             }
         }
     }
 }
 
 impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
-    ///
     /// Read string from reader
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
@@ -77,7 +76,6 @@ impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
 }
 
 impl DekuReader<'_, (Endian, (Encoding, StringLayout))> for StringDeku {
-    ///
     /// Read string from reader
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
@@ -92,7 +90,6 @@ impl DekuReader<'_, (Endian, (Encoding, StringLayout))> for StringDeku {
 }
 
 impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
-    ///
     /// Write string to the writer.
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
@@ -105,7 +102,6 @@ impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
 }
 
 impl DekuWriter<(Endian, (Encoding, StringLayout))> for StringDeku {
-    ///
     /// Write string to the writer.
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
@@ -117,7 +113,6 @@ impl DekuWriter<(Endian, (Encoding, StringLayout))> for StringDeku {
     }
 }
 
-///
 /// Read Requirements tuple.
 ///
 /// Type is defined for convenience.
@@ -127,7 +122,6 @@ type ReadRequirements = (
     Limit<u16, fn(&u16) -> bool>,
 );
 
-///
 /// Read limit and null placement requirements from layout and reader (if prefixed)
 fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     reader: &mut Reader<R>,
@@ -167,23 +161,22 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     }
 }
 
-///
 /// Common implementation to read String from stream.
 ///
 /// Read data from reader, check null character presence
 /// and placement and converts to a string.
 fn read_string<'a, R, T>(
     reader: &mut Reader<R>,
-    null_requirement: NullRequirement,
-    zero: T,
+    null_requirement: &NullRequirement,
     limit: Limit<T, fn(&T) -> bool>,
     endian: Endian,
     convert: fn(&[T]) -> Result<String, DekuError>,
 ) -> Result<StringDeku, DekuError>
 where
     R: no_std_io::Read + no_std_io::Seek,
-    T: Clone + PartialEq + DekuReader<'a, Endian>,
+    T: Default + Clone + PartialEq + DekuReader<'a, Endian>,
 {
+    let zero = T::default();
     let buf = <Vec<T>>::from_reader_with_ctx(reader, (limit, endian))?;
 
     let first_null = buf.iter().position(|x| *x == zero).unwrap_or(buf.len());
@@ -209,19 +202,18 @@ where
     convert(&buf[..first_null]).map(Into::into)
 }
 
-///
 /// Common implementation to write Vec<u8> and Vec<u16>
 fn write_string<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
     layout: StringLayout,
     buf: &mut Vec<T>,
-    zero: T,
 ) -> Result<(), DekuError>
 where
     W: no_std_io::Write + no_std_io::Seek,
-    T: Clone + PartialEq + DekuWriter<Endian>,
+    T: Default + Clone + PartialEq + DekuWriter<Endian>,
 {
+    let zero = T::default();
     // don't write shady strings with null character in the middle
 
     let first_null: usize = buf.iter().position(|x| *x == zero).unwrap_or(buf.len());
@@ -245,8 +237,11 @@ where
                 ))));
             }
 
+            // buffer len is not above corresponding type size,
+            // so truncation is safe
+            #[allow(clippy::cast_possible_truncation)]
             match prefix {
-                Size::U8 => (buf.len() as u8).to_writer(writer, endian),
+                Size::U8 => ((buf.len() & 0xFF) as u8).to_writer(writer, endian),
                 Size::U16 => (buf.len() as u16).to_writer(writer, endian),
                 Size::U32 => (buf.len() as u32).to_writer(writer, endian),
             }?;
@@ -275,13 +270,16 @@ where
                 )));
             }
 
-            buf.resize(size, zero);
-            buf.to_writer(writer, endian)
+            buf.to_writer(writer, endian)?;
+
+            for _ in buf.len()..size {
+                zero.to_writer(writer, endian)?;
+            }
+            Ok(())
         }
     }
 }
 
-///
 /// Requirement for null character presence
 #[derive(Debug, PartialEq, PartialOrd)]
 enum NullRequirement {
