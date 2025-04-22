@@ -1,4 +1,3 @@
-//!
 //! Rejected read tests for UTF-8 & UTF-16 strings
 mod data;
 mod macros;

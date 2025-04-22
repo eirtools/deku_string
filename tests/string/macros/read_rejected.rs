@@ -24,7 +24,7 @@ macro_rules! create_test_impl_read_rejected {
         paste! {
             #[rstest]
             $(
-            #[case::$case(paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper>] })]
+            #[case::$case( [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper>] )]
             )+
             fn [<read_ $encoding _ $layout _ $endian _ $error _ctx_ $ctx _rejected>] (
                 #[case] raw_data: &[u8],

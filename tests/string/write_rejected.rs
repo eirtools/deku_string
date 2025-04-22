@@ -1,4 +1,3 @@
-//!
 //! Rejected write tests
 mod data;
 mod macros;

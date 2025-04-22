@@ -1,3 +1,7 @@
+#![allow(clippy::cast_possible_wrap)]
+#![allow(clippy::cast_sign_loss)]
+#![allow(clippy::cast_possible_truncation)]
+
 use std::io::{ErrorKind, Result};
 
 use deku::no_std_io::{Seek, SeekFrom, Write};

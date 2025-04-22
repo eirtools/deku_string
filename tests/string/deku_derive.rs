@@ -106,7 +106,7 @@ fn write_model() {
 
     match model.to_bytes() {
         Ok(value) => assert_eq!(value, EXPECTED_BYTES),
-        Err(value) => assert!(false, "Got unexpected error {value:#?}"),
+        Err(value) => panic!("Got unexpected error {value:#?}"),
     }
 }
 
@@ -120,6 +120,6 @@ fn read_model() {
             assert_eq!(size_left, 0);
             assert_eq!(rest, &[]);
         }
-        Err(value) => assert!(false, "Got unexpected error {value:#?}"),
+        Err(value) => panic!("Got unexpected error {value:#?}"),
     }
 }
