@@ -4,6 +4,3 @@ cargo-nextest = "0.9.94"
 fd-find = { version = "10.2.0", "versioning" = "cargo" }
 cargo-mutants = "25.0.1"
 cargo-llvm-cov = "0.6.16"
-
-[tools-quality]
-taplo-cli = "0.9.3"
