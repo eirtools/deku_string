@@ -54,6 +54,8 @@
 
 mod deku_impl;
 mod std_impl;
+#[cfg(feature = "serde")]
+mod serde_impl;
 
 ///
 /// Simple wrapper around String to read and write various layouts.
