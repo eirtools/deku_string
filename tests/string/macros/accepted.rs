@@ -199,7 +199,7 @@ macro_rules! create_test_impl_rw_accepted {
         );
     };
 
-    // Entry point (both cases of encoding and endian)
+    // Entry point (all cases of encoding and endian)
     ($layout:ident, all_encodings, $($rest:tt)*) => {
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_8, (), $($rest)*);
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_16, (), $($rest)*);

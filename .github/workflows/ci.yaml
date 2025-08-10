@@ -159,4 +159,4 @@ jobs:
       with:
         default-datasource: crate
     - name: Run cargo-mutants
-      run: cargo mutants --test-tool=nextest --colors=always
+      run: cargo mutants --test-tool=nextest --colors=always --all-features
