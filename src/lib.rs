@@ -52,9 +52,9 @@
 //! }
 //! ```
 
-mod str;
+mod string;
 
-pub use str::{Encoding, StringDeku, StringLayout};
+pub use string::{Encoding, StringDeku, StringLayout};
 
 /// Length prefix size
 #[derive(Debug, Clone, Copy)]
