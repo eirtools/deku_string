@@ -106,7 +106,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
 
     - name: Report test results
       uses: mikepenz/action-junit-report@v5
@@ -130,12 +130,12 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v5
     - name: Publish coverage report
       uses: orgoro/coverage@v3.2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        coverageFile: ${{ github.workspace }}/target/lcov.xml
+        coverageFile: ./lcov.xml
 
   build-mutants:
     name: Run mutants tests
