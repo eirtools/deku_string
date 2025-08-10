@@ -135,7 +135,7 @@ jobs:
       uses: orgoro/coverage@v3.2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        coverageFile: ${{ github.workspace }}/target/lcov.xml
+        coverageFile: ./lcov.xml
 
   build-mutants:
     name: Run mutants tests
