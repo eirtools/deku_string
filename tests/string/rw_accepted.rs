@@ -44,6 +44,7 @@ create_test_impl_rw_accepted! {
     all_encodings,
     (empty, in_data_in),
     (valid, in_data_in),
+    (len_255, in_data_in),
 }
 
 create_test_impl_rw_accepted! {

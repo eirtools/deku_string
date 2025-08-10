@@ -71,7 +71,6 @@ mod test {
         let mut parsed: StringDeku = Default::default();
         StringDeku::deserialize_in_place(&mut de, &mut parsed)
             .expect("Parse successful");
-        let expected = "to str";
-        assert_eq!(expected, parsed);
+        assert_eq!("to str", parsed);
     }
 }

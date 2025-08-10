@@ -1,2 +1,5 @@
-additional_cargo_args = ["--all-features", "--profile=mutants"]
+# None of following ways of adding all features works :(
+additional_cargo_args = ["--all-features"]
+additional_cargo_test_args = ["--all-features", "--profile=mutants"]
 test_tool = "nextest"
+features = ["serde"]
