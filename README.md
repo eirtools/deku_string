@@ -15,6 +15,7 @@ It handles both UTF-8 and UTF-16 encoded strings and is suitable for parsing var
 * Dynamic read and write without additional temporary structs and operations.
 * No need to specify custom reader and writer.
 * Compatible with Deku's derive macros and custom readers/writers.
+* Supports serde via `serde` feature
 
 ### Supported Layout Formats
 
