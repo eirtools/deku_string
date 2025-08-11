@@ -32,7 +32,7 @@ jobs:
         cargo --version
 
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Cache Cargo
       uses: ./.github/actions/cache
@@ -53,7 +53,7 @@ jobs:
     needs: build
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Publish github
       run: |
         package_version=$(cargo metadata --format-version 1 --no-deps| jq -r '.packages[].version')
@@ -68,7 +68,7 @@ jobs:
       contents: read
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
     - name: Package
       run: cargo publish --no-verify
       env:

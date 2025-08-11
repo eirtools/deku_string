@@ -61,7 +61,7 @@ jobs:
         cargo --version
 
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ github.event.inputs.source || github.ref || github.event.ref }}
 
@@ -147,7 +147,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         ref: ${{ github.event.inputs.source || github.ref || github.event.ref }}
 
