@@ -1,8 +1,7 @@
 use crate::Size;
 
 mod deku_impl;
-#[cfg(feature = "serde")]
-mod serde_impl;
+mod lib_impl;
 mod std_impl;
 
 ///
@@ -46,7 +45,7 @@ pub enum StringLayout {
     /// String is prefixed by length value
     LengthPrefix(Size),
 
-    /// String is zero-ended. 1 byte for Ascii and UTF-8, 2 bytes for UTF-16
+    /// String is zero-ended. 1 byte for ASCII and UTF-8, 2 bytes for UTF-16
     ZeroEnded,
 }
 
