@@ -30,8 +30,8 @@ std_shim_implementation! {
     module_name: std_impl,
     local_type: StringDeku,
     internal_type: String,
-    test_input: "from str",
-    test_input_other: "other value",
-    test_input_less: "aaa",
-    test_input_greater: "zzz",
+    test_input: "from str".into(),
+    test_input_other: "other value".into(),
+    test_input_less: "aaa".into(),
+    test_input_greater: "zzz".into(),
 }

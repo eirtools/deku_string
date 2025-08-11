@@ -14,13 +14,21 @@ macro_rules! std_shim_implementation {
         module_name: $module_name: ident,
         local_type: $local_type: ident,
         internal_type: $internal_type: ident,
-        test_input: $test_input: literal,
-        test_input_other: $test_input_other: literal,
-        test_input_less: $test_input_less: literal,
-        test_input_greater: $test_input_greater: literal,
+        test_input: $test_input: expr,
+        test_input_other: $test_input_other: expr,
+        test_input_less: $test_input_less: expr,
+        test_input_greater: $test_input_greater: expr,
     ) => {
         mod $module_name {
             use crate::{InternalValue as _, $local_type};
+
+            impl core::ops::Deref for $local_type {
+                type Target = $internal_type;
+
+                fn deref(&self) -> &Self::Target {
+                    self.internal_ref()
+                }
+            }
 
             impl core::fmt::Display for $local_type {
                 #[inline]
@@ -39,7 +47,7 @@ macro_rules! std_shim_implementation {
 
             impl From<$internal_type> for $local_type {
                 #[inline]
-                fn from(input: $internal_type) -> StringDeku {
+                fn from(input: $internal_type) -> $local_type {
                     $local_type(input)
                 }
             }
@@ -96,7 +104,7 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn display() {
-                    let input: $internal_type = $test_input.into();
+                    let input: $internal_type = $test_input;
                     let local: $local_type = input.clone().into();
 
                     let formatted = format!("{local}");
@@ -107,7 +115,7 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn debug() {
-                    let input: $internal_type = $test_input.into();
+                    let input: $internal_type = $test_input;
                     let local: $local_type = input.clone().into();
 
                     let formatted = format!("{local:?}");
@@ -117,8 +125,15 @@ macro_rules! std_shim_implementation {
                 }
 
                 #[rstest]
+                fn test_deref() {
+                    let input: $internal_type = $test_input;
+                    let local: $local_type = input.clone().into();
+                    assert_eq!(input, *local);
+                }
+
+                #[rstest]
                 fn test_eq() {
-                    let input: $internal_type = $test_input.into();
+                    let input: $internal_type = $test_input;
                     let local: $local_type = input.clone().into();
 
                     let other_into: $internal_type = local.clone().into();
@@ -133,10 +148,10 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn test_ne() {
-                    let input: $internal_type = $test_input.into();
+                    let input: $internal_type = $test_input;
                     let local: $local_type = input.into();
 
-                    let input_other: $internal_type = $test_input_other.into();
+                    let input_other: $internal_type = $test_input_other;
                     let local_other: $local_type = input_other.clone().into();
 
                     assert_ne!(local, local_other);
@@ -156,7 +171,7 @@ macro_rules! std_shim_implementation {
                         s.finish()
                     }
 
-                    let input: $internal_type = $test_input.into();
+                    let input: $internal_type = $test_input;
                     let local: $local_type = input.clone().into();
 
                     assert_eq!(calculate_hash(&input), calculate_hash(&local));
@@ -164,9 +179,9 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn partial_cmp() {
-                    let input: $internal_type = $test_input.into();
-                    let input_less: $internal_type = $test_input_less.into();
-                    let input_greater: $internal_type = $test_input_greater.into();
+                    let input: $internal_type = $test_input;
+                    let input_less: $internal_type = $test_input_less;
+                    let input_greater: $internal_type = $test_input_greater;
 
                     let local: $local_type = input.clone().into();
                     let local_less: $local_type = input_less.clone().into();

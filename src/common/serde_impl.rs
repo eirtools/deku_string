@@ -38,7 +38,7 @@ macro_rules! serde_shim_implementation {
                 where
                     D: Deserializer<'de>,
                 {
-                    Ok(StringDeku(Deserialize::deserialize(deserializer)?))
+                    Ok($local_type(Deserialize::deserialize(deserializer)?))
                 }
 
                 #[inline]
@@ -80,7 +80,7 @@ macro_rules! serde_shim_implementation {
 
                 #[rstest]
                 fn deserialize_fail() {
-                    serde_json::from_str::<StringDeku>($test_input_encoded_invalid)
+                    serde_json::from_str::<$local_type>($test_input_encoded_invalid)
                         .expect_err("Parse failed");
                 }
 
