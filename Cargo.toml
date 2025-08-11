@@ -36,5 +36,21 @@ path = "tests/string/write_rejected.rs"
 name = "str_deku_derive"
 path = "tests/string/deku_derive.rs"
 
+[[test]]
+name = "seven_bit_rw_accepted"
+path = "tests/seven_bit/rw_accepted.rs"
+
+[[test]]
+name = "seven_bit_read_rejected"
+path = "tests/seven_bit/read_rejected.rs"
+
+[[test]]
+name = "seven_bit_write_rejected"
+path = "tests/seven_bit/write_rejected.rs"
+
+[[test]]
+name = "seven_bit_deku_derive"
+path = "tests/seven_bit/deku_derive.rs"
+
 [badges]
 maintenance = { status = "actively-developed" }
