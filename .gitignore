@@ -1,3 +1,5 @@
 target
 Cargo.lock
 mutants.out*
+llvm.cov
+llvm.info
