@@ -17,12 +17,17 @@ macro_rules! create_test_impl_write_rejected {
             $layout, endian: little, encoding: utf_16, ctx: prime, error: $error, $(($case)),+
         );
         create_test_impl_write_rejected!(
+            $layout, endian: little, encoding: utf_32, ctx: prime, error: $error, $(($case)),+
+        );
+        create_test_impl_write_rejected!(
             $layout, endian: big, encoding: utf_8, ctx: prime, error: $error, $(($case)),+
         );
         create_test_impl_write_rejected!(
             $layout, endian: big, encoding: utf_16, ctx: prime, error: $error, $(($case)),+
         );
-
+        create_test_impl_write_rejected!(
+            $layout, endian: big, encoding: utf_32, ctx: prime, error: $error, $(($case)),+
+        );
         create_test_impl_write_rejected!(
             $layout, endian: little, encoding: utf_8, ctx: alt, error: $error, $(($case)),+
         );
@@ -30,10 +35,16 @@ macro_rules! create_test_impl_write_rejected {
             $layout, endian: little, encoding: utf_16, ctx: alt, error: $error, $(($case)),+
         );
         create_test_impl_write_rejected!(
+            $layout, endian: little, encoding: utf_32, ctx: alt, error: $error, $(($case)),+
+        );
+        create_test_impl_write_rejected!(
             $layout, endian: big, encoding: utf_8, ctx: alt, error: $error, $(($case)),+
         );
         create_test_impl_write_rejected!(
             $layout, endian: big, encoding: utf_16, ctx: alt, error: $error, $(($case)),+
+        );
+        create_test_impl_write_rejected!(
+            $layout, endian: big, encoding: utf_32, ctx: alt, error: $error, $(($case)),+
         );
     };
     (

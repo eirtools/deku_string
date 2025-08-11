@@ -4,6 +4,7 @@ macro_rules! create_test_impl_read_rejected {
     ( $layout: ident, error: $error: ident, $( ($case:ident) ),+ $(,)?) => {
         create_test_impl_read_rejected!($layout, encoding: utf_8, error: $error, $(($case)),+);
         create_test_impl_read_rejected!($layout, encoding: utf_16, error: $error, $(($case)),+);
+        create_test_impl_read_rejected!($layout, encoding: utf_32, error: $error, $(($case)),+);
     };
 
     // given layout, all endian, given encoding. Generate test case from name

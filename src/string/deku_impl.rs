@@ -5,7 +5,7 @@ use deku::reader::Reader;
 use deku::writer::Writer;
 use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
-use crate::{Encoding, Size, StringDeku, StringLayout};
+use crate::{Encoding, InternalValue, Size, StringDeku, StringLayout};
 
 impl StringDeku {
     pub(self) fn from_reader_with_ctx_impl<R>(
@@ -17,7 +17,7 @@ impl StringDeku {
     where
         R: no_std_io::Read + no_std_io::Seek,
     {
-        let (null_requirement, limit_u8, limit_u16): ReadRequirements =
+        let (null_requirement, limit_u8, limit_u16, limit_u32): ReadRequirements =
             read_requirements(reader, endian, layout)?;
 
         if limit_u8 == Limit::Count(0) {
@@ -38,6 +38,19 @@ impl StringDeku {
                         .map_err(|_| DekuError::Parse("Invalid UTF-16".into()))
                 })
             }
+            Encoding::Utf32 => {
+                read_string(reader, &null_requirement, limit_u32, endian, |buf| {
+                    let mut result: Vec<char> = vec![];
+                    buf.iter().try_fold((), |_, value| {
+                        let Some(ch) = char::from_u32(*value) else {
+                            return Err(DekuError::Parse("Invalid UTF-32".into()));
+                        };
+                        result.push(ch);
+                        Ok(())
+                    })?;
+                    Ok(result.into_iter().collect())
+                })
+            }
         }
     }
 
@@ -50,11 +63,19 @@ impl StringDeku {
     ) -> Result<(), DekuError> {
         match encoding {
             Encoding::Utf8 => {
-                let mut buf = self.0.as_bytes().to_vec();
+                let mut buf = self.internal_ref().as_bytes().to_vec();
                 write_string(writer, endian, layout, &mut buf)
             }
             Encoding::Utf16 => {
-                let mut buf = self.0.encode_utf16().collect::<Vec<u16>>();
+                let mut buf = self.internal_ref().encode_utf16().collect::<Vec<u16>>();
+                write_string(writer, endian, layout, &mut buf)
+            }
+            Encoding::Utf32 => {
+                let mut buf = self
+                    .internal_ref()
+                    .chars()
+                    .map(|ch| ch.into())
+                    .collect::<Vec<u32>>();
                 write_string(writer, endian, layout, &mut buf)
             }
         }
@@ -120,6 +141,7 @@ type ReadRequirements = (
     NullRequirement,
     Limit<u8, fn(&u8) -> bool>,
     Limit<u16, fn(&u16) -> bool>,
+    Limit<u32, fn(&u32) -> bool>,
 );
 
 /// Read limit and null placement requirements from layout and reader (if prefixed)
@@ -138,13 +160,19 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             } else {
                 NullRequirement::Required
             };
-            Ok((null, Limit::from(size), Limit::from(size)))
+            Ok((
+                null,
+                Limit::from(size),
+                Limit::from(size),
+                Limit::from(size),
+            ))
         }
         StringLayout::ZeroEnded => Ok((
             // zero is already at the end by how deku reads data
             NullRequirement::Accepted,
             Limit::new_until(|v: &u8| *v == 0),
             Limit::new_until(|v: &u16| *v == 0),
+            Limit::new_until(|v: &u32| *v == 0),
         )),
         StringLayout::LengthPrefix(prefix) => {
             let size: usize = match prefix {
@@ -154,6 +182,7 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             };
             Ok((
                 NullRequirement::Rejected,
+                Limit::from(size),
                 Limit::from(size),
                 Limit::from(size),
             ))
