@@ -14,6 +14,11 @@ pub const IO_PREFIX_U16_DATA_SIZE: u64 = 4;
 pub const IO_PREFIX_U32_DATA_SIZE: u64 = 5;
 pub const IO_ZERO_ENDED_DATA_SIZE: u64 = 0;
 
+pub const IO_FIXED_END: &str = "valid";
+
+pub const IO_FIXED_FORCE_ZERO_FIXED_END_SIZE: u64 = 10;
+pub const IO_FIXED_ALLOW_NO_ZERO_FIXED_END_SIZE: u64 = 10;
+
 pub const IO_PREFIX: &str = "value";
 
 //pub const IO_FIXED_PREFIX_SIZE — no prefix

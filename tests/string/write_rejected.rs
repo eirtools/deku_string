@@ -11,9 +11,9 @@ use deku::writer::Writer;
 
 use deku_string::{Encoding, StringDeku};
 
-use data::invalid_io::InvalidBufferType;
 use data::layouts::*;
 use data::write_rejected::*;
+use io_rejected::InvalidBufferType;
 
 #[allow(unused_imports)]
 use macros::write_rejected;
@@ -67,12 +67,14 @@ create_test_impl_write_rejected! {
     fixed_force_zero,
     error: io,
     (data),
+    (fixed_end),
 }
 
 create_test_impl_write_rejected! {
     fixed_allow_no_zero,
     error: io,
     (data),
+    (fixed_end),
 }
 
 create_test_impl_write_rejected! {

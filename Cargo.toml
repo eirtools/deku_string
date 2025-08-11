@@ -18,6 +18,7 @@ serde = { version = "1.0", optional = true }
 rstest = { version = "0.26.0" }
 pastey = { version = "0.1.0" }
 serde_json = { version = "1.0" }
+io-rejected = { path = "tests/io-rejected" }
 
 [[test]]
 name = "str_rw_accepted"
