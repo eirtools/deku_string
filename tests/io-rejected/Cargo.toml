@@ -1,0 +1,10 @@
+[package]
+name = "io-rejected"
+version = "0.0.0"
+edition = "2021"
+license = "MIT"
+repository = "https://github.com/eirtools/deku_string"
+publish = false
+
+[dependencies]
+deku = { version = "0.19.0" }
