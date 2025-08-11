@@ -1,0 +1,199 @@
+//! "Transparency" shim implementations for InternalValue types.
+
+/// Macro to generate std transparent implementation for internal types and tests for them.
+///
+/// module_name: Module name produced
+/// local_type: Local type to create shims for. It must implement `InternalValue` trait.
+/// internal_type: Internal type for the local type
+/// test_input: common test input for various tests
+/// test_input_other: test input not equal to `test_input`
+/// test_input_less: test input less than `test_input`
+/// test_input_greater: test input greater that `test_input`
+macro_rules! std_shim_implementation {
+    (
+        module_name: $module_name: ident,
+        local_type: $local_type: ident,
+        internal_type: $internal_type: ident,
+        test_input: $test_input: literal,
+        test_input_other: $test_input_other: literal,
+        test_input_less: $test_input_less: literal,
+        test_input_greater: $test_input_greater: literal,
+    ) => {
+        mod $module_name {
+            use crate::{InternalValue as _, $local_type};
+
+            impl core::fmt::Display for $local_type {
+                #[inline]
+                fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                    core::fmt::Display::fmt(self.internal_ref(), f)
+                }
+            }
+
+            impl core::fmt::Debug for $local_type {
+                /// Formats as plain String
+                #[inline]
+                fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                    core::fmt::Debug::fmt(self.internal_ref(), f)
+                }
+            }
+
+            impl From<$internal_type> for $local_type {
+                #[inline]
+                fn from(input: $internal_type) -> StringDeku {
+                    $local_type(input)
+                }
+            }
+
+            impl From<$local_type> for $internal_type {
+                #[inline]
+                fn from(local: $local_type) -> Self {
+                    local.internal_move()
+                }
+            }
+
+            impl std::hash::Hash for $local_type {
+                fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+                    self.internal_ref().hash(state);
+                }
+            }
+
+            impl PartialOrd<$internal_type> for $local_type {
+                fn partial_cmp(
+                    &self,
+                    input: &$internal_type,
+                ) -> Option<std::cmp::Ordering> {
+                    self.internal_ref().partial_cmp(input)
+                }
+            }
+
+            impl PartialOrd<$local_type> for $internal_type {
+                fn partial_cmp(
+                    &self,
+                    other: &$local_type,
+                ) -> Option<std::cmp::Ordering> {
+                    self.partial_cmp(other.internal_ref())
+                }
+            }
+
+            impl PartialEq<$internal_type> for $local_type {
+                fn eq(&self, input: &$internal_type) -> bool {
+                    self.internal_ref() == input
+                }
+            }
+
+            impl PartialEq<$local_type> for $internal_type {
+                fn eq(&self, other: &$local_type) -> bool {
+                    self == other.internal_ref()
+                }
+            }
+
+            #[cfg(test)]
+            mod test {
+                use std::cmp::Ordering;
+
+                use crate::$local_type;
+                use rstest::rstest;
+
+                #[rstest]
+                fn display() {
+                    let input: $internal_type = $test_input.into();
+                    let local: $local_type = input.clone().into();
+
+                    let formatted = format!("{local}");
+                    let formatted_input = format!("{input}");
+
+                    assert_eq!(formatted, formatted_input);
+                }
+
+                #[rstest]
+                fn debug() {
+                    let input: $internal_type = $test_input.into();
+                    let local: $local_type = input.clone().into();
+
+                    let formatted = format!("{local:?}");
+                    let formatted_input = format!("{input:?}");
+
+                    assert_eq!(formatted, formatted_input);
+                }
+
+                #[rstest]
+                fn test_eq() {
+                    let input: $internal_type = $test_input.into();
+                    let local: $local_type = input.clone().into();
+
+                    let other_into: $internal_type = local.clone().into();
+
+                    assert_eq!(local, local);
+                    assert_eq!(input, local);
+                    assert_eq!(local, input);
+
+                    assert_eq!(other_into, input);
+                    assert_eq!(input, other_into);
+                }
+
+                #[rstest]
+                fn test_ne() {
+                    let input: $internal_type = $test_input.into();
+                    let local: $local_type = input.into();
+
+                    let input_other: $internal_type = $test_input_other.into();
+                    let local_other: $local_type = input_other.clone().into();
+
+                    assert_ne!(local, local_other);
+                    assert_ne!(local_other, local);
+
+                    assert_ne!(local, input_other);
+                    assert_ne!(input_other, local);
+                }
+
+                #[rstest]
+                fn test_hash() {
+                    use std::hash::{DefaultHasher, Hash, Hasher};
+
+                    fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {
+                        let mut s = DefaultHasher::new();
+                        t.hash(&mut s);
+                        s.finish()
+                    }
+
+                    let input: $internal_type = $test_input.into();
+                    let local: $local_type = input.clone().into();
+
+                    assert_eq!(calculate_hash(&input), calculate_hash(&local));
+                }
+
+                #[rstest]
+                fn partial_cmp() {
+                    let input: $internal_type = $test_input.into();
+                    let input_less: $internal_type = $test_input_less.into();
+                    let input_greater: $internal_type = $test_input_greater.into();
+
+                    let local: $local_type = input.clone().into();
+                    let local_less: $local_type = input_less.clone().into();
+                    let local_greater: $local_type = input_greater.clone().into();
+
+                    assert_eq!(local.partial_cmp(&input), Some(Ordering::Equal));
+                    assert_eq!(input.partial_cmp(&local), Some(Ordering::Equal));
+
+                    assert_eq!(local.partial_cmp(&input_less), Some(Ordering::Greater));
+                    assert_eq!(local.partial_cmp(&local_less), Some(Ordering::Greater));
+                    assert_eq!(
+                        local_greater.partial_cmp(&local),
+                        Some(Ordering::Greater)
+                    );
+                    assert_eq!(
+                        input_greater.partial_cmp(&local),
+                        Some(Ordering::Greater)
+                    );
+
+                    assert_eq!(local.partial_cmp(&input_greater), Some(Ordering::Less));
+                    assert_eq!(local.partial_cmp(&local_greater), Some(Ordering::Less));
+                    assert_eq!(local_less.partial_cmp(&local), Some(Ordering::Less));
+                    assert_eq!(local_less.partial_cmp(&local), Some(Ordering::Less));
+                }
+            }
+        }
+    };
+}
+
+pub(crate) use std_shim_implementation;

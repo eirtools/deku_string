@@ -52,7 +52,12 @@
 //! }
 //! ```
 
+mod common;
 mod string;
+
+pub(crate) use common::InternalValue;
+pub(crate) use common::serde_impl::serde_shim_implementation;
+pub(crate) use common::std_impl::std_shim_implementation;
 
 pub use string::{Encoding, StringDeku, StringLayout};
 
