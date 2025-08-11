@@ -1,5 +1,3 @@
-#![allow(dead_code)]
-
 pub mod accepted;
 pub mod layouts;
 pub mod read_rejected;

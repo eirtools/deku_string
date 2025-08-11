@@ -1,5 +1,4 @@
 /// Actual test implementation for read accepted test
-#[macro_export]
 macro_rules! create_test_impl_read_accepted {
     ($(($case:ident, $original_bytes:expr, $underlying_value:expr)),+ $(,)?) => {
         create_test_impl_read_accepted!(underlying_type: u32, $(($case, $original_bytes, $underlying_value)),+);
@@ -33,7 +32,7 @@ macro_rules! create_test_impl_read_accepted {
 }
 
 /// Actual test implementation for write accepted test
-#[macro_export]
+
 macro_rules! create_test_impl_write_accepted {
     ($(($case:ident, $input_value:expr, $target_bytes:expr)),+ $(,)?) => {
         create_test_impl_write_accepted!(underlying_type: u32, $(($case, $string_value, $target_bytes)),+);
@@ -73,7 +72,6 @@ macro_rules! create_test_impl_write_accepted {
 }
 
 /// Generate both read and write tests with given parameters
-#[macro_export]
 macro_rules! create_test_impl_rw_accepted{
     (
         underlying_type: $underlying_type: ident,
@@ -98,3 +96,7 @@ macro_rules! create_test_impl_rw_accepted{
         create_test_impl_rw_accepted!(underlying_type: u128, $(($case)),+);
     };
 }
+
+pub(crate) use create_test_impl_read_accepted;
+pub(crate) use create_test_impl_rw_accepted;
+pub(crate) use create_test_impl_write_accepted;

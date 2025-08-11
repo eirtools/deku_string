@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_macros, unused_imports)]
+
 //! Rejected write tests
 mod data;
 mod macros;
@@ -15,8 +17,8 @@ use data::layouts::*;
 use data::write_rejected::*;
 use io_rejected::InvalidBufferType;
 
-#[allow(unused_imports)]
-use macros::write_rejected;
+use macros::misc::*;
+use macros::write_rejected::*;
 
 create_test_impl_write_rejected! {
     fixed_force_zero,

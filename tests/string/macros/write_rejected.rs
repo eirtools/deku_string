@@ -1,4 +1,3 @@
-#[macro_export]
 macro_rules! _create_test_impl_write_rejected_size {
     (error: io, $layout:ident, $case:ident) => {
         paste! {[<IO_ $layout:upper _ $case:upper _SIZE>]}
@@ -9,7 +8,6 @@ macro_rules! _create_test_impl_write_rejected_size {
 }
 
 /// Create write rejected tests
-#[macro_export]
 macro_rules! create_test_impl_write_rejected {
     ($layout:ident, error: $error: ident, $(($case:ident)),+ $(,)?) => {
         create_test_impl_write_rejected!(
@@ -70,3 +68,6 @@ macro_rules! create_test_impl_write_rejected {
         }
     };
 }
+
+pub(crate) use _create_test_impl_write_rejected_size;
+pub(crate) use create_test_impl_write_rejected;
