@@ -7,6 +7,9 @@ macro_rules! _ctx_encoding {
     (encoding: utf_16) => {
         Encoding::Utf16
     };
+    (encoding: utf_32) => {
+        Encoding::Utf32
+    };
 }
 
 /// Endian value for Deku context

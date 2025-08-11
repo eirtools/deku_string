@@ -203,7 +203,9 @@ macro_rules! create_test_impl_rw_accepted {
     ($layout:ident, all_encodings, $($rest:tt)*) => {
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_8, (), $($rest)*);
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_16, (), $($rest)*);
+        create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_32, (), $($rest)*);
         create_test_impl_rw_accepted!(@accum $layout, endian: big, encoding: utf_8, (), $($rest)*);
         create_test_impl_rw_accepted!(@accum $layout, endian: big, encoding: utf_16, (), $($rest)*);
+        create_test_impl_rw_accepted!(@accum $layout, endian: big, encoding: utf_32, (), $($rest)*);
     };
 }

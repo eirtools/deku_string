@@ -69,4 +69,7 @@ pub enum Encoding {
 
     /// UTF-16 character sequences
     Utf16,
+
+    /// UTF-32 character sequences
+    Utf32,
 }
