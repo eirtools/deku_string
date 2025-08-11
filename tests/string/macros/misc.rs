@@ -1,5 +1,4 @@
 /// Encoding value for Deku context
-#[macro_export]
 macro_rules! _ctx_encoding {
     (encoding: utf_8) => {
         Encoding::Utf8
@@ -10,7 +9,6 @@ macro_rules! _ctx_encoding {
 }
 
 /// Endian value for Deku context
-#[macro_export]
 macro_rules! _ctx_endian {
     (endian: little) => {
         Endian::Little
@@ -21,7 +19,6 @@ macro_rules! _ctx_endian {
 }
 
 /// Match value for all supported errors
-#[macro_export]
 macro_rules! _match_error {
     (error: assertion) => {
         deku::DekuError::Assertion(_)
@@ -38,7 +35,6 @@ macro_rules! _match_error {
 }
 
 /// Assert for given error
-#[macro_export]
 macro_rules! _rejected_check {
     ($value: ident, error: $error: ident) => {
         assert!(
@@ -49,7 +45,6 @@ macro_rules! _rejected_check {
     };
 }
 
-#[macro_export]
 macro_rules! _deku_ctx {
     (ctx: prime, $endian: ident, $encoding: ident, $layout: ident) => {
         (_ctx_endian!(endian: $endian), _ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout:upper>] })
@@ -59,3 +54,9 @@ macro_rules! _deku_ctx {
         (_ctx_endian!(endian: $endian), (_ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout:upper>] }))
     };
 }
+
+pub(crate) use _ctx_encoding;
+pub(crate) use _ctx_endian;
+pub(crate) use _deku_ctx;
+pub(crate) use _match_error;
+pub(crate) use _rejected_check;

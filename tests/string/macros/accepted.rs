@@ -1,5 +1,4 @@
 /// Actual test implementation for read accepted test
-#[macro_export]
 macro_rules! create_test_impl_read_accepted {
     (
         $layout:ident,
@@ -54,7 +53,6 @@ macro_rules! create_test_impl_read_accepted {
 }
 
 /// Actual test implementation for write accepted test
-#[macro_export]
 macro_rules! create_test_impl_write_accepted {
     (
         $layout:ident,
@@ -115,7 +113,6 @@ macro_rules! create_test_impl_write_accepted {
 }
 
 /// Generate both read and write tests with given parameters
-#[macro_export]
 macro_rules! _create_test_impl_rw_accepted_internal{
     (
         $layout:ident,
@@ -133,7 +130,6 @@ macro_rules! _create_test_impl_rw_accepted_internal{
     };
 }
 
-#[macro_export]
 macro_rules! _rw_accepted_naming_impl {
     (_in_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
         paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _IN>] }
@@ -153,7 +149,6 @@ macro_rules! _rw_accepted_naming_impl {
 }
 
 /// Generate read and write tests, parameters will be generated
-#[macro_export]
 macro_rules! create_test_impl_rw_accepted {
     (
         @accum $layout:ident,
@@ -207,3 +202,9 @@ macro_rules! create_test_impl_rw_accepted {
         create_test_impl_rw_accepted!(@accum $layout, endian: big, encoding: utf_16, (), $($rest)*);
     };
 }
+
+pub(crate) use _create_test_impl_rw_accepted_internal;
+pub(crate) use _rw_accepted_naming_impl;
+pub(crate) use create_test_impl_read_accepted;
+pub(crate) use create_test_impl_rw_accepted;
+pub(crate) use create_test_impl_write_accepted;

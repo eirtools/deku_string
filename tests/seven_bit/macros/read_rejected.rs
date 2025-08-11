@@ -1,5 +1,4 @@
 /// Create read rejected tests
-#[macro_export]
 macro_rules! create_test_impl_read_rejected {
     (error: $error: ident, $( ($case:ident) ),+ $(,)?) => {
         create_test_impl_read_rejected!(underlying_type: u32, error: $error, $(($case)),+);
@@ -26,3 +25,5 @@ macro_rules! create_test_impl_read_rejected {
         }
     };
 }
+
+pub(crate) use create_test_impl_read_rejected;

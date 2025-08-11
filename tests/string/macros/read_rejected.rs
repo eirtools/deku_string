@@ -1,5 +1,4 @@
 /// Create read rejected tests
-#[macro_export]
 macro_rules! create_test_impl_read_rejected {
     // given layout, all endian, all encodings
     ( $layout: ident, error: $error: ident, $( ($case:ident) ),+ $(,)?) => {
@@ -41,3 +40,5 @@ macro_rules! create_test_impl_read_rejected {
         }
     };
 }
+
+pub(crate) use create_test_impl_read_rejected;

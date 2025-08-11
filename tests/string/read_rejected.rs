@@ -1,3 +1,4 @@
+#![allow(dead_code, unused_macros, unused_imports)]
 //! Rejected read tests for UTF-8 & UTF-16 strings
 mod data;
 mod macros;
@@ -13,8 +14,8 @@ use data::layouts::*;
 use data::read_rejected::*;
 use deku_string::{Encoding, StringDeku};
 
-#[allow(unused_imports)]
-use macros::write_rejected;
+use macros::misc::*;
+use macros::read_rejected::*;
 
 // --------------------------------------
 // ---------- TESTS: Parse --------------

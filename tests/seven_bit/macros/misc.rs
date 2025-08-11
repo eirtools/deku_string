@@ -1,5 +1,4 @@
 /// Match value for all supported errors
-#[macro_export]
 macro_rules! _match_error {
     (error: assertion) => {
         deku::DekuError::Assertion(_)
@@ -16,7 +15,6 @@ macro_rules! _match_error {
 }
 
 /// Assert for given error
-#[macro_export]
 macro_rules! _rejected_check {
     ($value: ident, error: $error: ident) => {
         assert!(
@@ -26,3 +24,6 @@ macro_rules! _rejected_check {
         )
     };
 }
+
+pub(crate) use _match_error;
+pub(crate) use _rejected_check;

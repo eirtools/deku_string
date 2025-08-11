@@ -1,3 +1,5 @@
+#![allow(dead_code, unused_macros, unused_imports)]
+
 mod data;
 mod macros;
 
@@ -13,6 +15,11 @@ use deku_string::{SevenBitU32, SevenBitU64, SevenBitU128};
 
 #[allow(unused_imports)]
 use macros::accepted;
+
+use crate::macros::accepted::{
+    create_test_impl_read_accepted, create_test_impl_rw_accepted,
+    create_test_impl_write_accepted,
+};
 
 create_test_impl_rw_accepted! {
     (zero),

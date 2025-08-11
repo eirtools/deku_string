@@ -1,5 +1,4 @@
 /// Create write rejected tests
-#[macro_export]
 macro_rules! create_test_impl_write_rejected {
     ($(($case:ident)),+ $(,)?) => {
         create_test_impl_write_rejected!(underlying_type: u32, $(($case)),+);
@@ -30,3 +29,4 @@ macro_rules! create_test_impl_write_rejected {
         }
     };
 }
+pub(crate) use create_test_impl_write_rejected;
