@@ -11,7 +11,7 @@ use deku::writer::Writer;
 use deku::{DekuReader as _, DekuWriter as _, no_std_io};
 
 use data::accepted::*;
-use deku_string::{SevenBitU32, SevenBitU64, SevenBitU128};
+use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
 #[allow(unused_imports)]
 use macros::accepted;
