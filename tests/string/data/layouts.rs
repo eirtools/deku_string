@@ -24,5 +24,9 @@ pub const LAYOUT_PREFIX_U16: StringLayout = StringLayout::LengthPrefix(Size::U16
 /// Layout for Pascal-like string with 4 bytes of length
 pub const LAYOUT_PREFIX_U32: StringLayout = StringLayout::LengthPrefix(Size::U32);
 
+/// Layout for Pascal-like string with 4 bytes of length
+pub const LAYOUT_PREFIX_U32_7BIT: StringLayout =
+    StringLayout::LengthPrefix(Size::U32_7Bit);
+
 /// Layout for C-like string
 pub const LAYOUT_ZERO_ENDED: StringLayout = StringLayout::ZeroEnded;

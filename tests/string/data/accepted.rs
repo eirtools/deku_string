@@ -16,6 +16,7 @@ pub(crate) const FIXED_ALLOW_NO_ZERO_EMPTY_STR: &str = "";
 pub(crate) const PREFIX_U8_EMPTY_STR: &str = "";
 pub(crate) const PREFIX_U16_EMPTY_STR: &str = "";
 pub(crate) const PREFIX_U32_EMPTY_STR: &str = "";
+pub(crate) const PREFIX_U32_7BIT_EMPTY_STR: &str = "";
 pub(crate) const ZERO_ENDED_EMPTY_STR: &str = "";
 
 // ---------- UTF-8: Empty data (little)
@@ -26,6 +27,7 @@ pub(crate) const UTF_8_FIXED_ALLOW_NO_ZERO_LITTLE_EMPTY_IN:
 pub(crate) const UTF_8_PREFIX_U8_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_8_PREFIX_U16_LITTLE_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 pub(crate) const UTF_8_PREFIX_U32_LITTLE_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
+pub(crate) const UTF_8_PREFIX_U32_7BIT_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_8_ZERO_ENDED_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 
 // ---------- UTF-8: Empty data (big)
@@ -36,6 +38,7 @@ pub(crate) const UTF_8_FIXED_ALLOW_NO_ZERO_BIG_EMPTY_IN: &[u8;
 pub(crate) const UTF_8_PREFIX_U8_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_8_PREFIX_U16_BIG_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 pub(crate) const UTF_8_PREFIX_U32_BIG_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
+pub(crate) const UTF_8_PREFIX_U32_7BIT_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_8_ZERO_ENDED_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 
 // ---------- UTF-16: Empty data (little)
@@ -46,6 +49,7 @@ pub(crate) const UTF_16_FIXED_ALLOW_NO_ZERO_LITTLE_EMPTY_IN:
 pub(crate) const UTF_16_PREFIX_U8_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_16_PREFIX_U16_LITTLE_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 pub(crate) const UTF_16_PREFIX_U32_LITTLE_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
+pub(crate) const UTF_16_PREFIX_U32_7BIT_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_16_ZERO_ENDED_LITTLE_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 
 // ---------- UTF-16: Empty data (big)
@@ -56,6 +60,7 @@ pub(crate) const UTF_16_FIXED_ALLOW_NO_ZERO_BIG_EMPTY_IN:
 pub(crate) const UTF_16_PREFIX_U8_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_16_PREFIX_U16_BIG_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 pub(crate) const UTF_16_PREFIX_U32_BIG_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
+pub(crate) const UTF_16_PREFIX_U32_7BIT_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_16_ZERO_ENDED_BIG_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 
 // ---------- UTF-16: Empty data (little)
@@ -66,6 +71,7 @@ pub(crate) const UTF_32_FIXED_ALLOW_NO_ZERO_LITTLE_EMPTY_IN:
 pub(crate) const UTF_32_PREFIX_U8_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_32_PREFIX_U16_LITTLE_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 pub(crate) const UTF_32_PREFIX_U32_LITTLE_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
+pub(crate) const UTF_32_PREFIX_U32_7BIT_LITTLE_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_32_ZERO_ENDED_LITTLE_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
 
 // ---------- UTF-32: Empty data (big)
@@ -76,6 +82,7 @@ pub(crate) const UTF_32_FIXED_ALLOW_NO_ZERO_BIG_EMPTY_IN:
 pub(crate) const UTF_32_PREFIX_U8_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_32_PREFIX_U16_BIG_EMPTY_IN: &[u8; 2] = b"\x00\x00";
 pub(crate) const UTF_32_PREFIX_U32_BIG_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
+pub(crate) const UTF_32_PREFIX_U32_7BIT_BIG_EMPTY_IN: &[u8; 1] = b"\x00";
 pub(crate) const UTF_32_ZERO_ENDED_BIG_EMPTY_IN: &[u8; 4] = b"\x00\x00\x00\x00";
 
 // ------------------------------------
@@ -88,6 +95,7 @@ pub(crate) const FIXED_ALLOW_NO_ZERO_VALID_STR: &str = "zero?";
 pub(crate) const PREFIX_U8_VALID_STR: &str = "valid";
 pub(crate) const PREFIX_U16_VALID_STR: &str = "valid";
 pub(crate) const PREFIX_U32_VALID_STR: &str = "valid";
+pub(crate) const PREFIX_U32_7BIT_VALID_STR: &str = "valid";
 pub(crate) const ZERO_ENDED_VALID_STR: &str = "valid";
 
 // ---------- UTF-8: Full buffer valid (little)
@@ -101,6 +109,8 @@ pub(crate) const UTF_8_PREFIX_U16_LITTLE_VALID_IN: &[u8; 2 + UTF_8_FIXED_LENGTH_
     b"\x05\x00valid";
 pub(crate) const UTF_8_PREFIX_U32_LITTLE_VALID_IN: &[u8; 4 + UTF_8_FIXED_LENGTH_DATA] =
     b"\x05\x00\x00\x00valid";
+pub(crate) const UTF_8_PREFIX_U32_7BIT_LITTLE_VALID_IN:
+    &[u8; 1 + UTF_8_FIXED_LENGTH_DATA] = b"\x05valid";
 pub(crate) const UTF_8_ZERO_ENDED_LITTLE_VALID_IN: &[u8; 1 + UTF_8_FIXED_LENGTH_DATA] =
     b"valid\x00";
 
@@ -115,6 +125,8 @@ pub(crate) const UTF_8_PREFIX_U16_BIG_VALID_IN: &[u8; 2 + UTF_8_FIXED_LENGTH_DAT
     b"\x00\x05valid";
 pub(crate) const UTF_8_PREFIX_U32_BIG_VALID_IN: &[u8; 4 + UTF_8_FIXED_LENGTH_DATA] =
     b"\x00\x00\x00\x05valid";
+pub(crate) const UTF_8_PREFIX_U32_7BIT_BIG_VALID_IN: &[u8; 1
+     + UTF_8_FIXED_LENGTH_DATA] = b"\x05valid";
 pub(crate) const UTF_8_ZERO_ENDED_BIG_VALID_IN: &[u8; 1 + UTF_8_FIXED_LENGTH_DATA] =
     b"valid\x00";
 
@@ -129,6 +141,8 @@ pub(crate) const UTF_16_PREFIX_U16_LITTLE_VALID_IN: &[u8; 2
      + UTF_16_FIXED_LENGTH_DATA] = b"\x05\x00v\x00a\x00l\x00i\x00d\x00";
 pub(crate) const UTF_16_PREFIX_U32_LITTLE_VALID_IN: &[u8; 4
      + UTF_16_FIXED_LENGTH_DATA] = b"\x05\x00\x00\x00v\x00a\x00l\x00i\x00d\x00";
+pub(crate) const UTF_16_PREFIX_U32_7BIT_LITTLE_VALID_IN:
+    &[u8; 1 + UTF_16_FIXED_LENGTH_DATA] = b"\x05v\x00a\x00l\x00i\x00d\x00";
 pub(crate) const UTF_16_ZERO_ENDED_LITTLE_VALID_IN: &[u8; 2
      + UTF_16_FIXED_LENGTH_DATA] = b"v\x00a\x00l\x00i\x00d\x00\x00\x00";
 
@@ -143,6 +157,8 @@ pub(crate) const UTF_16_PREFIX_U16_BIG_VALID_IN: &[u8; 2 + UTF_16_FIXED_LENGTH_D
     b"\x00\x05\x00v\x00a\x00l\x00i\x00d";
 pub(crate) const UTF_16_PREFIX_U32_BIG_VALID_IN: &[u8; 4 + UTF_16_FIXED_LENGTH_DATA] =
     b"\x00\x00\x00\x05\x00v\x00a\x00l\x00i\x00d";
+pub(crate) const UTF_16_PREFIX_U32_7BIT_BIG_VALID_IN: &[u8; 1
+     + UTF_16_FIXED_LENGTH_DATA] = b"\x05\x00v\x00a\x00l\x00i\x00d";
 pub(crate) const UTF_16_ZERO_ENDED_BIG_VALID_IN: &[u8; 2 + UTF_16_FIXED_LENGTH_DATA] =
     b"\x00v\x00a\x00l\x00i\x00d\x00\x00";
 
@@ -160,6 +176,9 @@ pub(crate) const UTF_32_PREFIX_U16_LITTLE_VALID_IN: &[u8; 2
     b"\x05\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
 pub(crate) const UTF_32_PREFIX_U32_LITTLE_VALID_IN: &[u8; 4
      + UTF_32_FIXED_LENGTH_DATA] = b"\x05\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
+pub(crate) const UTF_32_PREFIX_U32_7BIT_LITTLE_VALID_IN:
+    &[u8; 1 + UTF_32_FIXED_LENGTH_DATA] =
+    b"\x05v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
 pub(crate) const UTF_32_ZERO_ENDED_LITTLE_VALID_IN: &[u8; 4
      + UTF_32_FIXED_LENGTH_DATA] = b"v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00";
 
@@ -175,6 +194,9 @@ pub(crate) const UTF_32_PREFIX_U16_BIG_VALID_IN: &[u8; 2 + UTF_32_FIXED_LENGTH_D
     b"\x00\x05\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d";
 pub(crate) const UTF_32_PREFIX_U32_BIG_VALID_IN: &[u8; 4 + UTF_32_FIXED_LENGTH_DATA] =
     b"\x00\x00\x00\x05\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d";
+pub(crate) const UTF_32_PREFIX_U32_7BIT_BIG_VALID_IN: &[u8; 1
+     + UTF_32_FIXED_LENGTH_DATA] =
+    b"\x05\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d";
 pub(crate) const UTF_32_ZERO_ENDED_BIG_VALID_IN: &[u8; 4 + UTF_32_FIXED_LENGTH_DATA] =
     b"\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00\x00";
 

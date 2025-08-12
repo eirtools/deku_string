@@ -58,6 +58,14 @@ create_test_impl_write_rejected! {
 }
 
 create_test_impl_write_rejected! {
+    prefix_u32_7bit,
+    error: assertion,
+    (zero_inside_str),
+    // it's not worth a while to test this due requirements to save 4GB string in heap
+    // (too_big_data),
+}
+
+create_test_impl_write_rejected! {
     zero_ended,
     error: assertion,
     (zero_inside_str),
@@ -70,6 +78,7 @@ create_test_impl_write_rejected! {
     error: io,
     (data),
     (fixed_end),
+    (suffix),
 }
 
 create_test_impl_write_rejected! {
@@ -77,6 +86,7 @@ create_test_impl_write_rejected! {
     error: io,
     (data),
     (fixed_end),
+    (suffix),
 }
 
 create_test_impl_write_rejected! {
@@ -95,6 +105,13 @@ create_test_impl_write_rejected! {
 
 create_test_impl_write_rejected! {
     prefix_u32,
+    error: io,
+    (data),
+    (prefix),
+}
+
+create_test_impl_write_rejected! {
+    prefix_u32_7bit,
     error: io,
     (data),
     (prefix),
