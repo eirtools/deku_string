@@ -6,7 +6,7 @@ license = "MIT"
 readme = "README.md"
 description = "String encoding/decoding helpers for Deku, supporting in fixed, Pascal, .NET and C-style formats with length guarantee."
 repository = "https://github.com/eirtools/deku_string"
-keywords = ["deku", "binary", "serialization", "string", "no_std", ".net", "csharp", "7bit-int"]
+keywords = ["deku", "binary", "serialization", "string", "no_std"]
 categories = ["encoding", "no-std", "parsing"]
 exclude = ["/.github", "/examples", "/*.md"]
 
