@@ -1,5 +1,5 @@
 #![allow(dead_code, unused_macros, unused_imports)]
-//! Rejected read tests for UTF-8 & UTF-16 strings
+//! Rejected read tests for UTF-8, UTF-16 & UTF-32 strings
 mod data;
 mod macros;
 
@@ -53,10 +53,17 @@ create_test_impl_read_rejected! {
 }
 
 create_test_impl_read_rejected! {
+    prefix_u32_7bit,
+    error: parse,
+    (invalid_utf),
+}
+
+create_test_impl_read_rejected! {
     zero_ended,
     error: parse,
     (invalid_utf),
 }
+
 // --------------------------------------
 // ---------- TESTS: Assertion ----------
 // --------------------------------------
@@ -83,6 +90,13 @@ create_test_impl_read_rejected! {
     prefix_u32,
     error: assertion,
     (zero_in_middle),
+}
+
+create_test_impl_read_rejected! {
+    prefix_u32_7bit,
+    error: assertion,
+    (zero_in_middle),
+    (invalid_size_encoding)
 }
 
 // ---------- Incomplete
@@ -116,6 +130,14 @@ create_test_impl_read_rejected! {
 
 create_test_impl_read_rejected! {
     prefix_u32,
+    error: incomplete,
+    (small_buffer),
+    (short_len),
+    (short_data),
+}
+
+create_test_impl_read_rejected! {
+    prefix_u32_7bit,
     error: incomplete,
     (small_buffer),
     (short_len),

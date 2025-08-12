@@ -75,4 +75,7 @@ pub enum Size {
 
     /// 4 bytes
     U32,
+
+    /// u16, 7bit encoded
+    U32_7Bit,
 }

@@ -5,11 +5,11 @@
 
 **`deku_string`** is an utility crate for [Deku](https://docs.rs/deku) that provides convenient support
 for serializing and deserializing strings in a variety of binary formats.
-It handles both UTF-8 and UTF-16 encoded strings and is suitable for parsing various string layouts.
+It handles UTF-8, UTF-16 and UTF-32 encoded strings and is suitable for parsing various string layouts.
 
 ### ✨ Features
 
-* UTF-8 and UTF-16 support.
+* UTF-8, UTF-16 and UTF-32 support.
 * Multiple string encoding and layout formats.
 * Little and Big Endian support.
 * Dynamic read and write without additional temporary structs and operations.
@@ -17,18 +17,20 @@ It handles both UTF-8 and UTF-16 encoded strings and is suitable for parsing var
 * Compatible with Deku's derive macros and custom readers/writers.
 * Supports serde via `serde` feature
 
-### Supported Layout Formats
+### Supported plenty layout formats
 
 * **Fixed-length strings**
   * With or without zero-termination
 * **Pascal-style strings**
   * Length-prefixed strings having length size `u8`, `u16`, or `u32`
+* **.NET byte reader/writer strings**
+  * Length-prefixed strings having length size `u32` 7-bit encoded (like in .NET)
 * **C-style strings**
   * Zero-terminated strings
 
 ### 📦 Usage
 
-See full example in [`tests/deku_derive.rs`](./tests/deku_derive.rs)
+See full example in [`tests/string/deku_derive.rs`](./tests/string/deku_derive.rs)
 
 ```rust
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd, ::deku::DekuRead, ::deku::DekuWrite)]
@@ -52,8 +54,8 @@ struct SampleModel {
 }
 ```
 
-### 🤝 Contributing
+### Contributing
 
-Contributions are warmly welcome!
+Contributions are welcome!
 
 Whether you're fixing a bug, improving performance, adding support for new string formats, or just refining docs — your pull requests and suggestions are greatly appreciated.

@@ -5,7 +5,7 @@ use deku::reader::Reader;
 use deku::writer::Writer;
 use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
-use crate::{Encoding, InternalValue, Size, StringDeku, StringLayout};
+use crate::{Encoding, InternalValue, SevenBitU32, Size, StringDeku, StringLayout};
 
 impl StringDeku {
     pub(self) fn from_reader_with_ctx_impl<R>(
@@ -179,6 +179,11 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
                 Size::U8 => <u8>::from_reader_with_ctx(reader, endian)? as usize,
                 Size::U16 => <u16>::from_reader_with_ctx(reader, endian)? as usize,
                 Size::U32 => <u32>::from_reader_with_ctx(reader, endian)? as usize,
+                Size::U32_7Bit => {
+                    let length: u32 =
+                        <SevenBitU32>::from_reader_with_ctx(reader, ())?.into();
+                    length as usize
+                }
             };
             Ok((
                 NullRequirement::Rejected,
@@ -258,6 +263,7 @@ where
                 Size::U8 => u8::MAX as usize,
                 Size::U16 => u16::MAX as usize,
                 Size::U32 => u32::MAX as usize,
+                Size::U32_7Bit => u32::MAX as usize,
             };
 
             if buf.len() > max_size {
@@ -273,6 +279,10 @@ where
                 Size::U8 => ((buf.len() & 0xFF) as u8).to_writer(writer, endian),
                 Size::U16 => (buf.len() as u16).to_writer(writer, endian),
                 Size::U32 => (buf.len() as u32).to_writer(writer, endian),
+                Size::U32_7Bit => {
+                    let length: SevenBitU32 = (buf.len() as u32).into();
+                    (length).to_writer(writer, ())
+                }
             }?;
 
             buf.to_writer(writer, endian)

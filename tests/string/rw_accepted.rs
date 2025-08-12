@@ -64,6 +64,13 @@ create_test_impl_rw_accepted! {
 }
 
 create_test_impl_rw_accepted! {
+    prefix_u32_7bit,
+    all_encodings,
+    (empty, in_data_in),
+    (valid, in_data_in),
+}
+
+create_test_impl_rw_accepted! {
     zero_ended,
     all_encodings,
     (empty, in_data_in),
