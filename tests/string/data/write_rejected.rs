@@ -5,7 +5,7 @@ pub const ASSERTION_ZERO_INSIDE_STR: &str = "invalid test\x00with garbage";
 /// A 65536 bytes long string to test out-of-bound checks on write.
 pub const ASSERTION_TOO_BIG_DATA: &str = include_str!("../../64k_data");
 
-pub const IO_DATA: &str = "valid test case w zero";
+pub const IO_DATA: &str = "text";
 
 pub const IO_FIXED_FORCE_ZERO_DATA_SIZE: u64 = 0;
 pub const IO_FIXED_ALLOW_NO_ZERO_DATA_SIZE: u64 = 0;
@@ -14,10 +14,10 @@ pub const IO_PREFIX_U16_DATA_SIZE: u64 = 4;
 pub const IO_PREFIX_U32_DATA_SIZE: u64 = 5;
 pub const IO_ZERO_ENDED_DATA_SIZE: u64 = 0;
 
-pub const IO_FIXED_END: &str = "valid";
+pub const IO_FIXED_END: &str = "text";
 
-pub const IO_FIXED_FORCE_ZERO_FIXED_END_SIZE: u64 = 10;
-pub const IO_FIXED_ALLOW_NO_ZERO_FIXED_END_SIZE: u64 = 10;
+pub const IO_FIXED_FORCE_ZERO_FIXED_END_SIZE: u64 = 4;
+pub const IO_FIXED_ALLOW_NO_ZERO_FIXED_END_SIZE: u64 = 4;
 
 pub const IO_PREFIX: &str = "value";
 
