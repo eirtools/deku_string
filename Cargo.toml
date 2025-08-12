@@ -1,23 +1,23 @@
 [package]
 name = "deku_string"
-version = "0.2.1-0"
+version = "0.3.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
-description = "String and Vector encoding/decoding helpers for Deku, supporting in fixed, Pascal, and C-style formats with length guarantee."
+description = "String encoding/decoding helpers for Deku, supporting in fixed, Pascal, .NET and C-style formats with length guarantee."
 repository = "https://github.com/eirtools/deku_string"
-keywords = ["deku", "binary", "serialization", "string", "no_std"]
+keywords = ["deku", "binary", "serialization", "string", "no_std", ".net", "csharp", "7bit-int"]
 categories = ["encoding", "no-std", "parsing"]
 exclude = ["/.github", "/examples", "/*.md"]
 
 [dependencies]
-deku = { version = "0.19.0" }
-serde = { version = "1.0", optional = true }
+deku = { version = "0.19.1" }
+serde = { version = "1.0.219", optional = true }
 
 [dev-dependencies]
-rstest = { version = "0.26.0" }
-pastey = { version = "0.1.0" }
-serde_json = { version = "1.0" }
+rstest = { version = "0.26.1" }
+pastey = { version = "0.1.1" }
+serde_json = { version = "1.0.142" }
 io-rejected = { path = "tests/io-rejected" }
 
 [[test]]
