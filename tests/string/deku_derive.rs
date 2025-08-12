@@ -46,6 +46,13 @@ struct SampleModel {
     #[deku(ctx = "Encoding::Utf8, StringLayout::LengthPrefix(Size::U32)")]
     utf8_prefixed_u32: StringDeku,
 
+    // variable 32-bit (7-bit encoded) length then string, null character is NOT allowed inside
+    // b"\0x501234"
+    //
+    // byte length with empty string is 1
+    #[deku(ctx = "Encoding::Utf8, StringLayout::LengthPrefix(Size::U32_7Bit)")]
+    utf8_prefixed_u32_7bit: StringDeku,
+
     // String with null byte at the end
     // b"012345\x00"
     //
@@ -98,7 +105,7 @@ struct SampleModel {
     utf16_zero_ended: StringDeku,
 }
 
-const EXPECTED_BYTES: &[u8; 77] = &[0; 77];
+const EXPECTED_BYTES: &[u8; 78] = &[0; 78];
 
 #[rstest]
 fn write_model() {
@@ -118,7 +125,7 @@ fn read_model() {
         Ok(((rest, size_left), value)) => {
             assert_eq!(value, expected_model);
             assert_eq!(size_left, 0);
-            assert_eq!(rest, &[]);
+            assert_eq!(rest.len(), 0);
         }
         Err(value) => panic!("Got unexpected error {value:#?}"),
     }

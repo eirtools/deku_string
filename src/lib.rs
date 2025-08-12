@@ -60,7 +60,7 @@ pub(crate) use common::InternalValue;
 pub(crate) use common::serde_impl::serde_shim_implementation;
 pub(crate) use common::std_impl::std_shim_implementation;
 
-pub use seven_bit::{SevenBitU32, SevenBitU64, SevenBitU128};
+pub use seven_bit::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 pub use string::{Encoding, StringDeku, StringLayout};
 
 /// Length prefix size

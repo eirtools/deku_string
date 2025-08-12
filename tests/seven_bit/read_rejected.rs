@@ -10,7 +10,7 @@ use deku::DekuReader as _;
 use deku::reader::Reader;
 
 use data::read_rejected::*;
-use deku_string::{SevenBitU32, SevenBitU64, SevenBitU128};
+use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
 #[allow(unused_imports)]
 use macros::read_rejected;

@@ -1,6 +1,8 @@
 /// Actual test implementation for read accepted test
 macro_rules! create_test_impl_read_accepted {
     ($(($case:ident, $original_bytes:expr, $underlying_value:expr)),+ $(,)?) => {
+        create_test_impl_read_accepted!(underlying_type: u8, $(($case, $original_bytes, $underlying_value)),+);
+        create_test_impl_read_accepted!(underlying_type: u16, $(($case, $original_bytes, $underlying_value)),+);
         create_test_impl_read_accepted!(underlying_type: u32, $(($case, $original_bytes, $underlying_value)),+);
         create_test_impl_read_accepted!(underlying_type: u64, $(($case, $original_bytes, $underlying_value)),+);
         create_test_impl_read_accepted!(underlying_type: u128, $(($case, $original_bytes, $underlying_value)),+);
@@ -35,6 +37,8 @@ macro_rules! create_test_impl_read_accepted {
 
 macro_rules! create_test_impl_write_accepted {
     ($(($case:ident, $input_value:expr, $target_bytes:expr)),+ $(,)?) => {
+        create_test_impl_write_accepted!(underlying_type: u8, $(($case, $string_value, $target_bytes)),+);
+        create_test_impl_write_accepted!(underlying_type: u16, $(($case, $string_value, $target_bytes)),+);
         create_test_impl_write_accepted!(underlying_type: u32, $(($case, $string_value, $target_bytes)),+);
         create_test_impl_write_accepted!(underlying_type: u64, $(($case, $string_value, $target_bytes)),+);
         create_test_impl_write_accepted!(underlying_type: u128, $(($case, $string_value, $target_bytes)),+);
@@ -91,6 +95,8 @@ macro_rules! create_test_impl_rw_accepted{
         $(($case:ident)),+
         $(,)?
     ) => {
+        create_test_impl_rw_accepted!(underlying_type: u8, $(($case)),+);
+        create_test_impl_rw_accepted!(underlying_type: u16, $(($case)),+);
         create_test_impl_rw_accepted!(underlying_type: u32, $(($case)),+);
         create_test_impl_rw_accepted!(underlying_type: u64, $(($case)),+);
         create_test_impl_rw_accepted!(underlying_type: u128, $(($case)),+);
