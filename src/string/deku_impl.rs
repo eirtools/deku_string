@@ -20,6 +20,8 @@ impl StringDeku {
         let (null_requirement, limit_u8, limit_u16, limit_u32): ReadRequirements =
             read_requirements(reader, endian, layout)?;
 
+        // other limits are the same, but have different types.
+        // This won't ever match for zero-ended strings
         if limit_u8 == Limit::Count(0) {
             // if requested length is 0, skip the data
             return Ok(StringDeku::from(""));
@@ -137,6 +139,7 @@ impl DekuWriter<(Endian, (Encoding, StringLayout))> for StringDeku {
 /// Read Requirements tuple.
 ///
 /// Type is defined for convenience.
+/// There's no option to define it just with size only.
 type ReadRequirements = (
     NullRequirement,
     Limit<u8, fn(&u8) -> bool>,
@@ -145,6 +148,8 @@ type ReadRequirements = (
 );
 
 /// Read limit and null placement requirements from layout and reader (if prefixed)
+///
+/// Zero-ended gives another limit kind that based on size, thus result can't be just a size.
 fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     reader: &mut Reader<R>,
     endian: Endian,
@@ -155,13 +160,13 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             size,
             allow_no_null,
         } => {
-            let null = if allow_no_null {
+            let null_requirement = if allow_no_null {
                 NullRequirement::Accepted
             } else {
                 NullRequirement::Required
             };
             Ok((
-                null,
+                null_requirement,
                 Limit::from(size),
                 Limit::from(size),
                 Limit::from(size),
@@ -258,34 +263,8 @@ where
     }
 
     match layout {
-        StringLayout::LengthPrefix(prefix) => {
-            let max_size: usize = match prefix {
-                Size::U8 => u8::MAX as usize,
-                Size::U16 => u16::MAX as usize,
-                Size::U32 => u32::MAX as usize,
-                Size::U32_7Bit => u32::MAX as usize,
-            };
-
-            if buf.len() > max_size {
-                return Err(DekuError::Assertion(Cow::from(format!(
-                    "Encoded string length cannot exceed {max_size} bytes"
-                ))));
-            }
-
-            // buffer len is not above corresponding type size,
-            // so truncation is safe
-            #[allow(clippy::cast_possible_truncation)]
-            match prefix {
-                Size::U8 => ((buf.len() & 0xFF) as u8).to_writer(writer, endian),
-                Size::U16 => (buf.len() as u16).to_writer(writer, endian),
-                Size::U32 => (buf.len() as u32).to_writer(writer, endian),
-                Size::U32_7Bit => {
-                    let length: SevenBitU32 = (buf.len() as u32).into();
-                    (length).to_writer(writer, ())
-                }
-            }?;
-
-            buf.to_writer(writer, endian)
+        StringLayout::LengthPrefix(prefix_size) => {
+            write_string_length_prefix(writer, endian, buf, prefix_size)
         }
         StringLayout::ZeroEnded => {
             buf.to_writer(writer, endian)?;
@@ -295,28 +274,89 @@ where
         StringLayout::FixedLength {
             size,
             allow_no_null,
-        } => {
-            if buf.len() > size {
-                return Err(DekuError::Assertion(Cow::from(format!(
-                    "Encoded string length cannot exceed {size} bytes"
-                ))));
-            }
-
-            if !allow_no_null && first_null >= size {
-                return Err(DekuError::Assertion(Cow::from(
-                    "Null MUST be present in the binary representation within write \
-                     buffer",
-                )));
-            }
-
-            buf.to_writer(writer, endian)?;
-
-            for _ in buf.len()..size {
-                zero.to_writer(writer, endian)?;
-            }
-            Ok(())
-        }
+        } => write_string_fixed_length(
+            writer,
+            endian,
+            buf,
+            size,
+            allow_no_null,
+            first_null,
+            zero,
+        ),
     }
+}
+
+fn write_string_length_prefix<W, T>(
+    writer: &mut Writer<W>,
+    endian: Endian,
+    buf: &mut Vec<T>,
+    prefix_size: Size,
+) -> Result<(), DekuError>
+where
+    W: no_std_io::Write + no_std_io::Seek,
+    T: Default + Clone + PartialEq + DekuWriter<Endian>,
+{
+    let max_size: usize = match prefix_size {
+        Size::U8 => u8::MAX as usize,
+        Size::U16 => u16::MAX as usize,
+        Size::U32 => u32::MAX as usize,
+        Size::U32_7Bit => u32::MAX as usize,
+    };
+
+    if buf.len() > max_size {
+        return Err(DekuError::Assertion(Cow::from(format!(
+            "Encoded string length cannot exceed {max_size} bytes"
+        ))));
+    }
+
+    // buffer len is not above corresponding type size,
+    // so truncation is safe
+    #[allow(clippy::cast_possible_truncation)]
+    match prefix_size {
+        Size::U8 => ((buf.len() & 0xFF) as u8).to_writer(writer, endian),
+        Size::U16 => (buf.len() as u16).to_writer(writer, endian),
+        Size::U32 => (buf.len() as u32).to_writer(writer, endian),
+        Size::U32_7Bit => {
+            let length: SevenBitU32 = (buf.len() as u32).into();
+            (length).to_writer(writer, ())
+        }
+    }?;
+
+    buf.to_writer(writer, endian)
+}
+
+fn write_string_fixed_length<W, T>(
+    writer: &mut Writer<W>,
+    endian: Endian,
+    buf: &mut Vec<T>,
+    size: usize,
+    allow_no_null: bool,
+    first_null: usize,
+    zero: T,
+) -> Result<(), DekuError>
+where
+    W: no_std_io::Write + no_std_io::Seek,
+    T: Default + Clone + PartialEq + DekuWriter<Endian>,
+{
+    if buf.len() > size {
+        return Err(DekuError::Assertion(Cow::from(format!(
+            "Encoded string length cannot exceed {size} elements"
+        ))));
+    }
+
+    if !allow_no_null && first_null == size {
+        return Err(DekuError::Assertion(Cow::from(
+            "String fills whole output buffer, while Null character must be written",
+        )));
+    }
+
+    buf.to_writer(writer, endian)?;
+
+    for _ in buf.len()..size {
+        zero.to_writer(writer, endian)?;
+    }
+
+    Ok(())
 }
 
 /// Requirement for null character presence

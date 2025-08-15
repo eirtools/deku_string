@@ -27,7 +27,7 @@ macro_rules! int7bit_deku_shim_implementation {
                     let mut result: $internal_type = 0;
                     let mut shift = 0;
                     let mut buf = [0];
-                    // read 28 bits
+                    // read full 7-bit parts
 
                     let bits_full_7 = $internal_type::BITS / 7;
                     let bits_rest = $internal_type::BITS % 7;

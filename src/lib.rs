@@ -6,7 +6,7 @@
 //!
 //! This implementation requires following context:
 //!  * Endian — little or big
-//!  * Encoding — UTF-8 or UTF-16
+//!  * Encoding — UTF-8, UTF-16 or UTF-32
 //!  * `StringLayout` — how string is represented in binary
 //!
 //! Pick your favorite combination
