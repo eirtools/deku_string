@@ -21,8 +21,11 @@ env:
   CARGO_NET_RETRY: 10
   BINSTALL_DISABLE_TELEMETRY: true
 
+permissions: {}
 jobs:
   cargo-format:
+    permissions:
+      contents: read
     name: Check formatting
     runs-on: ubuntu-latest
     steps:
@@ -32,6 +35,8 @@ jobs:
       run: cargo fmt --all --check
 
   pre-commit:
+    permissions:
+      contents: read
     name: Pre-commit checks
     runs-on: ubuntu-latest
     steps:
