@@ -1,10 +1,10 @@
 /// Actual test implementation for read accepted test
 macro_rules! create_test_impl_read_accepted {
     (
-        $layout:ident,
+        $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
-        $(($case:ident, $original_bytes:expr, $string_value:expr)),+
+        $(($case: ident, $original_bytes: expr, $string_value: expr)),+
         $(,)?
     ) => {
         create_test_impl_read_accepted!(
@@ -23,11 +23,11 @@ macro_rules! create_test_impl_read_accepted {
         );
     };
     (
-        $layout:ident,
+        $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
         ctx: $ctx: ident,
-        $(($case:ident, $original_bytes:expr, $string_value:expr)),+
+        $(($case: ident, $original_bytes: expr, $string_value: expr)),+
         $(,)?
     ) => {
         paste! {
@@ -55,10 +55,10 @@ macro_rules! create_test_impl_read_accepted {
 /// Actual test implementation for write accepted test
 macro_rules! create_test_impl_write_accepted {
     (
-        $layout:ident,
+        $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
-        $(($case:ident, $string_value:expr, $target_bytes:expr)),+
+        $(($case: ident, $string_value: expr, $target_bytes: expr)),+
         $(,)?
     ) => {
         create_test_impl_write_accepted!(
@@ -77,11 +77,11 @@ macro_rules! create_test_impl_write_accepted {
         );
     };
     (
-        $layout:ident,
+        $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
         ctx: $ctx: ident,
-        $(($case:ident, $string_value:expr, $target_bytes:expr)),+
+        $(($case: ident, $string_value: expr, $target_bytes: expr)),+
         $(,)?
     ) => {
         paste! {
@@ -115,10 +115,10 @@ macro_rules! create_test_impl_write_accepted {
 /// Generate both read and write tests with given parameters
 macro_rules! _create_test_impl_rw_accepted_internal{
     (
-        $layout:ident,
+        $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
-        $(($case:ident, $original_bytes:expr, $string_value:expr, $target_bytes:expr)),+
+        $(($case: ident, $original_bytes: expr, $string_value: expr, $target_bytes: expr)),+
         $(,)?
     ) => {
         create_test_impl_read_accepted!(
@@ -131,30 +131,30 @@ macro_rules! _create_test_impl_rw_accepted_internal{
 }
 
 macro_rules! _rw_accepted_naming_impl {
-    (_in_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
-        paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _IN>] }
+    (_in_, $layout: ident, $endian: ident, $encoding: ident, $case: ident) => {
+        paste! { [<$encoding: upper _ $layout: upper _ $endian: upper _ $case: upper _IN>] }
     };
 
-    (_data_, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
-        paste! { [<$layout:upper _ $case:upper _STR>] }
+    (_data_, $layout: ident, $endian: ident, $encoding: ident, $case: ident) => {
+        paste! { [<$layout: upper _ $case: upper _STR>] }
     };
 
-    (in_data_in, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
-        paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _IN>] }
+    (in_data_in, $layout: ident, $endian: ident, $encoding: ident, $case: ident) => {
+        paste! { [<$encoding: upper _ $layout: upper _ $endian: upper _ $case: upper _IN>] }
     };
 
-    (in_data_out, $layout:ident, $endian:ident, $encoding:ident, $case:ident) => {
-        paste! { [<$encoding:upper _ $layout:upper _ $endian:upper _ $case:upper _OUT>] }
+    (in_data_out, $layout: ident, $endian: ident, $encoding: ident, $case: ident) => {
+        paste! { [<$encoding: upper _ $layout: upper _ $endian: upper _ $case: upper _OUT>] }
     };
 }
 
 /// Generate read and write tests, parameters will be generated
 macro_rules! create_test_impl_rw_accepted {
     (
-        @accum $layout:ident,
+        @accum $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
-        ($($out:tt)+)
+        ($($out: tt)+)
         $(,)?
     ) => {
         _create_test_impl_rw_accepted_internal!(
@@ -162,7 +162,7 @@ macro_rules! create_test_impl_rw_accepted {
         );
     };
     // Handle case: in -> data -> in/out (last)
-    (@accum $layout:ident, endian: $endian: ident, encoding: $encoding: ident, ($($out:tt)*), ($case:ident, $variant:ident) $(,)?) => {
+    (@accum $layout: ident, endian: $endian: ident, encoding: $encoding: ident, ($($out: tt)*), ($case: ident, $variant: ident) $(,)?) => {
         create_test_impl_rw_accepted!(
             @accum $layout, endian: $endian, encoding: $encoding,
             ($($out)* (
@@ -175,12 +175,12 @@ macro_rules! create_test_impl_rw_accepted {
     };
     // Handle case: in -> data -> in/out, (rest)
     (
-        @accum $layout:ident,
+        @accum $layout: ident,
         endian: $endian: ident,
         encoding: $encoding: ident,
-        ($($out:tt)*),
-        ($case:ident, $variant:ident),
-        $($rest:tt)+
+        ($($out: tt)*),
+        ($case: ident, $variant: ident),
+        $($rest: tt)+
     ) => {
         create_test_impl_rw_accepted!(
             @accum $layout, endian: $endian, encoding: $encoding,
@@ -195,7 +195,7 @@ macro_rules! create_test_impl_rw_accepted {
     };
 
     // Entry point (all cases of encoding and endian)
-    ($layout:ident, all_encodings, $($rest:tt)*) => {
+    ($layout: ident, all_encodings, $($rest: tt)*) => {
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_8, (), $($rest)*);
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_16, (), $($rest)*);
         create_test_impl_rw_accepted!(@accum $layout, endian: little, encoding: utf_32, (), $($rest)*);

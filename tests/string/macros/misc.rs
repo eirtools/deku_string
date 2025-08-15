@@ -50,11 +50,11 @@ macro_rules! _rejected_check {
 
 macro_rules! _deku_ctx {
     (ctx: prime, $endian: ident, $encoding: ident, $layout: ident) => {
-        (_ctx_endian!(endian: $endian), _ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout:upper>] })
+        (_ctx_endian!(endian: $endian), _ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout: upper>] })
     };
 
     (ctx: alt, $endian: ident, $encoding: ident, $layout: ident) => {
-        (_ctx_endian!(endian: $endian), (_ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout:upper>] }))
+        (_ctx_endian!(endian: $endian), (_ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout: upper>] }))
     };
 }
 

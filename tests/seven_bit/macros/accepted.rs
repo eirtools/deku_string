@@ -1,6 +1,6 @@
 /// Actual test implementation for read accepted test
 macro_rules! create_test_impl_read_accepted {
-    ($(($case:ident, $original_bytes:expr, $underlying_value:expr)),+ $(,)?) => {
+    ($(($case: ident, $original_bytes: expr, $underlying_value: expr)),+ $(,)?) => {
         create_test_impl_read_accepted!(underlying_type: u8, $(($case, $original_bytes, $underlying_value)),+);
         create_test_impl_read_accepted!(underlying_type: u16, $(($case, $original_bytes, $underlying_value)),+);
         create_test_impl_read_accepted!(underlying_type: u32, $(($case, $original_bytes, $underlying_value)),+);
@@ -9,7 +9,7 @@ macro_rules! create_test_impl_read_accepted {
     };
     (
         underlying_type: $underlying_type: ident,
-        $(($case:ident, $original_bytes:expr, $underlying_value:expr)),+
+        $(($case: ident, $original_bytes: expr, $underlying_value: expr)),+
         $(,)?
     ) => {
         paste! {
@@ -24,7 +24,7 @@ macro_rules! create_test_impl_read_accepted {
                 let mut cursor = std::io::Cursor::new(raw_data);
                 let mut deku_reader = Reader::new(&mut cursor);
 
-                match [<SevenBit $underlying_type:upper>]::from_reader_with_ctx(&mut deku_reader, ()) {
+                match [<SevenBit $underlying_type: upper>]::from_reader_with_ctx(&mut deku_reader, ()) {
                     Err(err) => panic!("Unable to read data: {err:#?}"),
                     Ok(value) => assert_eq!(value, expected_value),
                 };
@@ -36,7 +36,7 @@ macro_rules! create_test_impl_read_accepted {
 /// Actual test implementation for write accepted test
 
 macro_rules! create_test_impl_write_accepted {
-    ($(($case:ident, $input_value:expr, $target_bytes:expr)),+ $(,)?) => {
+    ($(($case: ident, $input_value: expr, $target_bytes: expr)),+ $(,)?) => {
         create_test_impl_write_accepted!(underlying_type: u8, $(($case, $string_value, $target_bytes)),+);
         create_test_impl_write_accepted!(underlying_type: u16, $(($case, $string_value, $target_bytes)),+);
         create_test_impl_write_accepted!(underlying_type: u32, $(($case, $string_value, $target_bytes)),+);
@@ -45,7 +45,7 @@ macro_rules! create_test_impl_write_accepted {
     };
     (
         underlying_type: $underlying_type: ident,
-        $(($case:ident, $input_value:expr, $target_bytes:expr)),+
+        $(($case: ident, $input_value: expr, $target_bytes: expr)),+
         $(,)?
     ) => {
         paste! {
@@ -57,7 +57,7 @@ macro_rules! create_test_impl_write_accepted {
                 #[case] input_value: $underlying_type,
                 #[case] expected_data: &[u8],
             ) {
-                let raw_data: [<SevenBit $underlying_type:upper>] = input_value.into();
+                let raw_data: [<SevenBit $underlying_type: upper>] = input_value.into();
 
                 let mut output = Vec::new();
                 let mut cursor = no_std_io::Cursor::new(&mut output);
@@ -79,20 +79,20 @@ macro_rules! create_test_impl_write_accepted {
 macro_rules! create_test_impl_rw_accepted{
     (
         underlying_type: $underlying_type: ident,
-        $(($case:ident, $original_bytes:expr, $underlying_value:expr)),+
+        $(($case: ident, $original_bytes: expr, $underlying_value: expr)),+
         $(,)?
     ) => {
         create_test_impl_read_accepted!(underlying_type: $underlying_type, $(($case, $original_bytes, $underlying_value)),+);
         create_test_impl_write_accepted!(underlying_type: $underlying_type, $(($case, $underlying_value, $original_bytes)),+);
     };
-    (underlying_type: $underlying_type: ident, $(($case:ident)),+ $(,)?) => {
+    (underlying_type: $underlying_type: ident, $(($case: ident)),+ $(,)?) => {
         create_test_impl_rw_accepted!(
             underlying_type: $underlying_type,
-            $(($case, paste! { [<S7_ $underlying_type:upper _ $case:upper _OUT>] }, paste!{ [<S7_ $underlying_type:upper _ $case:upper _IN>] })),+
+            $(($case, paste! { [<S7_ $underlying_type: upper _ $case: upper _OUT>] }, paste!{ [<S7_ $underlying_type: upper _ $case: upper _IN>] })),+
         );
     };
     (
-        $(($case:ident)),+
+        $(($case: ident)),+
         $(,)?
     ) => {
         create_test_impl_rw_accepted!(underlying_type: u8, $(($case)),+);
