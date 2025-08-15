@@ -1,9 +1,8 @@
 macro_rules! int7bit_deku_shim_implementation {
     (
-        module_name:
-        $module_name:ident,local_type:
-        $local_type:ident,internal_type:
-        $internal_type:ident,
+        module_name: $module_name: ident,
+        local_type: $local_type: ident,
+        internal_type: $internal_type: ident,
     ) => {
         mod $module_name {
             use deku::ctx::Order;
