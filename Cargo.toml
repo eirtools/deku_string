@@ -11,7 +11,7 @@ categories = ["encoding", "no-std", "parsing"]
 exclude = ["/.github", "/examples", "/*.md"]
 
 [dependencies]
-deku = { version = "0.19.1" }
+deku = { version = "0.19.1", default-features = false, features = ["alloc"] }
 serde = { version = "1.0.219", optional = true }
 
 [dev-dependencies]
