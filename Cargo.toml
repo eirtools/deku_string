@@ -15,9 +15,6 @@ deku = { version = "0.19.1", default-features = false, features = ["alloc"] }
 serde = { version = "1.0.219", optional = true }
 defmt = { version = "1.0.1", optional = true }
 
-[features]
-default = ["defmt"]
-
 [dev-dependencies]
 rstest = { version = "0.26.1" }
 pastey = { version = "0.1.1" }
