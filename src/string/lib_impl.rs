@@ -1,6 +1,7 @@
 use crate::{
     InternalValue, StringDeku, serde_shim_implementation, std_shim_implementation,
 };
+use alloc::string::String;
 
 impl InternalValue for StringDeku {
     type InternalType = String;
@@ -29,7 +30,7 @@ serde_shim_implementation! {
 std_shim_implementation! {
     module_name: std_impl,
     local_type: StringDeku,
-    internal_type: String,
+    internal_type: alloc::string::String,
     test_input: "from str".into(),
     test_input_other: "other value".into(),
     test_input_less: "aaa".into(),

@@ -1,3 +1,4 @@
+use alloc::string::String;
 use crate::Size;
 
 mod deku_impl;

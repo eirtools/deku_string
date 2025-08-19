@@ -1,5 +1,6 @@
 //! Additional "transparency" shim implementations for `StringDeku`.
 
+use alloc::borrow::Cow;
 use crate::StringDeku;
 
 impl From<&str> for StringDeku {
@@ -8,8 +9,8 @@ impl From<&str> for StringDeku {
     }
 }
 
-impl From<std::borrow::Cow<'_, str>> for StringDeku {
-    fn from(value: std::borrow::Cow<'_, str>) -> StringDeku {
+impl From<Cow<'_, str>> for StringDeku {
+    fn from(value: Cow<'_, str>) -> StringDeku {
         StringDeku(value.into())
     }
 }
@@ -26,13 +27,13 @@ impl<'a> PartialEq<&'a str> for StringDeku {
     }
 }
 
-impl<'a> PartialEq<std::borrow::Cow<'a, str>> for StringDeku {
-    fn eq(&self, other: &std::borrow::Cow<'a, str>) -> bool {
+impl<'a> PartialEq<Cow<'a, str>> for StringDeku {
+    fn eq(&self, other: &Cow<'a, str>) -> bool {
         &self.0 == other
     }
 }
 
-impl PartialEq<StringDeku> for std::borrow::Cow<'_, str> {
+impl PartialEq<StringDeku> for Cow<'_, str> {
     fn eq(&self, other: &StringDeku) -> bool {
         self == &other.0
     }
@@ -40,7 +41,7 @@ impl PartialEq<StringDeku> for std::borrow::Cow<'_, str> {
 
 #[cfg(test)]
 mod test {
-    use std::borrow::Cow;
+    use alloc::borrow::Cow;
 
     use crate::StringDeku;
     use rstest::rstest;
