@@ -1,6 +1,8 @@
 use crate::Size;
 use alloc::string::String;
 
+#[cfg(feature = "defmt")]
+mod defmt_impl;
 mod deku_impl;
 mod lib_impl;
 mod std_impl;
@@ -29,13 +31,6 @@ mod std_impl;
 /// convenient way to make operations easier.
 #[derive(Clone, Default, PartialEq, PartialOrd, Eq, Ord)]
 pub struct StringDeku(pub(crate) String);
-
-#[cfg(feature = "defmt")]
-impl defmt::Format for StringDeku {
-    fn format(&self, fmt: defmt::Formatter) {
-        defmt::write!(fmt, "{}", self.0.as_str());
-    }
-}
 
 /// String variant to read and write
 #[derive(Debug, Clone, Copy)]
