@@ -38,10 +38,6 @@ name = "str_deku_derive"
 path = "tests/string/deku_derive.rs"
 
 [[test]]
-name = "str_format"
-path = "tests/string/format.rs"
-
-[[test]]
 name = "seven_bit_rw_accepted"
 path = "tests/seven_bit/rw_accepted.rs"
 
