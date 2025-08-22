@@ -164,7 +164,8 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn test_hash() {
-                    use alloc::collections::TryReserveError; // ensure alloc is linked in tests
+                    #[allow(unused_imports)]
+                    use alloc::collections::TryReserveError as _; // ensure alloc is linked in tests
                     use core::hash::{Hash, Hasher};
                     use std::collections::hash_map::DefaultHasher;
 
