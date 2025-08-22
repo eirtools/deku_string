@@ -205,8 +205,8 @@ macro_rules! create_test_impl_rw_accepted {
     };
 }
 
-pub(crate) use _create_test_impl_rw_accepted_internal;
-pub(crate) use _rw_accepted_naming_impl;
-pub(crate) use create_test_impl_read_accepted;
-pub(crate) use create_test_impl_rw_accepted;
-pub(crate) use create_test_impl_write_accepted;
+pub(crate) use {
+    _create_test_impl_rw_accepted_internal, _rw_accepted_naming_impl,
+    create_test_impl_read_accepted, create_test_impl_rw_accepted,
+    create_test_impl_write_accepted,
+};

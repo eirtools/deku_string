@@ -25,5 +25,4 @@ macro_rules! _rejected_check {
     };
 }
 
-pub(crate) use _match_error;
-pub(crate) use _rejected_check;
+pub(crate) use {_match_error, _rejected_check};
