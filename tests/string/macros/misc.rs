@@ -58,8 +58,4 @@ macro_rules! _deku_ctx {
     };
 }
 
-pub(crate) use _ctx_encoding;
-pub(crate) use _ctx_endian;
-pub(crate) use _deku_ctx;
-pub(crate) use _match_error;
-pub(crate) use _rejected_check;
+pub(crate) use {_ctx_encoding, _ctx_endian, _deku_ctx, _match_error, _rejected_check};

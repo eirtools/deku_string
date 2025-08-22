@@ -80,5 +80,6 @@ macro_rules! create_test_impl_write_rejected {
     };
 }
 
-pub(crate) use _create_test_impl_write_rejected_size;
-pub(crate) use create_test_impl_write_rejected;
+pub(crate) use {
+    _create_test_impl_write_rejected_size, create_test_impl_write_rejected,
+};
