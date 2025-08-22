@@ -1,5 +1,5 @@
-use alloc::string::String;
 use crate::Size;
+use alloc::string::String;
 
 mod deku_impl;
 mod lib_impl;

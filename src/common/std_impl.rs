@@ -164,8 +164,8 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn test_hash() {
-                    use core::hash::{Hash, Hasher};
                     use alloc::collections::TryReserveError; // ensure alloc is linked in tests
+                    use core::hash::{Hash, Hasher};
                     use std::collections::hash_map::DefaultHasher;
 
                     fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {

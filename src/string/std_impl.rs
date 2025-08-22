@@ -1,7 +1,7 @@
 //! Additional "transparency" shim implementations for `StringDeku`.
 
-use alloc::borrow::Cow;
 use crate::StringDeku;
+use alloc::borrow::Cow;
 
 impl From<&str> for StringDeku {
     fn from(value: &str) -> StringDeku {
