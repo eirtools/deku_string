@@ -1,5 +1,8 @@
 use crate::Size;
+use alloc::string::String;
 
+#[cfg(feature = "defmt")]
+mod defmt_impl;
 mod deku_impl;
 mod lib_impl;
 mod std_impl;

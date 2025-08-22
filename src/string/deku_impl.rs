@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use alloc::{borrow::Cow, format, string::String, vec, vec::Vec};
 
 use deku::ctx::{Endian, Limit};
 use deku::reader::Reader;

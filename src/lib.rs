@@ -1,3 +1,4 @@
+#![no_std]
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 
@@ -51,6 +52,9 @@
 //!     zero_ended: StringDeku,
 //! }
 //! ```
+extern crate alloc;
+#[cfg(test)]
+extern crate std;
 
 mod common;
 mod seven_bit;

@@ -13,7 +13,7 @@ macro_rules! std_shim_implementation {
     (
         module_name: $module_name: ident,
         local_type: $local_type: ident,
-        internal_type: $internal_type: ident,
+        internal_type: $internal_type: ty,
         test_input: $test_input: expr,
         test_input_other: $test_input_other: expr,
         test_input_less: $test_input_less: expr,
@@ -59,8 +59,8 @@ macro_rules! std_shim_implementation {
                 }
             }
 
-            impl std::hash::Hash for $local_type {
-                fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+            impl core::hash::Hash for $local_type {
+                fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
                     self.internal_ref().hash(state);
                 }
             }
@@ -69,7 +69,7 @@ macro_rules! std_shim_implementation {
                 fn partial_cmp(
                     &self,
                     input: &$internal_type,
-                ) -> Option<std::cmp::Ordering> {
+                ) -> Option<core::cmp::Ordering> {
                     self.internal_ref().partial_cmp(input)
                 }
             }
@@ -78,7 +78,7 @@ macro_rules! std_shim_implementation {
                 fn partial_cmp(
                     &self,
                     other: &$local_type,
-                ) -> Option<std::cmp::Ordering> {
+                ) -> Option<core::cmp::Ordering> {
                     self.partial_cmp(other.internal_ref())
                 }
             }
@@ -97,7 +97,8 @@ macro_rules! std_shim_implementation {
 
             #[cfg(test)]
             mod test {
-                use std::cmp::Ordering;
+                use core::cmp::Ordering;
+                use std::format;
 
                 use crate::$local_type;
                 use rstest::rstest;
@@ -163,7 +164,10 @@ macro_rules! std_shim_implementation {
 
                 #[rstest]
                 fn test_hash() {
-                    use std::hash::{DefaultHasher, Hash, Hasher};
+                    #[allow(unused_imports)]
+                    use alloc::collections::TryReserveError as _; // ensure alloc is linked in tests
+                    use core::hash::{Hash, Hasher};
+                    use std::collections::hash_map::DefaultHasher;
 
                     fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {
                         let mut s = DefaultHasher::new();
