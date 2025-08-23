@@ -2,9 +2,6 @@ pub const ASSERTION_NO_ZERO_INSIDE: &str = "zero?";
 
 pub const ASSERTION_ZERO_INSIDE_STR: &str = "va\x00id";
 
-/// A 65536 bytes long string to test out-of-bound checks on write.
-pub const ASSERTION_TOO_BIG_DATA: &str = include_str!("../../64k_data");
-
 pub const IO_DATA: &str = "text";
 
 pub const IO_FIXED_FORCE_ZERO_DATA_SIZE: u64 = 0;
