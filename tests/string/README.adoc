@@ -1,0 +1,98 @@
+= Integration tests for `StringDeku` documentation
+
+Practical guide how to read and write integration tests for `::deku_string::StringDeku`.
+
+== Common definitions and notes
+
+.Common notes
+* All identifiers used in tests are written in `snake_case` for readability.
+* All corresponding constants are defined in `SCREAM_SNAKE_CASE` and have strict formats.
+
+.Name parts used
+* `Layout` corresponds to `string_deku::StringLayout` and is one of layouts listed in `data/layouts.rs`, in lower case.
+* `Encoding` is one of `utf_8`, `utf_16` or `utf_32`.
+* `Endian` corresponds to `deku::ctx::Endian`
+        and is one of: `little`, `big`.
+* `Error` for rejection tests corresponds to `deku::DekuError` enum
+        and is one of: `assertion`, `parse`, `incomplete`, `io`.
+
+* `case_id` is case name to test.
+
+NOTE: All strings with fixed lengths are `data::layout::FIXED_LENGTH` characters long for consistency.
+
+=== Additional notes:
+
+As of nature of Deku, there's 2 ways to specify context, as defined in `::deku_string::string::deku_impl` module.
+
+One of them named `prime`, the second is `alt`. There should be no difference in how serializer and deserializer works.
+
+== Read/Write accepted tests: rw_accepted.rs
+
+Positive cases for read and write strings.
+
+=== Macro usage
+
+.Macro `create_test_impl_rw_accepted` has following arguments:
+* Layout.
+* `all_encodings` to generate test scenario for all encoding and endian supported.
+* Test case tuples defined as a pair (`case_id`, `in_data_in`) or (`case_id`, `in_data_out`).
+
+NOTE: At the moment of writing it's possible to define only one
+      definition `create_test_impl_rw_accepted` per layout.
+
+.Additional case arguments meaning
+* `in_data_in` means that data is read from input binary string, then serialized result must be the same as input.
+* `in_data_out` means that data is read from input binary string, then serialized result must be the same as provided output.
+
+=== Constant naming convention
+
+Constants are located in `data/accepted`.
+
+.Naming convention
+* Input bytes: `<encoding>_<layout>_<endian>_<case_id>_IN`
+* Intermediate string: `<layout>_<case_id>_STR`
+* Output bytes (if must be different from input): `<encoding>_<layout>_<endian>_<case_id>_OUT`
+
+== Read Rejected tests: read_rejected.rs
+
+Tests for read string from binary input. The read must return a predefined error category.
+
+=== Macro usage
+
+.Macro `create_test_impl_read_rejected` has following arguments:
+* Layout
+* Error to expect
+* Case tuples with each element defined as `(<case_id>)`
+
+NOTE: At the moment of writing it's possible to define only one
+      definition of `create_test_impl_read_rejected` per layout and error.
+
+=== Constant naming convention
+
+Constants are located in `data/read_rejected`
+
+There's only one input format defined: `<encoding>_<layout>_<endian>_<case_id>`
+
+== Write Rejected tests: write_rejected.rs
+
+Constants are located in `data/write_rejected` and have following structure.
+
+Tests to write StringDeku into binary output. The write must return a predefined error category.
+
+NOTE: At the moment of writing it's possible to define only one
+      definition of `create_test_impl_read_rejected` per layout and error.
+
+=== Macro usage:
+
+.Macro `create_test_impl_write_rejected` has following arguments:
+* Layout
+* Error to expect
+* Case tuples with each element defined as `(<case_id>)`
+
+=== Constant naming convention
+
+Constants are located in `data/write_rejected`
+
+.Naming convention
+* Input data: `<error>_<case_id>`
+* Byte to break output (for `io` error): `<error>_<case_id>_SIZE`.
