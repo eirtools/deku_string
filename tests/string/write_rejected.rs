@@ -20,6 +20,9 @@ use io_rejected::InvalidBufferType;
 use macros::misc::*;
 use macros::write_rejected::*;
 
+/// A 65536 bytes long string to test out-of-bound checks on write.
+pub const ASSERTION_TOO_BIG_DATA: &str = include_str!("../64k_data");
+
 create_test_impl_write_rejected! {
     fixed_force_zero,
     error: assertion,

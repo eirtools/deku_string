@@ -1,0 +1,63 @@
+= Integration tests for `SevenBitU*` documentation
+
+Practical guide how to read and write integration tests for `::deku_string::SevenBitU*`.
+
+== Common definitions and notes
+
+.Common notes
+* All identifiers used in tests are written in `snake_case` for readability.
+* All corresponding constants are defined in `SCREAM_SNAKE_CASE` and have strict formats.
+
+.Name parts used
+* `case_id` is case name to test
+* `int_bits` is bits amount in an unsigned integer and is one of 8, 16, 32, 64 or 128.
+
+== Read/Write accepted tests: rw_accepted.rs
+
+Positive cases for read and write 7-bit integers. Both way conversion is tested.
+
+=== Macro usage
+
+.Macro `create_test_impl_rw_accepted` has following arguments:
+* Case tuples with each element defined as `(<case_id>)`
+
+=== Constant naming convention
+
+Constants are located in `data/accepted`
+
+.Naming convention
+* Constant for input: `S7_U<int_bits>_<case_id>_IN`
+* Constant for output: `S7_U<int_bits>_<case_id>_OUT`
+
+
+== Read Rejected tests: read_rejected.rs
+
+Tests for read string from binary input. The read must return a predefined error category.
+
+=== Macro usage
+
+.Macro `create_test_impl_read_rejected` has following arguments:
+* Case tuples with each element defined as `(<case_id>)`
+
+=== Constant naming convention
+
+Constants are located in `data/read_rejected`
+
+There's only one input format defined: `S7_U<int_bits>_<case_id>`
+
+== Write Rejected tests: write_rejected.rs
+
+Tests to write StringDeku into binary output. The write must return a predefined error category.
+
+=== Macro usage:
+
+.Macro `create_test_impl_write_rejected` has following arguments:
+* Case tuples with each element defined as `(<case_id>)`
+
+=== Constant naming convention
+
+Constants are located in `data/write_rejected`
+
+.Naming convention
+* Input data: `S7_U<int_bits>_<case_id>`
+* Byte to break output is defined: `<error>_<case_id>_SIZE`.
