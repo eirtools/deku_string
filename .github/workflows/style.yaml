@@ -23,17 +23,6 @@ env:
 
 permissions: {}
 jobs:
-  cargo-format:
-    permissions:
-      contents: read
-    name: Check formatting
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v5
-    - name: Run style checks
-      run: cargo fmt --all --check
-
   pre-commit:
     permissions:
       contents: read
