@@ -59,6 +59,7 @@ extern crate std;
 mod common;
 mod seven_bit;
 mod string;
+mod vec;
 
 pub(crate) use common::InternalValue;
 pub(crate) use common::serde_impl::serde_shim_implementation;
@@ -66,6 +67,7 @@ pub(crate) use common::std_impl::std_shim_implementation;
 
 pub use seven_bit::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 pub use string::{Encoding, StringDeku, StringLayout};
+pub use vec::{VecDeku, VecLayout};
 
 /// Length prefix size
 #[derive(Debug, Clone, Copy)]
