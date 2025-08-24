@@ -20,9 +20,6 @@ use io_rejected::InvalidBufferType;
 use macros::misc::*;
 use macros::write_rejected::*;
 
-/// A 65536 bytes long string to test out-of-bound checks on write.
-pub const ASSERTION_TOO_BIG_DATA: &str = include_str!("../64k_data");
-
 create_test_impl_write_rejected! {
     fixed_force_zero,
     error: assertion,
@@ -49,14 +46,15 @@ create_test_impl_write_rejected! {
     prefix_u16,
     error: assertion,
     (zero_inside_str),
-    (too_big_data),
+    // it's not worth a while to test this due requirements to save 65K string in static data
+    // (too_big_data),
 }
 
 create_test_impl_write_rejected! {
     prefix_u32,
     error: assertion,
     (zero_inside_str),
-    // it's not worth a while to test this due requirements to save 4GB string in heap
+    // it's not worth a while to test this due requirements to save 4GB string in static data
     // (too_big_data),
 }
 
@@ -64,7 +62,7 @@ create_test_impl_write_rejected! {
     prefix_u32_7bit,
     error: assertion,
     (zero_inside_str),
-    // it's not worth a while to test this due requirements to save 4GB string in heap
+    // it's not worth a while to test this due requirements to save 4GB string in static data
     // (too_big_data),
 }
 

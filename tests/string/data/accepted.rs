@@ -174,13 +174,13 @@ pub(crate) const UTF_32_PREFIX_U8_LITTLE_VALID_IN: &[u8; 1 + UTF_32_FIXED_LENGTH
 pub(crate) const UTF_32_PREFIX_U16_LITTLE_VALID_IN: &[u8; 2
      + UTF_32_FIXED_LENGTH_DATA] =
     b"\x05\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
-pub(crate) const UTF_32_PREFIX_U32_LITTLE_VALID_IN: &[u8; 4
-     + UTF_32_FIXED_LENGTH_DATA] = b"\x05\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
+pub(crate) const UTF_32_PREFIX_U32_LITTLE_VALID_IN: &[u8; 4 + UTF_32_FIXED_LENGTH_DATA] =
+    b"\x05\x00\x00\x00v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
 pub(crate) const UTF_32_PREFIX_U32_7BIT_LITTLE_VALID_IN:
     &[u8; 1 + UTF_32_FIXED_LENGTH_DATA] =
     b"\x05v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00";
-pub(crate) const UTF_32_ZERO_ENDED_LITTLE_VALID_IN: &[u8; 4
-     + UTF_32_FIXED_LENGTH_DATA] = b"v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00";
+pub(crate) const UTF_32_ZERO_ENDED_LITTLE_VALID_IN: &[u8; 4 + UTF_32_FIXED_LENGTH_DATA] =
+    b"v\x00\x00\x00a\x00\x00\x00l\x00\x00\x00i\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00";
 
 // ---------- UTF-32: Full buffer valid (big)
 pub(crate) const UTF_32_FIXED_FORCE_ZERO_BIG_VALID_IN: &[u8; UTF_32_FIXED_LENGTH_DATA] =
@@ -334,152 +334,38 @@ pub(crate) const UTF_32_FIXED_ALLOW_NO_ZERO_BIG_NO_ZERO_INSIDE_IN:
 // --------------------------------------
 
 /// Raw data size
-const UTF_8_FIXED_LENGTH_255_DATA: usize = 255;
+const UTF_8_255_DATA: usize = 255;
 /// Raw data size
-const UTF_16_FIXED_LENGTH_255_DATA: usize = 255 * 2;
-const UTF_32_FIXED_LENGTH_255_DATA: usize = 255 * 4;
+const UTF_16_255_DATA: usize = 255 * 2;
+const UTF_32_255_DATA: usize = 255 * 4;
 
 // pub(crate) const FIXED_FORCE_LEN_255_STR -- same as "valid" case
 // pub(crate) const FIXED_LEN_255_STR -- same as "valid" case
-pub(crate) const PREFIX_U8_LEN_255_STR: &str = "vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv\
-                                                vvvvvvvvvvvvvvv";
-// pub(crate) const PREFIX_U16_LEN_25_STR -- same as "valid" case
-// pub(crate) const PREFIX_U32_LEN_25_STR -- same as "valid" case
-// pub(crate) const ZERO_ENDED_LEN_25_STR -- same as "valid" case
+pub(crate) const PREFIX_U8_LEN_255_STR: &str = include_str!("../../data/data_255");
+// pub(crate) const PREFIX_U16_LEN_255_STR -- same as "valid" case
+// pub(crate) const PREFIX_U32_LEN_255_STR -- same as "valid" case
+// pub(crate) const ZERO_ENDED_LEN_255_STR -- same as "valid" case
 
 // ---------- UTF-8: 255 bytes in the buffer (little)
-pub(crate) const UTF_8_PREFIX_U8_LITTLE_LEN_255_IN:
-    &[u8; 1 + UTF_8_FIXED_LENGTH_255_DATA] = b"\xFF\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv";
+pub(crate) const UTF_8_PREFIX_U8_LITTLE_LEN_255_IN: &[u8; 1 + UTF_8_255_DATA] =
+    include_bytes!("../../data/utf8_u8_little_data_255");
 
 // ---------- UTF-16: 255 bytes in the buffer (little)
-pub(crate) const UTF_16_PREFIX_U8_LITTLE_LEN_255_IN: &[u8; 1 + UTF_16_FIXED_LENGTH_255_DATA] = b"\xFF\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00\
-                                                                    v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00";
+pub(crate) const UTF_16_PREFIX_U8_LITTLE_LEN_255_IN: &[u8; 1 + UTF_16_255_DATA] =
+    include_bytes!("../../data/utf16_u8_little_data_255");
 
 // ---------- UTF-32: 255 bytes in the buffer (little)
-pub(crate) const UTF_32_PREFIX_U8_LITTLE_LEN_255_IN: &[u8; 1 + UTF_32_FIXED_LENGTH_255_DATA] = b"\xFF\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00\
-                                                                    v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00";
+pub(crate) const UTF_32_PREFIX_U8_LITTLE_LEN_255_IN: &[u8; 1 + UTF_32_255_DATA] =
+    include_bytes!("../../data/utf32_u8_little_data_255");
 
 // ---------- UTF-8: 255 bytes in the buffer (big)
-pub(crate) const UTF_8_PREFIX_U8_BIG_LEN_255_IN: &[u8; 1
-     + UTF_8_FIXED_LENGTH_255_DATA] = b"\xFF\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv\
-                                                                    vvvvvvvvvvvvvvv";
+pub(crate) const UTF_8_PREFIX_U8_BIG_LEN_255_IN: &[u8; 1 + UTF_8_255_DATA] =
+    include_bytes!("../../data/utf8_u8_big_data_255");
 
 // ---------- UTF-16: 255 bytes in the buffer (big)
-pub(crate) const UTF_16_PREFIX_U8_BIG_LEN_255_IN: &[u8; 1 + UTF_16_FIXED_LENGTH_255_DATA] = b"\xFF\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\
-                                                                    \x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v\x00v";
+pub(crate) const UTF_16_PREFIX_U8_BIG_LEN_255_IN: &[u8; 1 + UTF_16_255_DATA] =
+    include_bytes!("../../data/utf16_u8_big_data_255");
 
 // ---------- UTF-32: 255 bytes in the buffer (big)
-pub(crate) const UTF_32_PREFIX_U8_BIG_LEN_255_IN: &[u8; 1 + UTF_32_FIXED_LENGTH_255_DATA] = b"\xFF\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\
-                                                                    \x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v\x00\x00\x00v";
+pub(crate) const UTF_32_PREFIX_U8_BIG_LEN_255_IN: &[u8; 1 + UTF_32_255_DATA] =
+    include_bytes!("../../data/utf32_u8_big_data_255");

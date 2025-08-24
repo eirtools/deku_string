@@ -30,3 +30,6 @@ pub const IO_SUFFIX: &str = "";
 pub const IO_ZERO_ENDED_SUFFIX_SIZE: u64 = 0;
 pub const IO_FIXED_FORCE_ZERO_SUFFIX_SIZE: u64 = 2;
 pub const IO_FIXED_ALLOW_NO_ZERO_SUFFIX_SIZE: u64 = 2;
+
+/// A 256 bytes long string to test out-of-bound checks on write.
+pub const ASSERTION_TOO_BIG_DATA: &str = include_str!("../../data/data_256");
