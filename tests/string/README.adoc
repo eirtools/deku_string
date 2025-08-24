@@ -1,4 +1,5 @@
 = Integration tests for `StringDeku` documentation
+:toc:
 
 Practical guide how to read and write integration tests for `::deku_string::StringDeku`.
 
@@ -18,8 +19,6 @@ Practical guide how to read and write integration tests for `::deku_string::Stri
 
 * `case_id` is case name to test.
 
-NOTE: All strings with fixed lengths are `data::layout::FIXED_LENGTH` characters long for consistency.
-
 === Additional notes:
 
 As of nature of Deku, there's 2 ways to specify context, as defined in `::deku_string::string::deku_impl` module.
@@ -28,7 +27,7 @@ One of them named `prime`, the second is `alt`. There should be no difference in
 
 == Read/Write accepted tests: rw_accepted.rs
 
-Positive cases for read and write strings.
+Positive cases for read and write.
 
 === Macro usage
 
@@ -55,7 +54,7 @@ Constants are located in `data/accepted`.
 
 == Read Rejected tests: read_rejected.rs
 
-Tests for read string from binary input. The read must return a predefined error category.
+Tests for fails on value read from binary input. The read must return a predefined error category.
 
 === Macro usage
 
@@ -77,10 +76,7 @@ There's only one input format defined: `<encoding>_<layout>_<endian>_<case_id>`
 
 Constants are located in `data/write_rejected` and have following structure.
 
-Tests to write StringDeku into binary output. The write must return a predefined error category.
-
-NOTE: At the moment of writing it's possible to define only one
-      definition of `create_test_impl_read_rejected` per layout and error.
+Tests for fails on value write from binary input. The write must return a predefined error category.
 
 === Macro usage:
 
@@ -88,6 +84,9 @@ NOTE: At the moment of writing it's possible to define only one
 * Layout
 * Error to expect
 * Case tuples with each element defined as `(<case_id>)`
+
+NOTE: At the moment of writing it's possible to define only one
+      definition of `create_test_impl_read_rejected` per layout and error.
 
 === Constant naming convention
 
