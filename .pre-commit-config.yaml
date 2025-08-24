@@ -8,6 +8,7 @@ repos:
   - id: check-json
   - id: check-symlinks
   - id: end-of-file-fixer
+    exclude: ^tests/data/.*$
   - id: pretty-format-json
     args: [--autofix]
   - id: trailing-whitespace
