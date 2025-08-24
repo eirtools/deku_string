@@ -54,5 +54,21 @@ path = "tests/seven_bit/write_rejected.rs"
 name = "seven_bit_deku_derive"
 path = "tests/seven_bit/deku_derive.rs"
 
+[[test]]
+name = "vec_rw_accepted"
+path = "tests/vec/rw_accepted.rs"
+
+[[test]]
+name = "vec_read_rejected"
+path = "tests/vec/read_rejected.rs"
+
+[[test]]
+name = "vec_write_rejected"
+path = "tests/vec/write_rejected.rs"
+
+[[test]]
+name = "vec_deku_derive"
+path = "tests/vec/deku_derive.rs"
+
 [badges]
 maintenance = { status = "actively-developed" }

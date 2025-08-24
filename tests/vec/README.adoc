@@ -1,0 +1,97 @@
+= Integration tests for `VecDeku` documentation
+:toc:
+
+Practical guide how to read and write integration tests for `::deku_string::VecDeku`.
+
+== Common definitions and notes
+
+.Common notes
+* All identifiers used in tests are written in `snake_case` for readability.
+* All corresponding constants are defined in `SCREAM_SNAKE_CASE` and have strict formats.
+
+.Name parts used
+* `Layout` corresponds to `string_deku::VecLayout` and is one of layouts listed in `data/layouts.rs`, in lower case.
+* `Endian` corresponds to `deku::ctx::Endian`
+        and is one of: `little`, `big`.
+* `Error` for rejection tests corresponds to `deku::DekuError` enum
+        and is one of: `assertion`, `parse`, `incomplete`, `io`.
+* `data_type` is `u8` and `str`. Correspond to `VecDeku<u8>` and `VecDeku<StringDeku>` types. StringDeku is written as UTF-8 string with `Size::U16` length prefix. `UTF-8` is chosen for simplicity, while `Size::U16` to test that `Endian` is passed.
+* `case_id` is case name to test.
+
+=== Additional notes:
+
+As of nature of Deku, there's 2 ways to specify context, as defined in `::deku_string::vec::deku_impl` module.
+
+One of them named `prime`, the second is `alt`. There should be no difference in how serializer and deserializer works.
+
+== Read/Write accepted tests: rw_accepted.rs
+
+Positive cases for read and write.
+
+=== Macro usage
+
+.Macro `create_test_impl_rw_accepted` arguments
+* Layout.
+* `all_data` to generate test scenarios for all data types and endian supported.
+* Test case tuples defined as a pair (`case_id`, `in_data_in`) or (`case_id`, `in_data_out`).
+
+NOTE: At the moment of writing it's possible to define only one
+      definition `create_test_impl_rw_accepted` per layout.
+
+.Additional case arguments meaning
+* `in_data_in` means that input data is serialized into binary then deserialized into input data.
+* `in_data_out` means that input data is serialized into binary then deserialized into output data.
+
+=== Constant naming convention
+
+Constants are located in `data/accepted`.
+
+.Naming convention
+* Input vector: `<data_type>_<case_id>_BUF`
+* Serialized bytes: `<data_type>_<layout>_<case_id>_<endian>_BUF`
+* Output vector (optional): `<data_type>_<case_id>_BUF_OUT`
+
+== Read Rejected tests: read_rejected.rs
+
+Tests for fails on value read from binary input. The read must return a predefined error category.
+
+=== Macro usage
+
+.Macro `create_test_impl_read_rejected` arguments
+* Layout
+* Case tuples with each element defined as `(<case_id>)`
+
+NOTE: At the moment of writing it's possible to define only one
+      definition of `create_test_impl_read_rejected` per layout and error.
+
+NOTE: there's only one expected error: `incomplete`.
+
+=== Constant naming convention
+
+Constants are located in `data/read_rejected`
+
+There's only one input format defined: `<error>_<layout>_<case_id>`
+
+== Write Rejected tests: write_rejected.rs
+
+Tests for fails on value write from binary input. The write must return a predefined error category.
+
+=== Macro usage:
+
+.Macro `create_test_impl_write_rejected` arguments
+* Layout
+* Data type (optional)
+* Error to expect
+* Case tuples with each element defined as `(<case_id>)`
+
+NOTE: At the moment of writing it's possible to define only one
+      definition of `create_test_impl_read_rejected` per layout and error.
+
+=== Constant naming convention
+Constants are located in `data/write_rejected` and have following structure.
+
+Constants are located in `data/write_rejected`
+
+.Naming convention
+* Input data: `<error>_<data_type>_<case_id>`
+* Byte to break output (for `io` error): `<error>_<layout>_<case_id>_SIZE`.
