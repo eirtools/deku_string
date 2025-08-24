@@ -1,4 +1,7 @@
-use alloc::{borrow::Cow, format, string::String, vec, vec::Vec};
+use alloc::borrow::Cow;
+use alloc::string::String;
+use alloc::vec::Vec;
+use alloc::{format, vec};
 
 use deku::ctx::{Endian, Limit};
 use deku::reader::Reader;

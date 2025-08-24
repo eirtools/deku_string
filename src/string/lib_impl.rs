@@ -19,6 +19,16 @@ impl InternalValue for StringDeku {
     }
 }
 
+impl StringDeku {
+    /// Construct new StringDeku
+    pub fn new<T>(value: T) -> Self
+    where
+        T: AsRef<str>,
+    {
+        Self(value.as_ref().into())
+    }
+}
+
 serde_shim_implementation! {
     module_name: serde_impl,
     local_type: StringDeku,
@@ -35,4 +45,18 @@ std_shim_implementation! {
     test_input_other: "other value".into(),
     test_input_less: "aaa".into(),
     test_input_greater: "zzz".into(),
+}
+
+#[cfg(test)]
+mod string_new_impl {
+    use crate::StringDeku;
+    use rstest::rstest;
+
+    #[rstest]
+    fn new_impl() {
+        let input: &str = "from str";
+        let local: StringDeku = StringDeku::new(input);
+
+        assert_eq!(input, local);
+    }
 }
