@@ -10,6 +10,7 @@ from typing import Any
 VERSION_RE = re.compile(r"\d+\.\d+\.\d+")
 CRATE_NAME_RE = re.compile(r"[a-zA-Z0-9_-]+")
 
+
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Process file with to tools to install."
@@ -157,7 +158,9 @@ def install_tool(
     install_function = data_sources.get(datasource)
     if not install_function:
         if not quiet:
-            print(f"WARNING: Unable to find handler for datasource: {datasource} for {tool_name}")
+            print(
+                f"WARNING: Unable to find handler for datasource: {datasource} for {tool_name}"
+            )
         return
 
     install_function(tool_name, version, force, quiet, debug, dry_run, installed_crates)

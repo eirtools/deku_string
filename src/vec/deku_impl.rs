@@ -1,3 +1,4 @@
+//! Deku implementation for `VecDeku`
 use alloc::borrow::Cow;
 use alloc::format;
 use alloc::vec::Vec;
@@ -9,8 +10,9 @@ use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
 use crate::{SevenBitU32, Size, VecDeku, VecLayout};
 
-impl<T: Clone + PartialOrd> VecDeku<T> {
-    pub(self) fn from_reader_with_ctx_impl<'a, R, Ctx>(
+impl<T: Clone> VecDeku<T> {
+    /// Read data from reader
+    fn from_reader_impl<'a, R, Ctx>(
         reader: &mut Reader<R>,
         endian: Endian,
         layout: VecLayout,
@@ -41,7 +43,8 @@ impl<T: Clone + PartialOrd> VecDeku<T> {
         <Vec<T>>::from_reader_with_ctx(reader, (limit, inner_ctx)).map(Into::into)
     }
 
-    pub(self) fn to_writer_impl<W, Ctx>(
+    /// Read data to writer
+    fn to_writer_impl<W, Ctx>(
         &self,
         writer: &mut Writer<W>,
         endian: Endian,
@@ -59,8 +62,7 @@ impl<T: Clone + PartialOrd> VecDeku<T> {
                 let max_size: usize = match prefix {
                     Size::U8 => u8::MAX as usize,
                     Size::U16 => u16::MAX as usize,
-                    Size::U32 => u32::MAX as usize,
-                    Size::U32_7Bit => u32::MAX as usize,
+                    Size::U32 | Size::U32_7Bit => u32::MAX as usize,
                 };
 
                 if self.0.len() > max_size {
@@ -72,10 +74,23 @@ impl<T: Clone + PartialOrd> VecDeku<T> {
                 // buffer len is not above corresponding type size,
                 // so truncation is safe
                 match prefix {
-                    Size::U8 => (self.0.len() as u8).to_writer(writer, endian),
-                    Size::U16 => (self.0.len() as u16).to_writer(writer, endian),
-                    Size::U32 => (self.0.len() as u32).to_writer(writer, endian),
+                    Size::U8 =>
+                    {
+                        #[allow(clippy::cast_possible_truncation)]
+                        (self.0.len() as u8).to_writer(writer, endian)
+                    }
+                    Size::U16 =>
+                    {
+                        #[allow(clippy::cast_possible_truncation)]
+                        (self.0.len() as u16).to_writer(writer, endian)
+                    }
+                    Size::U32 =>
+                    {
+                        #[allow(clippy::cast_possible_truncation)]
+                        (self.0.len() as u32).to_writer(writer, endian)
+                    }
                     Size::U32_7Bit => {
+                        #[allow(clippy::cast_possible_truncation)]
                         let size: SevenBitU32 = (self.0.len() as u32).into();
                         size.to_writer(writer, ())
                     }
@@ -104,51 +119,45 @@ impl<T: Clone + PartialOrd> VecDeku<T> {
 
 impl<'a, V> DekuReader<'a, (Endian, VecLayout)> for VecDeku<V>
 where
-    V: Clone + DekuReader<'a, Endian> + PartialOrd,
+    V: Clone + DekuReader<'a, Endian>,
 {
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, VecLayout),
     ) -> Result<Self, DekuError> {
-        Self::from_reader_with_ctx_impl(reader, ctx.0, ctx.1, ctx.0)
+        Self::from_reader_impl(reader, ctx.0, ctx.1, ctx.0)
     }
 }
 
 impl<'a, V, Ctx> DekuReader<'a, (Endian, VecLayout, Ctx)> for VecDeku<V>
 where
     Ctx: Copy,
-    V: Clone + DekuReader<'a, (Endian, Ctx)> + PartialOrd,
+    V: Clone + DekuReader<'a, (Endian, Ctx)>,
 {
-    ///
-    /// Read string from reader
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, VecLayout, Ctx),
     ) -> Result<Self, DekuError> {
-        Self::from_reader_with_ctx_impl(reader, ctx.0, ctx.1, (ctx.0, ctx.2))
+        Self::from_reader_impl(reader, ctx.0, ctx.1, (ctx.0, ctx.2))
     }
 }
 
 impl<'a, V, Ctx> DekuReader<'a, (Endian, (VecLayout, Ctx))> for VecDeku<V>
 where
     Ctx: Copy,
-    V: Clone + DekuReader<'a, (Endian, Ctx)> + PartialOrd,
+    V: Clone + DekuReader<'a, (Endian, Ctx)>,
 {
-    ///
-    /// Read string from reader
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, (VecLayout, Ctx)),
     ) -> Result<Self, DekuError> {
-        Self::from_reader_with_ctx_impl(reader, ctx.0, ctx.1.0, (ctx.0, ctx.1.1))
+        Self::from_reader_impl(reader, ctx.0, ctx.1.0, (ctx.0, ctx.1.1))
     }
 }
 
-///
-/// Write to the writer.
 impl<V> DekuWriter<(Endian, VecLayout)> for VecDeku<V>
 where
-    V: Clone + Default + DekuWriter<Endian> + PartialOrd,
+    V: Clone + Default + DekuWriter<Endian>,
 {
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
@@ -159,12 +168,10 @@ where
     }
 }
 
-///
-/// Write to the writer.
 impl<V, Ctx> DekuWriter<(Endian, VecLayout, Ctx)> for VecDeku<V>
 where
     Ctx: Copy,
-    V: Clone + Default + DekuWriter<(Endian, Ctx)> + PartialOrd,
+    V: Clone + Default + DekuWriter<(Endian, Ctx)>,
 {
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
@@ -175,12 +182,10 @@ where
     }
 }
 
-///
-/// Write to the writer.
 impl<V, Ctx> DekuWriter<(Endian, (VecLayout, Ctx))> for VecDeku<V>
 where
     Ctx: Copy,
-    V: Clone + Default + DekuWriter<(Endian, Ctx)> + PartialOrd,
+    V: Clone + Default + DekuWriter<(Endian, Ctx)>,
 {
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,

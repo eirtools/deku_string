@@ -1,14 +1,14 @@
-//! "Transparency" shim implementations for InternalValue types.
+//! "Transparency" shim implementations for `InternalValue` types.
 
 /// Macro to generate std transparent implementation for internal types and tests for them.
 ///
-/// module_name: Module name produced
-/// local_type: Local type to create shims for. It must implement `InternalValue` trait.
-/// internal_type: Internal type for the local type
-/// test_input: common test input for various tests
-/// test_input_other: test input not equal to `test_input`
-/// test_input_less: test input less than `test_input`
-/// test_input_greater: test input greater that `test_input`
+/// `module_name`: Module name produced
+/// `local_type`: Local type to create shims for. It must implement `InternalValue` trait.
+/// `internal_type`: Internal type for the local type
+/// `test_input`: common test input for various tests
+/// `test_input_other`: test input not equal to `test_input`
+/// `test_input_less`: test input less than `test_input`
+/// `test_input_greater`: test input greater that `test_input`
 macro_rules! std_shim_implementation {
     (
         module_name: $module_name: ident,
@@ -21,8 +21,12 @@ macro_rules! std_shim_implementation {
     ) => {
         mod $module_name {
             use crate::{InternalValue as _, $local_type};
+            use core::cmp::Ordering;
+            use core::fmt::{Debug, Display, Formatter, Result as FmtResult};
+            use core::hash::{Hash, Hasher};
+            use core::ops::Deref;
 
-            impl core::ops::Deref for $local_type {
+            impl Deref for $local_type {
                 type Target = $internal_type;
 
                 fn deref(&self) -> &Self::Target {
@@ -30,25 +34,25 @@ macro_rules! std_shim_implementation {
                 }
             }
 
-            impl core::fmt::Display for $local_type {
+            impl Display for $local_type {
                 #[inline]
-                fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    core::fmt::Display::fmt(self.internal_ref(), f)
+                fn fmt(&self, fmt: &mut Formatter<'_>) -> FmtResult {
+                    Display::fmt(self.internal_ref(), fmt)
                 }
             }
 
-            impl core::fmt::Debug for $local_type {
+            impl Debug for $local_type {
                 /// Formats as plain String
                 #[inline]
-                fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-                    core::fmt::Debug::fmt(self.internal_ref(), f)
+                fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> FmtResult {
+                    Debug::fmt(self.internal_ref(), fmt)
                 }
             }
 
             impl From<$internal_type> for $local_type {
                 #[inline]
                 fn from(input: $internal_type) -> $local_type {
-                    $local_type(input)
+                    $local_type::new(input)
                 }
             }
 
@@ -59,26 +63,20 @@ macro_rules! std_shim_implementation {
                 }
             }
 
-            impl core::hash::Hash for $local_type {
-                fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+            impl Hash for $local_type {
+                fn hash<H: Hasher>(&self, state: &mut H) {
                     self.internal_ref().hash(state);
                 }
             }
 
             impl PartialOrd<$internal_type> for $local_type {
-                fn partial_cmp(
-                    &self,
-                    input: &$internal_type,
-                ) -> Option<core::cmp::Ordering> {
+                fn partial_cmp(&self, input: &$internal_type) -> Option<Ordering> {
                     self.internal_ref().partial_cmp(input)
                 }
             }
 
             impl PartialOrd<$local_type> for $internal_type {
-                fn partial_cmp(
-                    &self,
-                    other: &$local_type,
-                ) -> Option<core::cmp::Ordering> {
+                fn partial_cmp(&self, other: &$local_type) -> Option<Ordering> {
                     self.partial_cmp(other.internal_ref())
                 }
             }
@@ -97,8 +95,8 @@ macro_rules! std_shim_implementation {
 
             #[cfg(test)]
             mod test {
+                use alloc::format;
                 use core::cmp::Ordering;
-                use std::format;
 
                 use crate::$local_type;
                 use rstest::rstest;
@@ -166,13 +164,13 @@ macro_rules! std_shim_implementation {
                 fn test_hash() {
                     #[allow(unused_imports)]
                     use alloc::collections::TryReserveError as _; // ensure alloc is linked in tests
-                    use core::hash::{Hash, Hasher};
+                    use core::hash::{Hash, Hasher as _};
                     use std::collections::hash_map::DefaultHasher;
 
-                    fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {
-                        let mut s = DefaultHasher::new();
-                        t.hash(&mut s);
-                        s.finish()
+                    fn calculate_hash<T: Hash + ?Sized>(value: &T) -> u64 {
+                        let mut hasher = DefaultHasher::new();
+                        value.hash(&mut hasher);
+                        hasher.finish()
                     }
 
                     let input: $internal_type = $test_input;

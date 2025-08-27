@@ -1,3 +1,6 @@
+//! `defmt` implementations for `StringDeku`.
+//!
+//! it's more efficient than using `Display2Fmt`
 use crate::StringDeku;
 use defmt::{Format, Formatter};
 

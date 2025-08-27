@@ -33,10 +33,10 @@ macro_rules! create_test_impl_read_rejected {
                 let mut deku_reader = Reader::new(&mut cursor);
                 let ctx = _deku_ctx!(ctx: $ctx, $endian, $encoding, $layout);
 
-                match StringDeku::from_reader_with_ctx(&mut deku_reader, ctx) {
-                    Ok(value) => panic!("Error was expected, data has been read: {value:#?}"),
-                    Err(value) => _rejected_check!(value, error: $error),
-                }
+                let value = StringDeku
+                    ::from_reader_with_ctx(&mut deku_reader, ctx)
+                    .expect_err("Error was expected, data has been read");
+                _rejected_check!(value, error: $error)
             }
         }
     };

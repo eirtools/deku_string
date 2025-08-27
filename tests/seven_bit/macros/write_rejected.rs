@@ -21,10 +21,10 @@ macro_rules! create_test_impl_write_rejected {
                 let mut output = InvalidBufferType::new(byte_breaks);
                 let mut deku_writer = Writer::new(&mut output);
 
-                match raw_data.to_writer(&mut deku_writer, ()) {
-                    Ok(_) => panic!("Error was expected, data has been written"),
-                    Err(value) => _rejected_check!(value, error: io),
-                }
+                let value = raw_data
+                    .to_writer(&mut deku_writer, ())
+                    .expect_err("Error was expected, data has been written");
+                _rejected_check!(value, error: io);
             }
         }
     };

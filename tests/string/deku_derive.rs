@@ -1,7 +1,7 @@
 //!
 //! Integration test with Deku derives and example how to use.
 use ::deku_string::{Encoding, Size, StringDeku, StringLayout};
-use deku::{DekuContainerRead, DekuContainerWrite};
+use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use rstest::rstest;
 
 #[derive(
@@ -9,7 +9,7 @@ use rstest::rstest;
 )]
 #[deku(endian = "little")]
 struct SampleModel {
-    // fixed length buffer, null  character is required to be inside
+    // fixed length buffer, null character is required to be inside
     // "012345678\x00" is allowed
     // "0123456789" is NOT allowed
     //
@@ -60,7 +60,7 @@ struct SampleModel {
     #[deku(ctx = "Encoding::Utf8, StringLayout::ZeroEnded")]
     utf8_zero_ended: StringDeku,
 
-    // fixed length buffer, null  character is required to be inside
+    // fixed length buffer, null character is required to be inside
     // "012345678\x00" is allowed
     // "0123456789" is NOT allowed
     //
@@ -111,22 +111,18 @@ const EXPECTED_BYTES: &[u8; 78] = &[0; 78];
 fn write_model() {
     let model = SampleModel::default();
 
-    match model.to_bytes() {
-        Ok(value) => assert_eq!(value, EXPECTED_BYTES),
-        Err(value) => panic!("Got unexpected error {value:#?}"),
-    }
+    let value = model.to_bytes().expect("Unexpected error");
+    assert_eq!(value, EXPECTED_BYTES);
 }
 
 #[rstest]
 fn read_model() {
     let expected_model = SampleModel::default();
 
-    match SampleModel::from_bytes((EXPECTED_BYTES, 0)) {
-        Ok(((rest, size_left), value)) => {
-            assert_eq!(value, expected_model);
-            assert_eq!(size_left, 0);
-            assert_eq!(rest.len(), 0);
-        }
-        Err(value) => panic!("Got unexpected error {value:#?}"),
-    }
+    let ((rest, size_left), value) =
+        SampleModel::from_bytes((EXPECTED_BYTES, 0)).expect("Unexpected error");
+
+    assert_eq!(value, expected_model);
+    assert_eq!(size_left, 0);
+    assert_eq!(rest.len(), 0);
 }

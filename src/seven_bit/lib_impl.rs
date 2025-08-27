@@ -1,9 +1,11 @@
+//! Implementations for 7-bit integers.
 use super::deku_impl::int7bit_deku_shim_implementation;
 
 use crate::{InternalValue, serde_shim_implementation, std_shim_implementation};
 
 use super::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
+/// macro to implement `type::new()` method
 macro_rules! new_impl {
     (
         module_name: $module_name: ident,
@@ -15,7 +17,7 @@ macro_rules! new_impl {
             use crate::$local_type;
 
             impl $local_type {
-                /// Construct new $local_type
+                /// Construct new struct
                 pub const fn new(input: $internal_type) -> Self {
                     Self(input)
                 }
@@ -37,6 +39,7 @@ macro_rules! new_impl {
         }
     };
 }
+/// All implementations at once.
 // macro could take only bit length.
 //
 // make a PR if there's any way to make it possible without additional dependencies
@@ -52,16 +55,16 @@ macro_rules! shim_impl {
         impl InternalValue for $local_type {
             type InternalType = $internal_type;
 
-            fn internal_ref(&self) -> &Self::InternalType {
-                &self.0
+            fn internal_move(self) -> Self::InternalType {
+                self.0
             }
 
             fn internal_mut(&mut self) -> &mut Self::InternalType {
                 &mut self.0
             }
 
-            fn internal_move(self) -> Self::InternalType {
-                self.0
+            fn internal_ref(&self) -> &Self::InternalType {
+                &self.0
             }
         }
 
@@ -84,6 +87,7 @@ macro_rules! shim_impl {
         serde_shim_implementation! {
             module_name: $module_name_serde,
             local_type: $local_type,
+            internal_type: $internal_type,
             test_input: 42,
             test_input_encoded: "42",
             test_input_encoded_invalid: "\"123\"",

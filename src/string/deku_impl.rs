@@ -1,3 +1,4 @@
+//! Deku implementation for `StringDeku`
 use alloc::borrow::Cow;
 use alloc::string::String;
 use alloc::vec::Vec;
@@ -8,10 +9,13 @@ use deku::reader::Reader;
 use deku::writer::Writer;
 use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
-use crate::{Encoding, InternalValue, SevenBitU32, Size, StringDeku, StringLayout};
+use crate::{
+    Encoding, InternalValue as _, SevenBitU32, Size, StringDeku, StringLayout,
+};
 
 impl StringDeku {
-    pub(self) fn from_reader_with_ctx_impl<R>(
+    /// Read from reader with context
+    fn from_reader_impl<R>(
         reader: &mut Reader<R>,
         endian: Endian,
         encoding: Encoding,
@@ -27,18 +31,26 @@ impl StringDeku {
         // This won't ever match for zero-ended strings
         if limit_u8 == Limit::Count(0) {
             // if requested length is 0, skip the data
-            return Ok(StringDeku::from(""));
+            return Ok(Self::from(""));
         }
 
         match encoding {
             Encoding::Utf8 => {
                 read_string(reader, &null_requirement, limit_u8, endian, |buf| {
+                    #[allow(
+                        clippy::map_err_ignore,
+                        reason = "Deku doesn't support custom errors"
+                    )]
                     String::from_utf8(buf.to_vec())
                         .map_err(|_| DekuError::Parse("Invalid UTF-8".into()))
                 })
             }
             Encoding::Utf16 => {
                 read_string(reader, &null_requirement, limit_u16, endian, |buf| {
+                    #[allow(
+                        clippy::map_err_ignore,
+                        reason = "Deku doesn't support custom errors"
+                    )]
                     String::from_utf16(buf)
                         .map_err(|_| DekuError::Parse("Invalid UTF-16".into()))
                 })
@@ -46,7 +58,7 @@ impl StringDeku {
             Encoding::Utf32 => {
                 read_string(reader, &null_requirement, limit_u32, endian, |buf| {
                     let mut result: Vec<char> = vec![];
-                    buf.iter().try_fold((), |_, value| {
+                    buf.iter().try_fold((), |(), value| {
                         let Some(ch) = char::from_u32(*value) else {
                             return Err(DekuError::Parse("Invalid UTF-32".into()));
                         };
@@ -58,8 +70,8 @@ impl StringDeku {
             }
         }
     }
-
-    pub(self) fn to_writer_impl<W: no_std_io::Write + no_std_io::Seek>(
+    /// Write to a reader with context
+    fn to_writer_impl<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
         endian: Endian,
@@ -68,20 +80,20 @@ impl StringDeku {
     ) -> Result<(), DekuError> {
         match encoding {
             Encoding::Utf8 => {
-                let mut buf = self.internal_ref().as_bytes().to_vec();
-                write_string(writer, endian, layout, &mut buf)
+                let buf = self.internal_ref().as_bytes().to_vec();
+                write_string(writer, endian, layout, &buf)
             }
             Encoding::Utf16 => {
-                let mut buf = self.internal_ref().encode_utf16().collect::<Vec<u16>>();
-                write_string(writer, endian, layout, &mut buf)
+                let buf = self.internal_ref().encode_utf16().collect::<Vec<u16>>();
+                write_string(writer, endian, layout, &buf)
             }
             Encoding::Utf32 => {
-                let mut buf = self
+                let buf = self
                     .internal_ref()
                     .chars()
-                    .map(|ch| ch.into())
+                    .map(Into::into)
                     .collect::<Vec<u32>>();
-                write_string(writer, endian, layout, &mut buf)
+                write_string(writer, endian, layout, &buf)
             }
         }
     }
@@ -97,7 +109,7 @@ impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
         Self: Sized,
     {
         let (endian, encoding, layout) = ctx;
-        Self::from_reader_with_ctx_impl(reader, endian, encoding, layout)
+        Self::from_reader_impl(reader, endian, encoding, layout)
     }
 }
 
@@ -111,7 +123,7 @@ impl DekuReader<'_, (Endian, (Encoding, StringLayout))> for StringDeku {
         Self: Sized,
     {
         let (endian, (encoding, layout)) = ctx;
-        Self::from_reader_with_ctx_impl(reader, endian, encoding, layout)
+        Self::from_reader_impl(reader, endian, encoding, layout)
     }
 }
 
@@ -178,9 +190,9 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
         StringLayout::ZeroEnded => Ok((
             // zero is already at the end by how deku reads data
             NullRequirement::Accepted,
-            Limit::new_until(|v: &u8| *v == 0),
-            Limit::new_until(|v: &u16| *v == 0),
-            Limit::new_until(|v: &u32| *v == 0),
+            Limit::new_until(|int: &u8| *int == 0),
+            Limit::new_until(|int: &u16| *int == 0),
+            Limit::new_until(|int: &u32| *int == 0),
         )),
         StringLayout::LengthPrefix(prefix) => {
             let size: usize = match prefix {
@@ -223,7 +235,7 @@ where
 
     let first_null = buf.iter().position(|x| *x == zero).unwrap_or(buf.len());
 
-    match null_requirement {
+    match *null_requirement {
         NullRequirement::Accepted => {}
         NullRequirement::Required => {
             if first_null == buf.len() {
@@ -244,12 +256,12 @@ where
     convert(&buf[..first_null]).map(Into::into)
 }
 
-/// Common implementation to write Vec<u8> and Vec<u16>
+/// Common implementation to write Vec<T> where T is u8, u16 or u32
 fn write_string<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
     layout: StringLayout,
-    buf: &mut Vec<T>,
+    buf: &Vec<T>,
 ) -> Result<(), DekuError>
 where
     W: no_std_io::Write + no_std_io::Seek,
@@ -284,15 +296,16 @@ where
             size,
             allow_no_null,
             first_null,
-            zero,
+            &zero,
         ),
     }
 }
 
+/// Write string with length prefix
 fn write_string_length_prefix<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
-    buf: &mut Vec<T>,
+    buf: &Vec<T>,
     prefix_size: Size,
 ) -> Result<(), DekuError>
 where
@@ -302,8 +315,7 @@ where
     let max_size: usize = match prefix_size {
         Size::U8 => u8::MAX as usize,
         Size::U16 => u16::MAX as usize,
-        Size::U32 => u32::MAX as usize,
-        Size::U32_7Bit => u32::MAX as usize,
+        Size::U32 | Size::U32_7Bit => u32::MAX as usize,
     };
 
     if buf.len() > max_size {
@@ -328,14 +340,15 @@ where
     buf.to_writer(writer, endian)
 }
 
+/// Write string with fixed length
 fn write_string_fixed_length<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
-    buf: &mut Vec<T>,
+    buf: &Vec<T>,
     size: usize,
     allow_no_null: bool,
     first_null: usize,
-    zero: T,
+    zero: &T,
 ) -> Result<(), DekuError>
 where
     W: no_std_io::Write + no_std_io::Seek,

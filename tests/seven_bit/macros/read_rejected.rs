@@ -17,10 +17,10 @@ macro_rules! create_test_impl_read_rejected {
                 let mut cursor = std::io::Cursor::new(raw_data);
                 let mut deku_reader = Reader::new(&mut cursor);
 
-                match [<SevenBit $underlying_type: upper>]::from_reader_with_ctx(&mut deku_reader, ()) {
-                    Ok(value) => panic!("Error was expected, data has been read: {value:#?}"),
-                    Err(value) => _rejected_check!(value, error: $error),
-                }
+                let value = [<SevenBit $underlying_type: upper>]
+                    ::from_reader_with_ctx(&mut deku_reader, ())
+                    .expect_err("Error was expected, data has been read");
+                _rejected_check!(value, error: $error)
             }
         }
     };

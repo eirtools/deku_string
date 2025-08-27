@@ -12,7 +12,7 @@ pub struct InvalidBufferType {
 }
 
 impl InvalidBufferType {
-    pub fn new(size: u64) -> Self {
+    pub const fn new(size: u64) -> Self {
         InvalidBufferType { size, pos: 0 }
     }
 }

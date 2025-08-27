@@ -32,26 +32,26 @@ macro_rules! _data_convert {
     };
     (data: str, $var:ident) => {
         $var.into_iter()
-            .map(|&v| StringDeku::new(v))
+            .map(|&item| StringDeku::new(item))
             .collect::<Vec<StringDeku>>()
     };
 }
 
 macro_rules! _deku_ctx {
     (data: u8, ctx: prime, $layout:ident, $endian: ident) => {
-        (_ctx_endian!(endian: $endian),  paste! {[<LAYOUT_ $layout:upper>]})
+        (_ctx_endian!(endian: $endian), paste! {[<LAYOUT_ $layout:upper>]})
     };
 
     ( data: str, ctx: prime, $layout:ident, $endian: ident)=> {
-        (_ctx_endian!(endian: $endian),  paste! {[<LAYOUT_ $layout:upper>]}, STRING_CTX)
+        (_ctx_endian!(endian: $endian), paste! {[<LAYOUT_ $layout:upper>]}, STRING_CTX)
     };
 
     (data: u8, ctx: alt, $layout:ident, $endian: ident) => {
-        (_ctx_endian!(endian: $endian),  paste! {[<LAYOUT_ $layout:upper>]})
+        (_ctx_endian!(endian: $endian), paste! {[<LAYOUT_ $layout:upper>]})
     };
 
     ( data: str, ctx: alt, $layout:ident, $endian: ident)=> {
-        (_ctx_endian!(endian: $endian),  (paste! {[<LAYOUT_ $layout:upper>]}, STRING_CTX))
+        (_ctx_endian!(endian: $endian), (paste! {[<LAYOUT_ $layout:upper>]}, STRING_CTX))
     };
 }
 

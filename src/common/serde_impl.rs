@@ -1,18 +1,19 @@
-//! Transparent serde shim implementations for InternalValue types.
+//! Transparent serde shim implementations for `InternalValue` types.
 
 /// Macro to generate serde implementation for types and tests for them.
 ///
 /// module is automatically guarded so no need to add additional gate.
 ///
-/// module_name: Module name produced
-/// local_type: Local type to create shims for. It must implement `InternalValue` trait.
-/// test_input: Plain value before serialization with `serde_json`
-/// test_input_encoded: Plain value after serialization with `serde_json`
-/// test_input_encoded_invalid: Plain value which would result to deserialization error
+/// `module_name`: Module name produced
+/// `local_type`: Local type to create shims for. It must implement `InternalValue` trait.
+/// `test_input`: Plain value before serialization with `serde_json`
+/// `test_input_encoded`: Plain value after serialization with `serde_json`
+/// `test_input_encoded_invalid`: Plain value which would result to deserialization error
 macro_rules! serde_shim_implementation {
     (
         module_name: $module_name: ident,
         local_type: $local_type: ident,
+        internal_type: $internal_type: ty,
         test_input: $test_input: literal,
         test_input_encoded: $test_input_encoded: literal,
         test_input_encoded_invalid: $test_input_encoded_invalid: literal,
@@ -28,7 +29,7 @@ macro_rules! serde_shim_implementation {
                 where
                     S: Serializer,
                 {
-                    Serialize::serialize(&*(self.internal_ref()), serializer)
+                    Serialize::serialize(self.internal_ref(), serializer)
                 }
             }
 
@@ -38,7 +39,8 @@ macro_rules! serde_shim_implementation {
                 where
                     D: Deserializer<'de>,
                 {
-                    Ok($local_type(Deserialize::deserialize(deserializer)?))
+                    let value: $internal_type = Deserialize::deserialize(deserializer)?;
+                    Ok($local_type::new(value))
                 }
 
                 #[inline]
@@ -60,8 +62,7 @@ macro_rules! serde_shim_implementation {
             mod test {
                 use crate::$local_type;
                 use rstest::rstest;
-                use serde::de::Deserialize;
-                use serde_json;
+                use serde::de::Deserialize as _;
 
                 #[rstest]
                 fn serialize() {

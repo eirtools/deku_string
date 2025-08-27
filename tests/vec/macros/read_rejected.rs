@@ -5,14 +5,14 @@ macro_rules! create_test_impl_read_rejected {
     // given layout, all endian, all encodings, actual value
     ($layout:ident, $( ($case:ident) ),+ $(,)?) => {
         create_test_impl_read_rejected!($layout, data: u8, endian: little, ctx: prime, $(($case)), +);
-        create_test_impl_read_rejected!($layout, data: u8, endian: big, ctx: prime,  $(($case)), +);
-        create_test_impl_read_rejected!($layout, data: str, endian: little, ctx: prime,  $(($case)), +);
-        create_test_impl_read_rejected!($layout, data: str, endian: big, ctx: prime,  $(($case)), +);
+        create_test_impl_read_rejected!($layout, data: u8, endian: big, ctx: prime, $(($case)), +);
+        create_test_impl_read_rejected!($layout, data: str, endian: little, ctx: prime, $(($case)), +);
+        create_test_impl_read_rejected!($layout, data: str, endian: big, ctx: prime, $(($case)), +);
 
         create_test_impl_read_rejected!($layout, data: u8, endian: little, ctx: alt, $(($case)), +);
-        create_test_impl_read_rejected!($layout, data: u8, endian: big, ctx: alt,  $(($case)), +);
-        create_test_impl_read_rejected!($layout, data: str, endian: little, ctx: alt,  $(($case)), +);
-        create_test_impl_read_rejected!($layout, data: str, endian: big, ctx: alt,  $(($case)), +);
+        create_test_impl_read_rejected!($layout, data: u8, endian: big, ctx: alt, $(($case)), +);
+        create_test_impl_read_rejected!($layout, data: str, endian: little, ctx: alt, $(($case)), +);
+        create_test_impl_read_rejected!($layout, data: str, endian: big, ctx: alt, $(($case)), +);
 
     };
 
@@ -30,10 +30,10 @@ macro_rules! create_test_impl_read_rejected {
                 let mut deku_reader = Reader::new(&mut cursor);
                 let ctx = _deku_ctx!(data: $data, ctx: $ctx, $layout, $endian);
 
-                match <VecDeku<_data_type!(data: $data)>>::from_reader_with_ctx(&mut deku_reader, ctx) {
-                    Ok(_) => panic!("Error was expected, data has been written: {raw_data:#?}"),
-                    Err(value) => _rejected_check!(value, error: incomplete),
-                }
+                let value = <VecDeku<_data_type!(data: $data)>>
+                    ::from_reader_with_ctx(&mut deku_reader, ctx)
+                    .expect_err("Error was expected, data has been read");
+                _rejected_check!(value, error: incomplete)
             }
         }
     };

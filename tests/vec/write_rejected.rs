@@ -12,8 +12,8 @@ use deku::writer::Writer;
 use data::layouts::*;
 use data::write_rejected::*;
 
-use data::invalid_io::InvalidBufferType;
 use deku_string::{StringDeku, VecDeku};
+use io_rejected::InvalidBufferType;
 
 use macros::misc::*;
 use macros::write_rejected::{

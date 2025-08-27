@@ -24,17 +24,17 @@ macro_rules! create_test_impl_read_accepted {
                 let mut cursor = std::io::Cursor::new(raw_data);
                 let mut deku_reader = Reader::new(&mut cursor);
 
-                match [<SevenBit $underlying_type: upper>]::from_reader_with_ctx(&mut deku_reader, ()) {
-                    Err(err) => panic!("Unable to read data: {err:#?}"),
-                    Ok(value) => assert_eq!(value, expected_value),
-                };
+                let value = [<SevenBit $underlying_type: upper>]
+                    ::from_reader_with_ctx(&mut deku_reader, ())
+                    .expect("Unable to read data: {err:#?}");
+
+                assert_eq!(value, expected_value);
             }
         }
     };
 }
 
 /// Actual test implementation for write accepted test
-
 macro_rules! create_test_impl_write_accepted {
     ($(($case: ident, $input_value: expr, $target_bytes: expr)),+ $(,)?) => {
         create_test_impl_write_accepted!(underlying_type: u8, $(($case, $string_value, $target_bytes)),+);

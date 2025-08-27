@@ -1,3 +1,4 @@
+//! Wrapper around `Vec<T>` to read and write with various layouts.
 mod deku_impl;
 mod lib_impl;
 #[cfg(feature = "serde")]
@@ -9,12 +10,11 @@ use alloc::vec::Vec;
 use crate::Size;
 
 /// Thin wrapper around Vec<T> to read and write various layouts.
-/// This looks as a simple wrapper over Vec<T>, `VecDeku` structure is built
-/// to be able of reading and writing of various common binary layouts.
 ///
 /// * Fixed Length Layout represents a fixed amount of elements (bytes or words depending on encoding)
 ///   to read and write.
 /// * Length prefixed layout represent count and then
+/// * End means read till the buffer ends
 ///
 /// How it's different from using `deku` directly?
 ///
@@ -23,10 +23,10 @@ use crate::Size;
 /// * no running `update` function, which may be forgotten.
 /// * Fixed length is actually fixed, so if developer asked size 10, it will be read and written exactly 10.
 /// * Easy to write complicated fields like this: `Encrypted<Compressed<FixedLengthVec<PascalString>>>`
-#[derive(Clone, Default, PartialEq, PartialOrd)]
+#[derive(Clone, Default, Eq, Ord, PartialEq, PartialOrd)]
 pub struct VecDeku<T>(Vec<T>)
 where
-    T: Sized + Clone + PartialEq + PartialOrd;
+    T: Sized + Clone;
 
 ///  Supported string binary layouts
 #[derive(Debug, Clone, Copy)]
