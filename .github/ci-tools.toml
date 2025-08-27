@@ -1,6 +1,6 @@
 [tools]
 cargo-nextest = "0.9.103"
 # cargo-machete = "0.6.0"
-fd-find = { version = "10.2.0", "versioning" = "cargo" }
+fd-find = { version = "10.3.0", "versioning" = "cargo" }
 cargo-mutants = "25.3.1"
 cargo-llvm-cov = "0.6.18"
