@@ -20,7 +20,7 @@
 //! #[derive(Debug, Clone, PartialEq, ::deku::DekuRead, ::deku::DekuWrite)]
 //! #[deku(endian = "little")]
 //! struct SampleModel {
-//!     // fixed length buffer, null  character is required to be inside
+//!     // fixed length buffer, null character is required to be inside
 //!     // "012345678\x00" is allowed
 //!     // "0123456789" is NOT allowed
 //!     #[deku(ctx = "Encoding::Utf8, StringLayout::fixed_length(10)")]

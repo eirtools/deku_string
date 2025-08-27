@@ -47,10 +47,11 @@ macro_rules! _create_test_impl_read_accepted {
                 let mut deku_reader = Reader::new(&mut cursor);
                 let ctx = _deku_ctx!(data: $data, ctx: $ctx, $layout, $endian);
 
-                match <VecDeku<_data_type!(data: $data)>>::from_reader_with_ctx(&mut deku_reader, ctx) {
-                    Err(err) => panic!("Unable to read data: {err:#?}"),
-                    Ok(value) => assert_eq!(value, expected_data),
-                };
+                let value = <VecDeku<_data_type!(data: $data)>>
+                    ::from_reader_with_ctx(&mut deku_reader, ctx)
+                    .expect("Unable to read data: {err:#?}");
+
+                assert_eq!(value, expected_data);
             }
         }
     };

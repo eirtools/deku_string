@@ -43,10 +43,11 @@ macro_rules! create_test_impl_read_accepted {
                 let mut deku_reader = Reader::new(&mut cursor);
                 let ctx = _deku_ctx!(ctx: $ctx, $endian, $encoding, $layout);
 
-                match StringDeku::from_reader_with_ctx(&mut deku_reader, ctx) {
-                    Err(err) => panic!("Unable to read data: {err:#?}"),
-                    Ok(value) => assert_eq!(value, expected_string),
-                };
+                let value = StringDeku
+                    ::from_reader_with_ctx(&mut deku_reader, ctx)
+                    .expect("Unable to read data: {err:#?}");
+
+                assert_eq!(value, expected_string);
             }
         }
     };

@@ -1,3 +1,4 @@
+//! Wrapper around String to read and write with various layouts.
 use crate::Size;
 use alloc::string::String;
 
@@ -7,10 +8,7 @@ mod deku_impl;
 mod lib_impl;
 mod std_impl;
 
-///
-/// Simple wrapper around String to read and write various layouts.
-/// This looks as a simple wrapper over String, `StringDeku` structure is built
-/// to be able of reading and writing of various common binary layouts.
+/// Simple wrapper around String to read and write with various layouts.
 ///
 /// For example,
 ///
@@ -30,7 +28,7 @@ mod std_impl;
 /// While content is hidden, `to_string`, `into` and equality functions and operators provide
 /// convenient way to make operations easier.
 #[derive(Clone, Default, PartialEq, PartialOrd, Eq, Ord)]
-pub struct StringDeku(pub(crate) String);
+pub struct StringDeku(String);
 
 /// String variant to read and write
 #[derive(Debug, Clone, Copy)]

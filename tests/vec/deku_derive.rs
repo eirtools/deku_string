@@ -1,5 +1,5 @@
 use ::deku_string::{Size, VecDeku, VecLayout};
-use deku::{DekuContainerRead, DekuContainerWrite};
+use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use rstest::{fixture, rstest};
 
 #[derive(
@@ -52,45 +52,28 @@ pub fn sample_model() -> SampleModel {
 
 #[fixture]
 pub fn default_model() -> SampleModel {
-    SampleModel::default()
-}
-
-#[rstest]
-fn write_model(sample_model: SampleModel) {
-    match sample_model.to_bytes() {
-        Ok(value) => assert_eq!(value, EXPECTED_BYTES),
-        Err(value) => panic!("Got unexpected error {value:#?}"),
+    SampleModel {
+        fixed: VecDeku::new(&[0; 10]),
+        ..Default::default()
     }
 }
 
 #[rstest]
-fn read_model(sample_model: SampleModel) {
-    match SampleModel::from_bytes((EXPECTED_BYTES, 0)) {
-        Ok(((rest, size_left), value)) => {
-            assert_eq!(value, sample_model);
-            assert_eq!(size_left, 0);
-            assert_eq!(rest.len(), 0);
-        }
-        Err(value) => panic!("Got unexpected error {value:#?}"),
-    }
+#[case::sample(sample_model, EXPECTED_BYTES)]
+#[case::sample(default_model, EXPECTED_BYTES_DEFAULT)]
+fn write_model(#[case] model: fn() -> SampleModel, #[case] bytes: &[u8]) {
+    let result = model().to_bytes().expect("Unexpected error");
+    assert_eq!(result, bytes);
 }
 
 #[rstest]
-fn write_model_default(default_model: SampleModel) {
-    match default_model.to_bytes() {
-        Ok(value) => assert_eq!(value, EXPECTED_BYTES_DEFAULT),
-        Err(value) => panic!("Got unexpected error {value:#?}"),
-    }
-}
+#[case::sample(sample_model, EXPECTED_BYTES)]
+#[case::sample(default_model, EXPECTED_BYTES_DEFAULT)]
+fn read_model(#[case] model: fn() -> SampleModel, #[case] bytes: &[u8]) {
+    let ((rest, size_left), value) =
+        SampleModel::from_bytes((bytes, 0)).expect("Unexpected error");
 
-#[rstest]
-fn read_model_default(default_model: SampleModel) {
-    match SampleModel::from_bytes((EXPECTED_BYTES_DEFAULT, 0)) {
-        Ok(((rest, size_left), value)) => {
-            assert_ne!(value, default_model);
-            assert_eq!(size_left, 0);
-            assert_eq!(rest.len(), 0);
-        }
-        Err(value) => panic!("Got unexpected error {value:#?}"),
-    }
+    assert_eq!(value, model());
+    assert_eq!(size_left, 0);
+    assert_eq!(rest.len(), 0);
 }

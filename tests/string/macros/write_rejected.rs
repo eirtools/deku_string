@@ -71,10 +71,10 @@ macro_rules! create_test_impl_write_rejected {
                 let mut deku_writer = Writer::new(&mut output);
                 let ctx = _deku_ctx!(ctx: $ctx, $endian, $encoding, $layout);
 
-                match raw_data.to_writer(&mut deku_writer, ctx) {
-                    Ok(_) => panic!("Error was expected, data has been written"),
-                    Err(value) => _rejected_check!(value, error: $error),
-                }
+                let value = raw_data
+                    .to_writer(&mut deku_writer, ctx)
+                    .expect_err("Error was expected, data has been written");
+                _rejected_check!(value, error: $error);
             }
         }
     };

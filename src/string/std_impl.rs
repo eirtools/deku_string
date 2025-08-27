@@ -4,14 +4,14 @@ use crate::StringDeku;
 use alloc::borrow::Cow;
 
 impl From<&str> for StringDeku {
-    fn from(value: &str) -> StringDeku {
-        StringDeku(value.into())
+    fn from(value: &str) -> Self {
+        Self(value.into())
     }
 }
 
 impl From<Cow<'_, str>> for StringDeku {
-    fn from(value: Cow<'_, str>) -> StringDeku {
-        StringDeku(value.into())
+    fn from(value: Cow<'_, str>) -> Self {
+        Self(value.into())
     }
 }
 
@@ -41,6 +41,8 @@ impl PartialEq<StringDeku> for Cow<'_, str> {
 
 #[cfg(test)]
 mod test {
+    use core::fmt::Debug;
+
     use alloc::borrow::Cow;
 
     use crate::StringDeku;
@@ -51,7 +53,7 @@ mod test {
     #[case::str(Cow::from("from str"))]
     fn test_from_eq<T>(#[case] value: T)
     where
-        T: Into<StringDeku> + PartialEq<StringDeku> + std::fmt::Debug + Clone,
+        T: Into<StringDeku> + PartialEq<StringDeku> + Debug + Clone,
         StringDeku: PartialEq<T>,
     {
         let str_deku: StringDeku = value.clone().into();
@@ -65,7 +67,7 @@ mod test {
     #[case::str(Cow::from("from str"))]
     fn test_from_ne<T>(#[case] value: T)
     where
-        T: Into<StringDeku> + PartialEq<StringDeku> + std::fmt::Debug + Clone,
+        T: Into<StringDeku> + PartialEq<StringDeku> + Debug + Clone,
         StringDeku: PartialEq<T>,
     {
         let str_deku: StringDeku = "other value".into();

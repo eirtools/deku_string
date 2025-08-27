@@ -57,7 +57,7 @@ jobs:
     - name: Publish github
       run: |
         package_version=$(cargo metadata --format-version 1 --no-deps| jq -r '.packages[].version')
-        gh release create "v${package_version}" --fail-on-no-commits --generate-notes  --latest
+        gh release create "v${package_version}" --fail-on-no-commits --generate-notes --latest
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

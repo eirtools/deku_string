@@ -1,17 +1,18 @@
+//! Serde implementations for `VecDeku`
 use crate::{InternalValue as _, VecDeku};
 use alloc::vec::Vec;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
 impl<T> Serialize for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd + Serialize,
+    T: Sized + Clone + Serialize,
 {
     #[inline]
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        Serialize::serialize(&*(self.internal_ref()), serializer)
+        Serialize::serialize(self.internal_ref(), serializer)
     }
 }
 
@@ -44,8 +45,7 @@ where
 mod test {
     use crate::VecDeku;
     use rstest::rstest;
-    use serde::de::Deserialize;
-    use serde_json;
+    use serde::de::Deserialize as _;
 
     const TEST_INPUT: [u8; 3] = [1, 2, 3];
     const TEST_INPUT_ENCODED: &str = "[1,2,3]";
@@ -74,7 +74,7 @@ mod test {
     #[rstest]
     fn deserialize_in_place() {
         let mut de = serde_json::de::Deserializer::from_str(TEST_INPUT_ENCODED);
-        let mut parsed: VecDeku<u8> = Default::default();
+        let mut parsed: VecDeku<u8> = VecDeku::default();
         VecDeku::<u8>::deserialize_in_place(&mut de, &mut parsed)
             .expect("Parse successful");
         assert_eq!(parsed, TEST_INPUT.as_slice());

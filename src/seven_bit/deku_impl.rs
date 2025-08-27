@@ -1,3 +1,6 @@
+//! Common Deku implementation for 7-bit integers
+
+/// Macro to provide deku implementation for 7-bit integers
 macro_rules! int7bit_deku_shim_implementation {
     (
         module_name: $module_name: ident,
@@ -10,7 +13,7 @@ macro_rules! int7bit_deku_shim_implementation {
             use deku::writer::Writer;
             use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
-            use crate::InternalValue;
+            use crate::InternalValue as _;
 
             use super::$local_type;
 

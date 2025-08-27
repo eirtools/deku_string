@@ -1,20 +1,35 @@
+//! Standard library implementations for `VecDeku`.
+use core::cmp::Ordering;
+use core::fmt::{Debug, Formatter, Result as FmtResult};
+use core::hash::{Hash, Hasher};
+use core::ops::{Deref, DerefMut};
+
 use alloc::vec::Vec;
 
 use crate::{InternalValue as _, VecDeku};
 
 impl<T> VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
 {
-    /// Construct new VecDeku from a slice
+    /// Construct new `VecDeku` from a slice
     pub fn new(data: &[T]) -> Self {
         Self(data.to_vec())
     }
 }
 
-impl<T> core::ops::Deref for VecDeku<T>
+impl<T> DerefMut for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
+{
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.as_mut()
+    }
+}
+
+impl<T> Deref for VecDeku<T>
+where
+    T: Sized + Clone,
 {
     type Target = [T];
 
@@ -23,40 +38,41 @@ where
     }
 }
 
-impl<T> core::fmt::Debug for VecDeku<T>
+impl<T> Debug for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd + core::fmt::Debug,
+    T: Sized + Clone + Debug,
 {
     /// Formats as plain String
     #[inline]
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        core::fmt::Debug::fmt(self.internal_ref(), f)
+    #[allow(clippy::min_ident_chars)]
+    fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
+        Debug::fmt(self.internal_ref(), f)
     }
 }
 
 impl<T> From<&[T]> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
 {
     #[inline]
-    fn from(input: &[T]) -> VecDeku<T> {
+    fn from(input: &[T]) -> Self {
         Self::new(input)
     }
 }
 
 impl<T> From<Vec<T>> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
 {
     #[inline]
-    fn from(input: Vec<T>) -> VecDeku<T> {
+    fn from(input: Vec<T>) -> Self {
         Self::new(&input)
     }
 }
 
 impl<T> From<VecDeku<T>> for Vec<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
 {
     #[inline]
     fn from(local: VecDeku<T>) -> Self {
@@ -66,7 +82,7 @@ where
 
 impl<T> AsRef<[T]> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
 {
     fn as_ref(&self) -> &[T] {
         self.internal_ref().as_ref()
@@ -75,72 +91,72 @@ where
 
 impl<T> AsMut<Vec<T>> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone,
 {
     fn as_mut(&mut self) -> &mut Vec<T> {
         self.internal_mut()
     }
 }
 
-impl<T> core::hash::Hash for VecDeku<T>
+impl<T> Hash for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd + core::hash::Hash,
+    T: Sized + Clone + PartialEq + PartialOrd + Hash,
 {
-    fn hash<H: core::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H: Hasher>(&self, state: &mut H) {
         self.internal_ref().hash(state);
     }
 }
 
 impl<T> PartialEq<&[T]> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone + PartialEq,
 {
-    fn eq(&self, input: &&[T]) -> bool {
-        self.internal_ref() == input
+    fn eq(&self, other: &&[T]) -> bool {
+        self.internal_ref() == other
     }
 }
 
 impl<T> PartialEq<VecDeku<T>> for &[T]
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone + PartialEq,
 {
-    fn eq(&self, input: &VecDeku<T>) -> bool {
-        self == input.internal_ref()
+    fn eq(&self, other: &VecDeku<T>) -> bool {
+        self == other.internal_ref()
     }
 }
 
 impl<T> PartialEq<Vec<T>> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone + PartialEq,
 {
-    fn eq(&self, input: &Vec<T>) -> bool {
-        self.internal_ref() == input
+    fn eq(&self, other: &Vec<T>) -> bool {
+        self.internal_ref() == other
     }
 }
 
 impl<T> PartialEq<VecDeku<T>> for Vec<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone + PartialEq,
 {
-    fn eq(&self, input: &VecDeku<T>) -> bool {
-        self == input.internal_ref()
+    fn eq(&self, other: &VecDeku<T>) -> bool {
+        self == other.internal_ref()
     }
 }
 
 impl<T> PartialOrd<Vec<T>> for VecDeku<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone + PartialOrd,
 {
-    fn partial_cmp(&self, input: &Vec<T>) -> Option<core::cmp::Ordering> {
-        self.internal_ref().partial_cmp(input)
+    fn partial_cmp(&self, other: &Vec<T>) -> Option<Ordering> {
+        self.internal_ref().partial_cmp(other)
     }
 }
 
 impl<T> PartialOrd<VecDeku<T>> for Vec<T>
 where
-    T: Sized + Clone + PartialEq + PartialOrd,
+    T: Sized + Clone + PartialOrd,
 {
-    fn partial_cmp(&self, other: &VecDeku<T>) -> Option<core::cmp::Ordering> {
+    fn partial_cmp(&self, other: &VecDeku<T>) -> Option<Ordering> {
         self.partial_cmp(other.internal_ref())
     }
 }
@@ -171,14 +187,14 @@ mod test {
     }
 
     #[rstest]
-    fn test_deref() {
+    fn deref() {
         let input: Vec<u8> = TEST_INPUT.into();
         let local: VecDeku<u8> = input.clone().into();
         assert_eq!(input, *local);
     }
 
     #[rstest]
-    fn test_from_eq() {
+    fn from_eq() {
         let input = TEST_INPUT;
         let local: VecDeku<u8> = VecDeku::new(&input);
 
@@ -188,7 +204,7 @@ mod test {
     }
 
     #[rstest]
-    fn test_from_ne() {
+    fn from_ne() {
         let input = TEST_INPUT;
         let input_other = TEST_INPUT_OTHER;
         let local: VecDeku<u8> = VecDeku::new(&input);
@@ -203,7 +219,7 @@ mod test {
     }
 
     #[rstest]
-    fn test_from_eq_vec() {
+    fn from_eq_vec() {
         let input: Vec<u8> = [1, 2, 3].to_vec();
         let local: VecDeku<u8> = input.clone().into();
 
@@ -213,7 +229,7 @@ mod test {
     }
 
     #[rstest]
-    fn test_from_ne_vec() {
+    fn from_ne_vec() {
         let input: Vec<u8> = [1, 2, 3].to_vec();
         let input_other: Vec<u8> = [3, 2, 1].to_vec();
 
@@ -229,7 +245,7 @@ mod test {
     }
 
     #[rstest]
-    fn test_vec_as_ref_into() {
+    fn vec_as_ref_into() {
         let mut local: VecDeku<u8> = VecDeku::new(&TEST_INPUT);
 
         let mut vec: Vec<u8> = local.clone().into();
@@ -244,16 +260,16 @@ mod test {
     }
 
     #[rstest]
-    fn test_hash() {
+    fn hash() {
         #[allow(unused_imports)]
         use alloc::collections::TryReserveError as _; // ensure alloc is linked in tests
-        use core::hash::{Hash, Hasher};
+        use core::hash::{Hash, Hasher as _};
         use std::collections::hash_map::DefaultHasher;
 
-        fn calculate_hash<T: Hash + ?Sized>(t: &T) -> u64 {
-            let mut s = DefaultHasher::new();
-            t.hash(&mut s);
-            s.finish()
+        fn calculate_hash<T: Hash + ?Sized>(value: &T) -> u64 {
+            let mut hasher = DefaultHasher::new();
+            value.hash(&mut hasher);
+            hasher.finish()
         }
 
         let input: Vec<u8> = TEST_INPUT.into();

@@ -1,3 +1,4 @@
+//! Implementations for `StringDeku`.
 use crate::{
     InternalValue, StringDeku, serde_shim_implementation, std_shim_implementation,
 };
@@ -6,21 +7,21 @@ use alloc::string::String;
 impl InternalValue for StringDeku {
     type InternalType = String;
 
-    fn internal_ref(&self) -> &Self::InternalType {
-        &self.0
+    fn internal_move(self) -> Self::InternalType {
+        self.0
     }
 
     fn internal_mut(&mut self) -> &mut Self::InternalType {
         &mut self.0
     }
 
-    fn internal_move(self) -> Self::InternalType {
-        self.0
+    fn internal_ref(&self) -> &Self::InternalType {
+        &self.0
     }
 }
 
 impl StringDeku {
-    /// Construct new StringDeku
+    /// Construct new `StringDeku`
     pub fn new<T>(value: T) -> Self
     where
         T: AsRef<str>,
@@ -32,6 +33,7 @@ impl StringDeku {
 serde_shim_implementation! {
     module_name: serde_impl,
     local_type: StringDeku,
+    internal_type: alloc::string::String,
     test_input: "from str",
     test_input_encoded: "\"from str\"",
     test_input_encoded_invalid: "123",
@@ -54,7 +56,7 @@ mod string_new_impl {
 
     #[rstest]
     fn new_impl() {
-        let input: &str = "from str";
+        let input = "from str";
         let local: StringDeku = StringDeku::new(input);
 
         assert_eq!(input, local);
