@@ -18,6 +18,8 @@ macro_rules! new_impl {
 
             impl $local_type {
                 /// Construct new struct
+                #[inline]
+                #[must_use]
                 pub const fn new(input: $internal_type) -> Self {
                     Self(input)
                 }
@@ -56,14 +58,17 @@ macro_rules! shim_impl {
         impl InternalValue for $local_type {
             type InternalType = $internal_type;
 
+            #[inline]
             fn internal_move(self) -> Self::InternalType {
                 self.0
             }
 
+            #[inline]
             fn internal_mut(&mut self) -> &mut Self::InternalType {
                 &mut self.0
             }
 
+            #[inline]
             fn internal_ref(&self) -> &Self::InternalType {
                 &self.0
             }
@@ -107,6 +112,7 @@ macro_rules! shim_impl {
             use core::ops::DerefMut;
 
             impl DerefMut for $local_type {
+                #[inline]
                 fn deref_mut(&mut self) -> &mut Self::Target {
                     self.internal_mut()
                 }

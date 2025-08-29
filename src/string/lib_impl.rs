@@ -9,14 +9,17 @@ use alloc::string::String;
 impl InternalValue for StringDeku {
     type InternalType = String;
 
+    #[inline]
     fn internal_move(self) -> Self::InternalType {
         self.0
     }
 
+    #[inline]
     fn internal_mut(&mut self) -> &mut Self::InternalType {
         &mut self.0
     }
 
+    #[inline]
     fn internal_ref(&self) -> &Self::InternalType {
         &self.0
     }
@@ -24,6 +27,8 @@ impl InternalValue for StringDeku {
 
 impl StringDeku {
     /// Construct new `StringDeku`
+    #[inline]
+    #[must_use]
     pub fn new<T>(value: T) -> Self
     where
         T: AsRef<str>,
@@ -33,6 +38,7 @@ impl StringDeku {
 }
 
 impl DerefMut for StringDeku {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.internal_mut()
     }

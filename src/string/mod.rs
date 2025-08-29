@@ -52,6 +52,7 @@ pub enum StringLayout {
 
 impl StringLayout {
     /// Construct fixed length variant with given size and no null isn't allowed.
+    #[inline]
     #[must_use]
     pub const fn fixed_length(size: usize) -> Self {
         Self::FixedLength {

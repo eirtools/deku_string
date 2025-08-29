@@ -4,36 +4,42 @@ use crate::StringDeku;
 use alloc::borrow::Cow;
 
 impl From<&str> for StringDeku {
+    #[inline]
     fn from(value: &str) -> Self {
         Self(value.into())
     }
 }
 
 impl From<Cow<'_, str>> for StringDeku {
+    #[inline]
     fn from(value: Cow<'_, str>) -> Self {
         Self(value.into())
     }
 }
 
 impl PartialEq<StringDeku> for &str {
+    #[inline]
     fn eq(&self, other: &StringDeku) -> bool {
         self == &other.0
     }
 }
 
 impl<'a> PartialEq<&'a str> for StringDeku {
+    #[inline]
     fn eq(&self, other: &&'a str) -> bool {
         &self.0 == other
     }
 }
 
 impl<'a> PartialEq<Cow<'a, str>> for StringDeku {
+    #[inline]
     fn eq(&self, other: &Cow<'a, str>) -> bool {
         &self.0 == other
     }
 }
 
 impl PartialEq<StringDeku> for Cow<'_, str> {
+    #[inline]
     fn eq(&self, other: &StringDeku) -> bool {
         self == &other.0
     }

@@ -13,6 +13,7 @@ where
     T: Sized + Clone,
 {
     /// Construct new `VecDeku` from a slice
+    #[inline]
     pub fn new(data: &[T]) -> Self {
         Self(data.to_vec())
     }
@@ -22,6 +23,7 @@ impl<T> DerefMut for VecDeku<T>
 where
     T: Sized + Clone,
 {
+    #[inline]
     fn deref_mut(&mut self) -> &mut Self::Target {
         self.as_mut()
     }
@@ -33,6 +35,7 @@ where
 {
     type Target = [T];
 
+    #[inline]
     fn deref(&self) -> &Self::Target {
         self.as_ref()
     }
@@ -84,6 +87,7 @@ impl<T> AsRef<[T]> for VecDeku<T>
 where
     T: Sized + Clone,
 {
+    #[inline]
     fn as_ref(&self) -> &[T] {
         self.internal_ref().as_ref()
     }
@@ -93,6 +97,7 @@ impl<T> AsMut<Vec<T>> for VecDeku<T>
 where
     T: Sized + Clone,
 {
+    #[inline]
     fn as_mut(&mut self) -> &mut Vec<T> {
         self.internal_mut()
     }
@@ -102,6 +107,7 @@ impl<T> Hash for VecDeku<T>
 where
     T: Sized + Clone + PartialEq + PartialOrd + Hash,
 {
+    #[inline]
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.internal_ref().hash(state);
     }
@@ -111,6 +117,7 @@ impl<T> PartialEq<&[T]> for VecDeku<T>
 where
     T: Sized + Clone + PartialEq,
 {
+    #[inline]
     fn eq(&self, other: &&[T]) -> bool {
         self.internal_ref() == other
     }
@@ -120,6 +127,7 @@ impl<T> PartialEq<VecDeku<T>> for &[T]
 where
     T: Sized + Clone + PartialEq,
 {
+    #[inline]
     fn eq(&self, other: &VecDeku<T>) -> bool {
         self == other.internal_ref()
     }
@@ -129,6 +137,7 @@ impl<T> PartialEq<Vec<T>> for VecDeku<T>
 where
     T: Sized + Clone + PartialEq,
 {
+    #[inline]
     fn eq(&self, other: &Vec<T>) -> bool {
         self.internal_ref() == other
     }
@@ -138,6 +147,7 @@ impl<T> PartialEq<VecDeku<T>> for Vec<T>
 where
     T: Sized + Clone + PartialEq,
 {
+    #[inline]
     fn eq(&self, other: &VecDeku<T>) -> bool {
         self == other.internal_ref()
     }
@@ -147,6 +157,7 @@ impl<T> PartialOrd<Vec<T>> for VecDeku<T>
 where
     T: Sized + Clone + PartialOrd,
 {
+    #[inline]
     fn partial_cmp(&self, other: &Vec<T>) -> Option<Ordering> {
         self.internal_ref().partial_cmp(other)
     }
@@ -156,6 +167,7 @@ impl<T> PartialOrd<VecDeku<T>> for Vec<T>
 where
     T: Sized + Clone + PartialOrd,
 {
+    #[inline]
     fn partial_cmp(&self, other: &VecDeku<T>) -> Option<Ordering> {
         self.partial_cmp(other.internal_ref())
     }

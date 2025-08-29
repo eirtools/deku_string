@@ -15,6 +15,7 @@ use crate::{
 
 impl StringDeku {
     /// Read from reader with context
+    #[inline]
     fn from_reader_impl<R>(
         reader: &mut Reader<R>,
         endian: Endian,
@@ -55,6 +56,7 @@ impl StringDeku {
         }
     }
     /// Write to a reader with context
+    #[inline]
     fn to_writer_impl<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
@@ -92,7 +94,6 @@ fn convert_utf_8(buf: &[u8]) -> Result<String, DekuError> {
 }
 
 /// Convert UTF-16 data (native endian) to string
-#[inline]
 fn convert_utf_16(buf: &[u16]) -> Result<String, DekuError> {
     #[allow(clippy::map_err_ignore, reason = "Deku doesn't support custom errors")]
     String::from_utf16(buf).map_err(|_| DekuError::Parse("Invalid UTF-16".into()))
@@ -114,6 +115,7 @@ fn convert_utf_32(buf: &[u32]) -> Result<String, DekuError> {
 
 impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
     /// Read string from reader
+    #[inline]
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, Encoding, StringLayout),
@@ -128,6 +130,7 @@ impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
 
 impl DekuReader<'_, (Endian, (Encoding, StringLayout))> for StringDeku {
     /// Read string from reader
+    #[inline]
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, (Encoding, StringLayout)),
@@ -142,6 +145,7 @@ impl DekuReader<'_, (Endian, (Encoding, StringLayout))> for StringDeku {
 
 impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
     /// Write string to the writer.
+    #[inline]
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
@@ -154,6 +158,7 @@ impl DekuWriter<(Endian, Encoding, StringLayout)> for StringDeku {
 
 impl DekuWriter<(Endian, (Encoding, StringLayout))> for StringDeku {
     /// Write string to the writer.
+    #[inline]
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
@@ -178,6 +183,7 @@ type ReadRequirements = (
 /// Read limit and null placement requirements from layout and reader (if prefixed)
 ///
 /// Zero-ended gives another limit kind that based on size, thus result can't be just a size.
+#[inline]
 fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     reader: &mut Reader<R>,
     endian: Endian,
@@ -204,6 +210,7 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             Limit::new_until(|int: &u16| *int == 0),
             Limit::new_until(|int: &u32| *int == 0),
         )),
+
         StringLayout::LengthPrefix(prefix) => {
             let size: usize = match prefix {
                 Size::U8 => <u8>::from_reader_with_ctx(reader, endian)? as usize,
@@ -221,7 +228,9 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     }
 }
 
+/// Create read requirements based on size.
 #[inline]
+#[must_use]
 fn size_requirement(
     null_requirement: NullRequirement,
     size: usize,
@@ -238,6 +247,7 @@ fn size_requirement(
 ///
 /// Read data from reader, check null character presence
 /// and placement and converts to a string.
+#[inline]
 fn read_string<'a, R, T>(
     reader: &mut Reader<R>,
     null_requirement: &NullRequirement,
@@ -276,6 +286,7 @@ where
 }
 
 /// Common implementation to write Vec<T> where T is u8, u16 or u32
+#[inline]
 fn write_string<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
@@ -321,6 +332,7 @@ where
 }
 
 /// Write string with length prefix
+#[inline]
 fn write_string_length_prefix<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,
@@ -360,6 +372,7 @@ where
 }
 
 /// Write string with fixed length
+#[inline]
 fn write_string_fixed_length<W, T>(
     writer: &mut Writer<W>,
     endian: Endian,

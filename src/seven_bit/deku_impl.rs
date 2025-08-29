@@ -19,6 +19,7 @@ macro_rules! int7bit_deku_shim_implementation {
 
             impl DekuReader<'_> for $local_type {
                 /// Read 7-bit int as described here:
+                #[inline]
                 fn from_reader_with_ctx<R>(
                     reader: &mut Reader<R>,
                     _ctx: (),
@@ -65,6 +66,7 @@ macro_rules! int7bit_deku_shim_implementation {
             }
 
             impl DekuWriter for $local_type {
+                #[inline]
                 fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
                     &self,
                     writer: &mut Writer<W>,

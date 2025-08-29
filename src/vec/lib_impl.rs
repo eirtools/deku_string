@@ -11,14 +11,17 @@ where
 {
     type InternalType = Vec<T>;
 
+    #[inline]
     fn internal_move(self) -> Self::InternalType {
         self.0
     }
 
+    #[inline]
     fn internal_mut(&mut self) -> &mut Self::InternalType {
         &mut self.0
     }
 
+    #[inline]
     fn internal_ref(&self) -> &Self::InternalType {
         &self.0
     }

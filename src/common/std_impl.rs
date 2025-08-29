@@ -30,6 +30,7 @@ macro_rules! std_shim_implementation {
             impl Deref for $local_type {
                 type Target = $deref_type;
 
+                #[inline]
                 fn deref(&self) -> &Self::Target {
                     self.internal_ref()
                 }
@@ -65,30 +66,35 @@ macro_rules! std_shim_implementation {
             }
 
             impl Hash for $local_type {
+                #[inline]
                 fn hash<H: Hasher>(&self, state: &mut H) {
                     self.internal_ref().hash(state);
                 }
             }
 
             impl PartialOrd<$internal_type> for $local_type {
+                #[inline]
                 fn partial_cmp(&self, input: &$internal_type) -> Option<Ordering> {
                     self.internal_ref().partial_cmp(input)
                 }
             }
 
             impl PartialOrd<$local_type> for $internal_type {
+                #[inline]
                 fn partial_cmp(&self, other: &$local_type) -> Option<Ordering> {
                     self.partial_cmp(other.internal_ref())
                 }
             }
 
             impl PartialEq<$internal_type> for $local_type {
+                #[inline]
                 fn eq(&self, input: &$internal_type) -> bool {
                     self.internal_ref() == input
                 }
             }
 
             impl PartialEq<$local_type> for $internal_type {
+                #[inline]
                 fn eq(&self, other: &$local_type) -> bool {
                     self == other.internal_ref()
                 }
