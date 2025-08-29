@@ -8,7 +8,7 @@ use deku::reader::Reader;
 use deku::writer::Writer;
 use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
-use crate::{SevenBitU32, Size, VecDeku, VecLayout};
+use crate::{InternalValue, SevenBitU32, Size, VecDeku, VecLayout};
 
 impl<T: Clone> VecDeku<T> {
     /// Read data from reader
@@ -26,17 +26,7 @@ impl<T: Clone> VecDeku<T> {
         let limit = match layout {
             VecLayout::FixedLength(size) => Limit::from(size),
             VecLayout::LengthPrefix(prefix) => {
-                let size = match prefix {
-                    Size::U8 => <u8>::from_reader_with_ctx(reader, endian)? as usize,
-                    Size::U16 => <u16>::from_reader_with_ctx(reader, endian)? as usize,
-                    Size::U32 => <u32>::from_reader_with_ctx(reader, endian)? as usize,
-                    Size::U32_7Bit => {
-                        let size: u32 =
-                            <SevenBitU32>::from_reader_with_ctx(reader, ())?.into();
-                        size as usize
-                    }
-                };
-                Limit::from(size)
+                Limit::from(read_size(reader, endian, prefix)?)
             }
             VecLayout::End => Limit::End,
         };
@@ -57,64 +47,124 @@ impl<T: Clone> VecDeku<T> {
         W: no_std_io::Write + no_std_io::Seek,
     {
         match layout {
-            VecLayout::End => self.0.to_writer(writer, inner_ctx),
+            VecLayout::End => self.internal_ref().to_writer(writer, inner_ctx),
             VecLayout::LengthPrefix(prefix) => {
-                let max_size: usize = match prefix {
-                    Size::U8 => u8::MAX as usize,
-                    Size::U16 => u16::MAX as usize,
-                    Size::U32 | Size::U32_7Bit => u32::MAX as usize,
-                };
-
-                if self.0.len() > max_size {
-                    return Err(DekuError::Assertion(Cow::from(format!(
-                        "Encoded string length cannot exceed {max_size} bytes"
-                    ))));
-                }
-
-                // buffer len is not above corresponding type size,
-                // so truncation is safe
-                match prefix {
-                    Size::U8 =>
-                    {
-                        #[allow(clippy::cast_possible_truncation)]
-                        (self.0.len() as u8).to_writer(writer, endian)
-                    }
-                    Size::U16 =>
-                    {
-                        #[allow(clippy::cast_possible_truncation)]
-                        (self.0.len() as u16).to_writer(writer, endian)
-                    }
-                    Size::U32 =>
-                    {
-                        #[allow(clippy::cast_possible_truncation)]
-                        (self.0.len() as u32).to_writer(writer, endian)
-                    }
-                    Size::U32_7Bit => {
-                        #[allow(clippy::cast_possible_truncation)]
-                        let size: SevenBitU32 = (self.0.len() as u32).into();
-                        size.to_writer(writer, ())
-                    }
-                }?;
-
-                self.0.to_writer(writer, inner_ctx)
+                write_length_prefix(self, writer, endian, prefix, inner_ctx)
             }
 
             VecLayout::FixedLength(size) => {
-                let len = self.0.len();
-                if len > size {
-                    return Err(DekuError::Assertion(Cow::from(format!(
-                        "Encoded string length cannot exceed {size} bytes"
-                    ))));
-                }
-                self.0.to_writer(writer, inner_ctx)?;
-                let default = T::default();
-                for _ in len..size {
-                    default.to_writer(writer, inner_ctx)?;
-                }
-                Ok(())
+                write_fixed_length(self, writer, size, inner_ctx)
             }
         }
     }
+}
+
+/// Read expected size from stream
+#[inline]
+fn read_size<'a, R>(
+    reader: &mut Reader<R>,
+    endian: Endian,
+    prefix: Size,
+) -> Result<usize, DekuError>
+where
+    R: no_std_io::Read + no_std_io::Seek,
+{
+    Ok(match prefix {
+        Size::U8 => <u8>::from_reader_with_ctx(reader, endian)? as usize,
+        Size::U16 => <u16>::from_reader_with_ctx(reader, endian)? as usize,
+        Size::U32 => <u32>::from_reader_with_ctx(reader, endian)? as usize,
+        Size::U32_7Bit => {
+            let size: u32 = <SevenBitU32>::from_reader_with_ctx(reader, ())?.into();
+            size as usize
+        }
+    })
+}
+
+/// Write length-prefixed data into stream
+#[inline]
+fn write_length_prefix<T, W, Ctx>(
+    data: &VecDeku<T>,
+    writer: &mut Writer<W>,
+    endian: Endian,
+    prefix: Size,
+    inner_ctx: Ctx,
+) -> Result<(), DekuError>
+where
+    Ctx: Copy,
+    T: Clone + Default + DekuWriter<Ctx>,
+    W: no_std_io::Write + no_std_io::Seek,
+{
+    let max_size: usize = match prefix {
+        Size::U8 => u8::MAX as usize,
+        Size::U16 => u16::MAX as usize,
+        Size::U32 | Size::U32_7Bit => u32::MAX as usize,
+    };
+
+    let len = data.internal_ref().len();
+
+    if len > max_size {
+        return Err(DekuError::Assertion(Cow::from(format!(
+            "Encoded string length cannot exceed {max_size} bytes"
+        ))));
+    }
+
+    // buffer len is not above corresponding type size,
+    // so truncation is safe
+
+    match prefix {
+        Size::U8 =>
+        {
+            #[allow(clippy::cast_possible_truncation)]
+            (len as u8).to_writer(writer, endian)
+        }
+        Size::U16 =>
+        {
+            #[allow(clippy::cast_possible_truncation)]
+            (len as u16).to_writer(writer, endian)
+        }
+        Size::U32 =>
+        {
+            #[allow(clippy::cast_possible_truncation)]
+            (len as u32).to_writer(writer, endian)
+        }
+        Size::U32_7Bit => {
+            #[allow(clippy::cast_possible_truncation)]
+            let size: SevenBitU32 = SevenBitU32::new(len as u32);
+            size.to_writer(writer, ())
+        }
+    }?;
+
+    data.internal_ref().to_writer(writer, inner_ctx)
+}
+
+/// Write fixed-length buffer into stream
+#[inline]
+fn write_fixed_length<T, W, Ctx>(
+    data: &VecDeku<T>,
+    writer: &mut Writer<W>,
+    size: usize,
+    inner_ctx: Ctx,
+) -> Result<(), DekuError>
+where
+    Ctx: Copy,
+    T: Clone + Default + DekuWriter<Ctx>,
+    W: no_std_io::Write + no_std_io::Seek,
+{
+    let len = data.internal_ref().len();
+    if len > size {
+        return Err(DekuError::Assertion(Cow::from(format!(
+            "Encoded string length cannot exceed {size} bytes"
+        ))));
+    }
+
+    data.internal_ref().to_writer(writer, inner_ctx)?;
+
+    let default = T::default();
+    for _ in len..size {
+        default.to_writer(writer, inner_ctx)?;
+    }
+
+    Ok(())
 }
 
 impl<'a, V> DekuReader<'a, (Endian, VecLayout)> for VecDeku<V>
