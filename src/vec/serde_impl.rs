@@ -46,6 +46,8 @@ mod test {
     use crate::VecDeku;
     use rstest::rstest;
     use serde::de::Deserialize as _;
+    use serde_json::de::Deserializer as JsonDeserializer;
+    use serde_json::{from_str as json_from_string, to_string as json_to_string};
 
     const TEST_INPUT: [u8; 3] = [1, 2, 3];
     const TEST_INPUT_ENCODED: &str = "[1,2,3]";
@@ -54,26 +56,26 @@ mod test {
     #[rstest]
     fn serialize() {
         let value: VecDeku<u8> = TEST_INPUT.as_slice().into();
-        let formatted = serde_json::to_string(&value).expect("Encode Ok");
+        let formatted = json_to_string(&value).expect("Encode Ok");
         assert_eq!(formatted, TEST_INPUT_ENCODED);
     }
 
     #[rstest]
     fn deserialize() {
         let parsed: VecDeku<u8> =
-            serde_json::from_str(TEST_INPUT_ENCODED).expect("Parse successful");
+            json_from_string(TEST_INPUT_ENCODED).expect("Parse successful");
         assert_eq!(parsed, TEST_INPUT.as_slice());
     }
 
     #[rstest]
     fn deserialize_fail() {
-        serde_json::from_str::<VecDeku<u8>>(TEST_INPUT_ENCODED_INVALID)
+        json_from_string::<VecDeku<u8>>(TEST_INPUT_ENCODED_INVALID)
             .expect_err("Parse failed");
     }
 
     #[rstest]
     fn deserialize_in_place() {
-        let mut de = serde_json::de::Deserializer::from_str(TEST_INPUT_ENCODED);
+        let mut de = JsonDeserializer::from_str(TEST_INPUT_ENCODED);
         let mut parsed: VecDeku<u8> = VecDeku::default();
         VecDeku::<u8>::deserialize_in_place(&mut de, &mut parsed)
             .expect("Parse successful");

@@ -2,18 +2,20 @@
 //!
 //! it's more efficient than using `Display2Fmt`
 use crate::StringDeku;
-use defmt::{Format, Formatter};
+use defmt::{Format, Formatter, write as defmt_write};
 
 impl Format for StringDeku {
     #[inline]
     fn format(&self, fmt: Formatter) {
-        defmt::write!(fmt, "{}", self.0.as_str());
+        defmt_write!(fmt, "{}", self.0.as_str());
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use defmt::export::fetch_bytes;
+    use defmt::println as defmt_println;
 
     const TEST_CONTENT: &str = "test_content";
     const EXPECTED: [u8; 26] = [
@@ -25,8 +27,8 @@ mod tests {
     fn format_string_deku() {
         let string_deku: StringDeku = TEST_CONTENT.into();
 
-        defmt::println!("{}", string_deku);
-        let output = defmt::export::fetch_bytes();
+        defmt_println!("{}", string_deku);
+        let output = fetch_bytes();
         assert_eq!(output, EXPECTED);
     }
 }
