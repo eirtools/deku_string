@@ -3,6 +3,7 @@
 // Plain trait implementations for `InternalValue` are preferred.
 //
 // Make a PR or give a hint if you know how.
+pub(crate) mod deku_impl;
 pub(crate) mod serde_impl;
 pub(crate) mod std_impl;
 
