@@ -8,10 +8,11 @@ use deku::reader::Reader;
 use deku::writer::Writer;
 use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
-use crate::{InternalValue, SevenBitU32, Size, VecDeku, VecLayout};
+use crate::{InternalValue as _, SevenBitU32, Size, VecDeku, VecLayout};
 
 impl<T: Clone> VecDeku<T> {
     /// Read data from reader
+    #[inline]
     fn from_reader_impl<'a, R, Ctx>(
         reader: &mut Reader<R>,
         endian: Endian,
@@ -34,6 +35,7 @@ impl<T: Clone> VecDeku<T> {
     }
 
     /// Read data to writer
+    #[inline]
     fn to_writer_impl<W, Ctx>(
         &self,
         writer: &mut Writer<W>,
@@ -61,7 +63,7 @@ impl<T: Clone> VecDeku<T> {
 
 /// Read expected size from stream
 #[inline]
-fn read_size<'a, R>(
+fn read_size<R>(
     reader: &mut Reader<R>,
     endian: Endian,
     prefix: Size,
@@ -129,7 +131,7 @@ where
         }
         Size::U32_7Bit => {
             #[allow(clippy::cast_possible_truncation)]
-            let size: SevenBitU32 = SevenBitU32::new(len as u32);
+            let size = SevenBitU32::new(len as u32);
             size.to_writer(writer, ())
         }
     }?;
@@ -171,6 +173,7 @@ impl<'a, V> DekuReader<'a, (Endian, VecLayout)> for VecDeku<V>
 where
     V: Clone + DekuReader<'a, Endian>,
 {
+    #[inline]
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, VecLayout),
@@ -184,6 +187,7 @@ where
     Ctx: Copy,
     V: Clone + DekuReader<'a, (Endian, Ctx)>,
 {
+    #[inline]
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, VecLayout, Ctx),
@@ -197,6 +201,7 @@ where
     Ctx: Copy,
     V: Clone + DekuReader<'a, (Endian, Ctx)>,
 {
+    #[inline]
     fn from_reader_with_ctx<R: no_std_io::Read + no_std_io::Seek>(
         reader: &mut Reader<R>,
         ctx: (Endian, (VecLayout, Ctx)),
@@ -209,6 +214,7 @@ impl<V> DekuWriter<(Endian, VecLayout)> for VecDeku<V>
 where
     V: Clone + Default + DekuWriter<Endian>,
 {
+    #[inline]
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
@@ -223,6 +229,7 @@ where
     Ctx: Copy,
     V: Clone + Default + DekuWriter<(Endian, Ctx)>,
 {
+    #[inline]
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,
@@ -237,6 +244,7 @@ where
     Ctx: Copy,
     V: Clone + Default + DekuWriter<(Endian, Ctx)>,
 {
+    #[inline]
     fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
         &self,
         writer: &mut Writer<W>,

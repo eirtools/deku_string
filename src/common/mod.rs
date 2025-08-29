@@ -12,11 +12,14 @@ pub(crate) trait InternalValue {
     type InternalType;
 
     /// Move internal value out of wrapper
+    #[must_use]
     fn internal_move(self) -> Self::InternalType;
 
     /// Reference internal value as mutable
+    #[must_use]
     fn internal_mut(&mut self) -> &mut Self::InternalType;
 
     /// Reference internal value
+    #[must_use]
     fn internal_ref(&self) -> &Self::InternalType;
 }
