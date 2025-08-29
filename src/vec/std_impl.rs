@@ -194,6 +194,14 @@ mod test {
     }
 
     #[rstest]
+    fn deref_mut() {
+        let mut local: VecDeku<u8> = VecDeku::new(TEST_INPUT.as_slice());
+        let x = &mut *local;
+        x[0] = 4;
+        assert_eq!([4, 2, 3], *local);
+    }
+
+    #[rstest]
     fn from_eq() {
         let input = TEST_INPUT;
         let local: VecDeku<u8> = VecDeku::new(&input);

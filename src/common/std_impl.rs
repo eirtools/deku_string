@@ -14,6 +14,7 @@ macro_rules! std_shim_implementation {
         module_name: $module_name: ident,
         local_type: $local_type: ident,
         internal_type: $internal_type: ty,
+        deref_type: $deref_type: ty,
         test_input: $test_input: expr,
         test_input_other: $test_input_other: expr,
         test_input_less: $test_input_less: expr,
@@ -27,7 +28,7 @@ macro_rules! std_shim_implementation {
             use core::ops::Deref;
 
             impl Deref for $local_type {
-                type Target = $internal_type;
+                type Target = $deref_type;
 
                 fn deref(&self) -> &Self::Target {
                     self.internal_ref()
@@ -124,14 +125,14 @@ macro_rules! std_shim_implementation {
                 }
 
                 #[rstest]
-                fn test_deref() {
+                fn deref() {
                     let input: $internal_type = $test_input;
                     let local: $local_type = input.clone().into();
                     assert_eq!(input, *local);
                 }
 
                 #[rstest]
-                fn test_eq() {
+                fn eq() {
                     let input: $internal_type = $test_input;
                     let local: $local_type = input.clone().into();
 
@@ -146,7 +147,7 @@ macro_rules! std_shim_implementation {
                 }
 
                 #[rstest]
-                fn test_ne() {
+                fn ne() {
                     let input: $internal_type = $test_input;
                     let local: $local_type = input.into();
 
@@ -161,7 +162,7 @@ macro_rules! std_shim_implementation {
                 }
 
                 #[rstest]
-                fn test_hash() {
+                fn hash() {
                     #[allow(unused_imports)]
                     use alloc::collections::TryReserveError as _; // ensure alloc is linked in tests
                     use core::hash::{Hash, Hasher as _};
