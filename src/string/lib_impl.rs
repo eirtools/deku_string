@@ -1,4 +1,6 @@
 //! Implementations for `StringDeku`.
+use core::ops::DerefMut;
+
 use crate::{
     InternalValue, StringDeku, serde_shim_implementation, std_shim_implementation,
 };
@@ -30,6 +32,12 @@ impl StringDeku {
     }
 }
 
+impl DerefMut for StringDeku {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.internal_mut()
+    }
+}
+
 serde_shim_implementation! {
     module_name: serde_impl,
     local_type: StringDeku,
@@ -43,6 +51,7 @@ std_shim_implementation! {
     module_name: std_impl,
     local_type: StringDeku,
     internal_type: alloc::string::String,
+    deref_type: str,
     test_input: "from str".into(),
     test_input_other: "other value".into(),
     test_input_less: "aaa".into(),
@@ -50,7 +59,7 @@ std_shim_implementation! {
 }
 
 #[cfg(test)]
-mod string_new_impl {
+mod string_new_deref_impl {
     use crate::StringDeku;
     use rstest::rstest;
 
@@ -60,5 +69,13 @@ mod string_new_impl {
         let local: StringDeku = StringDeku::new(input);
 
         assert_eq!(input, local);
+    }
+
+    #[rstest]
+    fn deref_mut() {
+        let mut local: StringDeku = StringDeku::new("mut str");
+        let x = &mut *local;
+        x.make_ascii_uppercase();
+        assert_eq!("MUT STR", local);
     }
 }

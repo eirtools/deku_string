@@ -13,7 +13,6 @@ macro_rules! create_test_impl_read_rejected {
         create_test_impl_read_rejected!($layout, data: u8, endian: big, ctx: alt, $(($case)), +);
         create_test_impl_read_rejected!($layout, data: str, endian: little, ctx: alt, $(($case)), +);
         create_test_impl_read_rejected!($layout, data: str, endian: big, ctx: alt, $(($case)), +);
-
     };
 
     // generate actual function for given layout, given endian, given encoding and given exact test cases
