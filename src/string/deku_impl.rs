@@ -1,16 +1,18 @@
 //! Deku implementation for `StringDeku`
 use alloc::borrow::Cow;
 use alloc::string::String;
+use alloc::vec;
 use alloc::vec::Vec;
-use alloc::{format, vec};
 
 use deku::ctx::{Endian, Limit};
 use deku::reader::Reader;
 use deku::writer::Writer;
 use deku::{DekuError, DekuReader, DekuWriter, no_std_io};
 
+use crate::common::deku_impl::write_data_fixed_length;
 use crate::{
-    Encoding, InternalValue as _, SevenBitU32, Size, StringDeku, StringLayout,
+    Encoding, InternalValue as _, StringDeku, StringLayout, read_size_prefix,
+    write_size_prefix,
 };
 
 impl StringDeku {
@@ -210,21 +212,10 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             Limit::new_until(|int: &u16| *int == 0),
             Limit::new_until(|int: &u32| *int == 0),
         )),
-
-        StringLayout::LengthPrefix(prefix) => {
-            let size: usize = match prefix {
-                Size::U8 => <u8>::from_reader_with_ctx(reader, endian)? as usize,
-                Size::U16 => <u16>::from_reader_with_ctx(reader, endian)? as usize,
-                Size::U32 => <u32>::from_reader_with_ctx(reader, endian)? as usize,
-                Size::U32_7Bit => {
-                    let length: u32 =
-                        <SevenBitU32>::from_reader_with_ctx(reader, ())?.into();
-                    length as usize
-                }
-            };
-
-            Ok(size_requirement(NullRequirement::Rejected, size))
-        }
+        StringLayout::LengthPrefix(prefix) => Ok(size_requirement(
+            NullRequirement::Rejected,
+            read_size_prefix(reader, endian, prefix)?,
+        )),
     }
 }
 
@@ -309,7 +300,8 @@ where
 
     match layout {
         StringLayout::LengthPrefix(prefix_size) => {
-            write_string_length_prefix(writer, endian, buf, prefix_size)
+            write_size_prefix(writer, endian, prefix_size, buf.len())?;
+            buf.to_writer(writer, endian)
         }
         StringLayout::ZeroEnded => {
             buf.to_writer(writer, endian)?;
@@ -319,92 +311,16 @@ where
         StringLayout::FixedLength {
             size,
             allow_no_null,
-        } => write_string_fixed_length(
-            writer,
-            endian,
-            buf,
-            size,
-            allow_no_null,
-            first_null,
-            &zero,
-        ),
-    }
-}
+        } => {
+            if !allow_no_null && first_null == size {
+                return Err(DekuError::Assertion(Cow::from(
+                    "String fills whole output buffer, while Null character must be written",
+                )));
+            }
 
-/// Write string with length prefix
-#[inline]
-fn write_string_length_prefix<W, T>(
-    writer: &mut Writer<W>,
-    endian: Endian,
-    buf: &Vec<T>,
-    prefix_size: Size,
-) -> Result<(), DekuError>
-where
-    W: no_std_io::Write + no_std_io::Seek,
-    T: Default + Clone + PartialEq + DekuWriter<Endian>,
-{
-    let max_size: usize = match prefix_size {
-        Size::U8 => u8::MAX as usize,
-        Size::U16 => u16::MAX as usize,
-        Size::U32 | Size::U32_7Bit => u32::MAX as usize,
-    };
-
-    if buf.len() > max_size {
-        return Err(DekuError::Assertion(Cow::from(format!(
-            "Encoded string length cannot exceed {max_size} bytes"
-        ))));
-    }
-
-    // buffer len is not above corresponding type size,
-    // so truncation is safe
-    #[allow(clippy::cast_possible_truncation)]
-    match prefix_size {
-        Size::U8 => ((buf.len() & 0xFF) as u8).to_writer(writer, endian),
-        Size::U16 => (buf.len() as u16).to_writer(writer, endian),
-        Size::U32 => (buf.len() as u32).to_writer(writer, endian),
-        Size::U32_7Bit => {
-            let length: SevenBitU32 = (buf.len() as u32).into();
-            (length).to_writer(writer, ())
+            write_data_fixed_length(writer, buf, size, endian, &zero)
         }
-    }?;
-
-    buf.to_writer(writer, endian)
-}
-
-/// Write string with fixed length
-#[inline]
-fn write_string_fixed_length<W, T>(
-    writer: &mut Writer<W>,
-    endian: Endian,
-    buf: &Vec<T>,
-    size: usize,
-    allow_no_null: bool,
-    first_null: usize,
-    zero: &T,
-) -> Result<(), DekuError>
-where
-    W: no_std_io::Write + no_std_io::Seek,
-    T: Default + Clone + PartialEq + DekuWriter<Endian>,
-{
-    if buf.len() > size {
-        return Err(DekuError::Assertion(Cow::from(format!(
-            "Encoded string length cannot exceed {size} elements"
-        ))));
     }
-
-    if !allow_no_null && first_null == size {
-        return Err(DekuError::Assertion(Cow::from(
-            "String fills whole output buffer, while Null character must be written",
-        )));
-    }
-
-    buf.to_writer(writer, endian)?;
-
-    for _ in buf.len()..size {
-        zero.to_writer(writer, endian)?;
-    }
-
-    Ok(())
 }
 
 /// Requirement for null character presence
