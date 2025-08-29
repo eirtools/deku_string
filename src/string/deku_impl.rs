@@ -36,38 +36,22 @@ impl StringDeku {
 
         match encoding {
             Encoding::Utf8 => {
-                read_string(reader, &null_requirement, limit_u8, endian, |buf| {
-                    #[allow(
-                        clippy::map_err_ignore,
-                        reason = "Deku doesn't support custom errors"
-                    )]
-                    String::from_utf8(buf.to_vec())
-                        .map_err(|_| DekuError::Parse("Invalid UTF-8".into()))
-                })
+                read_string(reader, &null_requirement, limit_u8, endian, convert_utf_8)
             }
-            Encoding::Utf16 => {
-                read_string(reader, &null_requirement, limit_u16, endian, |buf| {
-                    #[allow(
-                        clippy::map_err_ignore,
-                        reason = "Deku doesn't support custom errors"
-                    )]
-                    String::from_utf16(buf)
-                        .map_err(|_| DekuError::Parse("Invalid UTF-16".into()))
-                })
-            }
-            Encoding::Utf32 => {
-                read_string(reader, &null_requirement, limit_u32, endian, |buf| {
-                    let mut result: Vec<char> = vec![];
-                    buf.iter().try_fold((), |(), value| {
-                        let Some(ch) = char::from_u32(*value) else {
-                            return Err(DekuError::Parse("Invalid UTF-32".into()));
-                        };
-                        result.push(ch);
-                        Ok(())
-                    })?;
-                    Ok(result.into_iter().collect())
-                })
-            }
+            Encoding::Utf16 => read_string(
+                reader,
+                &null_requirement,
+                limit_u16,
+                endian,
+                convert_utf_16,
+            ),
+            Encoding::Utf32 => read_string(
+                reader,
+                &null_requirement,
+                limit_u32,
+                endian,
+                convert_utf_32,
+            ),
         }
     }
     /// Write to a reader with context
@@ -97,6 +81,35 @@ impl StringDeku {
             }
         }
     }
+}
+
+/// Convert UTF-8 data (native endian) to string
+#[inline]
+fn convert_utf_8(buf: &[u8]) -> Result<String, DekuError> {
+    #[allow(clippy::map_err_ignore, reason = "Deku doesn't support custom errors")]
+    String::from_utf8(buf.to_vec())
+        .map_err(|_| DekuError::Parse("Invalid UTF-8".into()))
+}
+
+/// Convert UTF-16 data (native endian) to string
+#[inline]
+fn convert_utf_16(buf: &[u16]) -> Result<String, DekuError> {
+    #[allow(clippy::map_err_ignore, reason = "Deku doesn't support custom errors")]
+    String::from_utf16(buf).map_err(|_| DekuError::Parse("Invalid UTF-16".into()))
+}
+
+/// Convert UTF-32 data (native endian) to string
+#[inline]
+fn convert_utf_32(buf: &[u32]) -> Result<String, DekuError> {
+    let mut result: Vec<char> = vec![];
+    buf.iter().try_fold((), |(), value| {
+        let Some(ch) = char::from_u32(*value) else {
+            return Err(DekuError::Parse("Invalid UTF-32".into()));
+        };
+        result.push(ch);
+        Ok(())
+    })?;
+    Ok(result.into_iter().collect())
 }
 
 impl DekuReader<'_, (Endian, Encoding, StringLayout)> for StringDeku {
@@ -180,13 +193,10 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
             } else {
                 NullRequirement::Required
             };
-            Ok((
-                null_requirement,
-                Limit::from(size),
-                Limit::from(size),
-                Limit::from(size),
-            ))
+
+            Ok(size_requirement(null_requirement, size))
         }
+
         StringLayout::ZeroEnded => Ok((
             // zero is already at the end by how deku reads data
             NullRequirement::Accepted,
@@ -205,14 +215,23 @@ fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
                     length as usize
                 }
             };
-            Ok((
-                NullRequirement::Rejected,
-                Limit::from(size),
-                Limit::from(size),
-                Limit::from(size),
-            ))
+
+            Ok(size_requirement(NullRequirement::Rejected, size))
         }
     }
+}
+
+#[inline]
+fn size_requirement(
+    null_requirement: NullRequirement,
+    size: usize,
+) -> ReadRequirements {
+    (
+        null_requirement,
+        Limit::from(size),
+        Limit::from(size),
+        Limit::from(size),
+    )
 }
 
 /// Common implementation to read String from stream.
