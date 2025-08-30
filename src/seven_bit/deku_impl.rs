@@ -20,6 +20,7 @@ macro_rules! int7bit_deku_shim_implementation {
             impl DekuReader<'_> for $local_type {
                 /// Read 7-bit int as described here:
                 #[inline]
+                #[allow(clippy::as_conversions, reason = "Assume that usize > u8")]
                 fn from_reader_with_ctx<R>(
                     reader: &mut Reader<R>,
                     _ctx: (),
@@ -39,7 +40,7 @@ macro_rules! int7bit_deku_shim_implementation {
                     for _ in 0..bits_full_7 {
                         reader.read_bytes(1, &mut buf, Order::default())?;
 
-                        result |= ((buf[0] & 0x7f) as $internal_type) << shift;
+                        result |= $internal_type::from(buf[0] & 0x7f) << shift;
 
                         if buf[0] <= 0x7f {
                             return Ok(Self(result));
@@ -59,7 +60,7 @@ macro_rules! int7bit_deku_shim_implementation {
                         return Err(DekuError::Assertion("Integer overflow".into()));
                     }
 
-                    result |= (buf[0] as $internal_type) << shift;
+                    result |= $internal_type::from(buf[0]) << shift;
 
                     Ok(result.into())
                 }
@@ -67,6 +68,7 @@ macro_rules! int7bit_deku_shim_implementation {
 
             impl DekuWriter for $local_type {
                 #[inline]
+                #[allow(clippy::as_conversions, reason = "Checked conversion to u8")]
                 fn to_writer<W: no_std_io::Write + no_std_io::Seek>(
                     &self,
                     writer: &mut Writer<W>,
@@ -77,6 +79,7 @@ macro_rules! int7bit_deku_shim_implementation {
 
                     while value > 0x7f {
                         buf[0] = 0x80 + (value & 0x7f) as u8;
+                        // direct data write
                         writer.write_bytes(&mut buf)?;
                         value >>= 7;
                     }

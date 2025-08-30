@@ -1,10 +1,14 @@
-//!
 //! Integration test with Deku derives and example how to use.
+#![allow(
+    clippy::tests_outside_test_module,
+    reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
+)]
 
 use ::deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use rstest::rstest;
 
+#[allow(clippy::struct_field_names, reason = "Naming is hard")]
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)] // usual stuff
 #[derive(::deku::DekuRead, ::deku::DekuWrite)] // deku
 struct SampleModel {

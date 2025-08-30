@@ -272,7 +272,7 @@ where
             }
         }
     }
-
+    #[allow(clippy::indexing_slicing, reason = "Checked indexing")]
     convert(&buf[..first_null]).map(Into::into)
 }
 

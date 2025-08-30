@@ -1,5 +1,8 @@
-//!
-//! Integration test with Deku derives and example how to use.
+#![allow(
+    clippy::tests_outside_test_module,
+    reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
+)]
+
 use ::deku_string::{Encoding, Size, StringDeku, StringLayout};
 use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use rstest::rstest;

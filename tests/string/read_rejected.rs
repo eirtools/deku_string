@@ -1,5 +1,9 @@
-#![allow(dead_code, unused_macros, unused_imports)]
-//! Rejected read tests for UTF-8, UTF-16 & UTF-32 strings
+#![allow(dead_code, unused_macros, unused_imports, reason = "tests")]
+#![allow(
+    clippy::tests_outside_test_module,
+    reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
+)]
+
 mod data;
 mod macros;
 

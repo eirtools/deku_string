@@ -47,7 +47,10 @@ where
 {
     /// Formats as plain String
     #[inline]
-    #[allow(clippy::min_ident_chars)]
+    #[allow(
+        clippy::min_ident_chars,
+        reason = "Conflict with trait definition, <https://github.com/rust-lang/rust-clippy/issues/15365>"
+    )]
     fn fmt(&self, f: &mut Formatter<'_>) -> FmtResult {
         Debug::fmt(self.internal_ref(), f)
     }
@@ -206,6 +209,7 @@ mod test {
     }
 
     #[rstest]
+    #[allow(clippy::indexing_slicing, reason = "Checked indexing")]
     fn deref_mut() {
         let mut local: VecDeku<u8> = VecDeku::new(TEST_INPUT.as_slice());
         let x = &mut *local;
@@ -281,8 +285,6 @@ mod test {
 
     #[rstest]
     fn hash() {
-        #[allow(unused_imports)]
-        use alloc::collections::TryReserveError as _; // ensure alloc is linked in tests
         use core::hash::{Hash, Hasher as _};
         use std::collections::hash_map::DefaultHasher;
 

@@ -10,6 +10,7 @@ use deku::{DekuError, DekuReader as _, DekuWriter, no_std_io};
 use crate::{SevenBitU32, Size};
 
 /// Read expected size from stream
+#[allow(clippy::as_conversions, reason = "Assume that usize > u32")]
 #[inline]
 pub(crate) fn read_size_prefix<R>(
     reader: &mut Reader<R>,
@@ -31,6 +32,7 @@ where
 }
 
 /// Write length-prefixed data into stream
+#[allow(clippy::as_conversions, reason = "Assume that usize > u32")]
 #[inline]
 pub(crate) fn write_size_prefix<W>(
     writer: &mut Writer<W>,

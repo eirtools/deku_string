@@ -1,4 +1,8 @@
-#![allow(dead_code, unused_macros, unused_imports)]
+#![allow(dead_code, unused_macros, unused_imports, reason = "tests")]
+#![allow(
+    clippy::tests_outside_test_module,
+    reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
+)]
 
 mod data;
 mod macros;
@@ -11,9 +15,6 @@ use deku::writer::Writer;
 
 use data::write_rejected::*;
 use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
-
-#[allow(unused_imports)]
-use macros::write_rejected;
 
 use io_rejected::InvalidBufferType;
 
