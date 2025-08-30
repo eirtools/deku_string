@@ -31,15 +31,16 @@ create_test_impl_rw_accepted! {
 create_test_impl_rw_accepted! {
     fixed,
     all_data,
-    (full, in_data_in),
-    (partial, in_data_out),
+    (empty, in_data_out),
+    (no_padding, in_data_in),
+    (padded_data, in_data_out),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u8,
     data: u8,
     (empty, in_data_in),
-    (full, in_data_in),
+    (no_padding, in_data_in),
     (len_255, in_data_in),
 }
 
@@ -47,33 +48,33 @@ create_test_impl_rw_accepted! {
     prefix_u8,
     data: str,
     (empty, in_data_in),
-    (full, in_data_in),
+    (no_padding, in_data_in),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u16,
     all_data,
     (empty, in_data_in),
-    (full, in_data_in),
+    (no_padding, in_data_in),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u32,
     all_data,
     (empty, in_data_in),
-    (full, in_data_in),
+    (no_padding, in_data_in),
 }
 
 create_test_impl_rw_accepted! {
     prefix_u32_7bit,
     all_data,
     (empty, in_data_in),
-    (full, in_data_in),
+    (no_padding, in_data_in),
 }
 
 create_test_impl_rw_accepted! {
     end,
     all_data,
     (empty, in_data_in),
-    (full, in_data_in),
+    (no_padding, in_data_in),
 }

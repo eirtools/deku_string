@@ -1,6 +1,7 @@
 use deku_string::{Size, StringLayout};
 
-/// How many bytes (for UTF-8) or u16 (for UTF-16) should be present in the buffer
+/// How many bytes (for UTF-8) or u16 (for UTF-16) should be present in the
+/// buffer
 pub const FIXED_LENGTH: usize = 5;
 
 /// Layout for fixed string buffer with enforced zero byte presence
@@ -24,7 +25,7 @@ pub const LAYOUT_PREFIX_U16: StringLayout = StringLayout::LengthPrefix(Size::U16
 /// Layout for Pascal-like string with 4 bytes of length
 pub const LAYOUT_PREFIX_U32: StringLayout = StringLayout::LengthPrefix(Size::U32);
 
-/// Layout for Pascal-like string with 4 bytes of length
+/// Layout for .Net-like string with u32 length
 pub const LAYOUT_PREFIX_U32_7BIT: StringLayout =
     StringLayout::LengthPrefix(Size::U32_7Bit);
 

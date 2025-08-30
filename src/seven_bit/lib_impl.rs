@@ -5,7 +5,12 @@ use crate::{InternalValue, serde_shim_implementation, std_shim_implementation};
 
 use super::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
-/// macro to implement `type::new()` method
+/// macro to implement `type::new()` method.
+///
+/// * `module_name`: module name to use.
+/// * `local_type` Type to generate deku implementation for.
+/// * `internal_type`: Actual wrapped type.
+/// * `test_input`: value to test against.
 macro_rules! new_impl {
     (
         module_name: $module_name: ident,
@@ -42,9 +47,13 @@ macro_rules! new_impl {
     };
 }
 /// All implementations at once.
-// macro could take only bit length.
-//
-// make a PR if there's any way to make it possible without additional dependencies
+/// * `local_type` Type to generate deku implementation for.
+/// * `internal_type`: Actual wrapped type.
+/// * `module_name_std`: module name for std shim implementation.
+/// * `module_name_new_impl`: module name for `new()` method implementation.
+/// * `module_name_deku`: module name for deku implementation.
+/// * `module_name_serde`: module name for serde implementation.
+/// * `module_name_deref`: module name for [`core::ops::DerefMut`] implementation.
 macro_rules! shim_impl {
     (
         local_type: $local_type: ident,

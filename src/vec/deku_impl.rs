@@ -1,4 +1,4 @@
-//! Deku implementation for `VecDeku`
+//! Deku-related implementation for [`crate::VecDeku`].
 use alloc::vec::Vec;
 
 use deku::ctx::{Endian, Limit};

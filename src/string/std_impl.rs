@@ -1,7 +1,16 @@
-//! Additional "transparency" shim implementations for `StringDeku`.
+//! Additional standard library implementations for [`crate::StringDeku`].
 
-use crate::StringDeku;
+use core::ops::DerefMut;
+
+use crate::{InternalValue as _, StringDeku};
 use alloc::borrow::Cow;
+
+impl DerefMut for StringDeku {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        self.internal_mut()
+    }
+}
 
 impl From<&str> for StringDeku {
     #[inline]
@@ -53,6 +62,14 @@ mod test {
 
     use crate::StringDeku;
     use rstest::rstest;
+
+    #[rstest]
+    fn deref_mut() {
+        let mut local: StringDeku = StringDeku::new("mut str");
+        let x = &mut *local;
+        x.make_ascii_uppercase();
+        assert_eq!("MUT STR", local);
+    }
 
     #[rstest]
     #[case::str("from str")]

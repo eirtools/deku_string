@@ -21,8 +21,8 @@ use crate::macros::read_rejected::create_test_impl_read_rejected;
 
 create_test_impl_read_rejected!(
     error: incomplete,
-    (incomplete_middle),
-    (incomplete_end),
+    (middle),
+    (end),
 );
 
 create_test_impl_read_rejected!(

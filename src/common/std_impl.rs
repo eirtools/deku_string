@@ -1,14 +1,15 @@
 //! "Transparency" shim implementations for `InternalValue` types.
 
-/// Macro to generate std transparent implementation for internal types and tests for them.
+/// Macro to generate std transparent implementation for internal types and
+/// tests for them.
 ///
-/// `module_name`: Module name produced
-/// `local_type`: Local type to create shims for. It must implement `InternalValue` trait.
-/// `internal_type`: Internal type for the local type
-/// `test_input`: common test input for various tests
-/// `test_input_other`: test input not equal to `test_input`
-/// `test_input_less`: test input less than `test_input`
-/// `test_input_greater`: test input greater that `test_input`
+/// * `module_name`: Module name produced.
+/// * `local_type`: Local type to create shims for.
+/// * `internal_type`: Wrapped type.
+/// * `test_input`: common test input for various tests.
+/// * `test_input_other`: test input not equal to `test_input`.
+/// * `test_input_less`: test input less than `test_input`.
+/// * `test_input_greater`: test input greater that `test_input`.
 macro_rules! std_shim_implementation {
     (
         module_name: $module_name: ident,
@@ -44,7 +45,6 @@ macro_rules! std_shim_implementation {
             }
 
             impl Debug for $local_type {
-                /// Formats as plain String
                 #[inline]
                 fn fmt(&self, fmt: &mut core::fmt::Formatter<'_>) -> FmtResult {
                     Debug::fmt(self.internal_ref(), fmt)
