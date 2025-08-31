@@ -6,7 +6,7 @@
 use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use deku_string::{Encoding, Size, StringDeku, StringLayout, VecDeku, VecLayout};
 
-use rstest::{fixture, rstest};
+use rstest::rstest;
 
 #[derive(
     Default, Debug, Clone, PartialEq, PartialOrd, deku::DekuRead, deku::DekuWrite,
@@ -39,8 +39,7 @@ const EXPECTED_BYTES: &[u8; 29] = &[
 ];
 const EXPECTED_BYTES_DEFAULT: &[u8; 21] = &[0; 21];
 
-#[fixture]
-pub fn sample_model() -> LayoutsTestModel {
+fn sample_model() -> LayoutsTestModel {
     LayoutsTestModel {
         fixed: VecDeku::new(&[0; 10]),
         end: VecDeku::new(&[0; 3]),
@@ -49,8 +48,7 @@ pub fn sample_model() -> LayoutsTestModel {
     }
 }
 
-#[fixture]
-pub fn default_model() -> LayoutsTestModel {
+fn default_model() -> LayoutsTestModel {
     LayoutsTestModel {
         fixed: VecDeku::new(&[0; 10]),
         ..Default::default()

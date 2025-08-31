@@ -1,14 +1,15 @@
 #![no_std]
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
+#![forbid(clippy::allow_attributes_without_reason)]
 
 //! Utility crate for [`Deku`] that provides convenient support for serializing and
 //! deserializing String and Vec in a variety of binary formats.
 //!
 //! Some notable features:
 //!
-//! * StringDeku supports UTF-8, UTF-16 and UTF-32 encodings.
-//! * Multiple layout formats, such as .Net, Pascal and zero-ended.
+//! * [`StringDeku`] supports UTF-8, UTF-16 and UTF-32 encodings.
+//! * Multiple layouts such as .Net, Pascal and zero-ended.
 //! * Little and Big Endian support.
 //! * Dynamic read and write without additional temporary structs and operations.
 //! * No need to specify custom reader and writer functions.
