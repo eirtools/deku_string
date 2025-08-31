@@ -4,7 +4,7 @@ members = [".", "tests/test-utils"]
 
 [workspace.dependencies]
 deku = { version = "0.19.1", default-features = false, features = ["alloc"] }
-test-utils = { path = "tests/test-utils" }
+test-utils = { path = "tests/test-utils", version = "0.0.0" }
 
 [package]
 name = "deku_string"
