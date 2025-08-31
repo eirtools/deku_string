@@ -1,0 +1,32 @@
+# https://embarkstudios.github.io/cargo-deny
+
+[graph]
+all-features = true
+
+[output]
+feature-depth = 1
+
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Unicode-3.0",
+    # "EUPL-1.2",
+    # "Apache-2.0 WITH LLVM-exception",
+]
+confidence-threshold = 0.8
+unused-allowed-license = "deny"
+
+[licenses.private]
+ignore = false
+
+[bans]
+external-default-features = "allow"
+highlight = "all"
+multiple-versions = "deny"
+wildcards = "deny"
+workspace-default-features = "allow"
+
+[sources]
+unknown-git = "deny"
+unknown-registry = "deny"
