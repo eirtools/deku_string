@@ -27,16 +27,15 @@ macro_rules! create_test_impl_read_rejected {
             #[case::$case( [<$encoding: upper _ $layout: upper _ $endian: upper _ $case: upper>] )]
             )+
             fn [<read_ $encoding _ $layout _ $endian _ $error _ctx_ $ctx _rejected>] (
-                #[case] raw_data: &[u8],
+                #[case] bytes: &[u8],
             ) {
-                let mut cursor = std::io::Cursor::new(raw_data);
-                let mut deku_reader = Reader::new(&mut cursor);
                 let ctx = _deku_ctx!(ctx: $ctx, $endian, $encoding, $layout);
 
-                let value = StringDeku
-                    ::from_reader_with_ctx(&mut deku_reader, ctx)
-                    .expect_err("Error was expected, data has been read");
-                _rejected_check!(value, error: $error)
+                let error = assert_model_read_error::<
+                        StringDeku,
+                        _deku_ctx_type!(ctx: $ctx)>
+                        (bytes, ctx);
+                _rejected_check!(error, error: $error)
             }
         }
     };

@@ -39,19 +39,16 @@ macro_rules! _create_test_impl_read_accepted {
             #[case::$case($original_bytes, $vec_value)]
             )+
             fn [<read_ $data _ $layout _ $endian _ctx_ $ctx _accepted>] (
-                #[case] raw_data: &[u8],
+                #[case] bytes: &[u8],
                 #[case] expected_data_static: &[_data_type_static!(data: $data)],
             ) {
-                let expected_data = _data_convert!(data: $data, expected_data_static);
-                let mut cursor = std::io::Cursor::new(raw_data);
-                let mut deku_reader = Reader::new(&mut cursor);
+                let expected_model = _data_convert!(data: $data, expected_data_static).into();
                 let ctx = _deku_ctx!(data: $data, ctx: $ctx, $layout, $endian);
 
-                let value = <VecDeku<_data_type!(data: $data)>>
-                    ::from_reader_with_ctx(&mut deku_reader, ctx)
-                    .expect("Unable to read data: {err:#?}");
-
-                assert_eq!(value, expected_data);
+                assert_model_read_ctx::<
+                        VecDeku<_data_type!(data: $data)>,
+                        _deku_ctx_type!(data: $data, ctx: $ctx)>
+                        (bytes, &expected_model, ctx);
             }
         }
     };
@@ -96,23 +93,12 @@ macro_rules! _create_test_impl_write_accepted {
             )+
             fn [<write_ $data _ $layout _ $endian _ctx_ $ctx _accepted>] (
                 #[case] raw_data_static: &[_data_type_static!(data: $data)],
-                #[case] expected_data: &[u8],
+                #[case] expected_bytes: &[u8],
             ) {
                 let raw_data_vec: Vec< _data_type!(data: $data) > = _data_convert!(data: $data, raw_data_static);
-                let raw_data = VecDeku::new(&raw_data_vec);
-
-                let mut output = Vec::new();
-                let mut cursor = no_std_io::Cursor::new(&mut output);
-                let mut deku_writer = Writer::new(&mut cursor);
+                let model = VecDeku::new(&raw_data_vec);
                 let ctx = _deku_ctx!(data: $data, ctx: $ctx, $layout, $endian);
-
-                match raw_data.to_writer(&mut deku_writer, ctx){
-                    Err(err) => panic!("Unable to write data: {err:#?}"),
-                    Ok(()) => {
-                        deku_writer.finalize().unwrap();
-                        assert_eq!(output, expected_data);
-                    }
-                };
+                assert_model_write_ctx(model, expected_bytes, ctx);
             }
         }
     };

@@ -3,9 +3,9 @@
     reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
 )]
 
-use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use deku_string::{Encoding, Size, StringDeku, StringLayout};
 use rstest::rstest;
+use test_utils::{assert_model_read, assert_model_write};
 
 #[derive(
     Default, Debug, Clone, PartialEq, PartialOrd, deku::DekuRead, deku::DekuWrite,
@@ -58,20 +58,14 @@ const EXPECTED_BYTES: &[u8; 78] = &[0; 78];
 
 #[rstest]
 fn write_model() {
-    let model = LayoutsTestModel::default();
+    let model: LayoutsTestModel = LayoutsTestModel::default();
 
-    let value = model.to_bytes().expect("Unexpected error");
-    assert_eq!(value, EXPECTED_BYTES);
+    assert_model_write(&model, EXPECTED_BYTES);
 }
 
 #[rstest]
 fn read_model() {
     let expected_model = LayoutsTestModel::default();
 
-    let ((rest, size_left), value) =
-        LayoutsTestModel::from_bytes((EXPECTED_BYTES, 0)).expect("Unexpected error");
-
-    assert_eq!(value, expected_model);
-    assert_eq!(size_left, 0);
-    assert_eq!(rest.len(), 0);
+    assert_model_read(EXPECTED_BYTES, &expected_model);
 }

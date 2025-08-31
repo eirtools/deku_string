@@ -16,7 +16,7 @@ use deku::writer::Writer;
 use data::write_rejected::*;
 use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
-use io_rejected::InvalidBufferType;
+use test_utils::assert_model_write_error;
 
 use crate::macros::misc::{_match_error, _rejected_check};
 use crate::macros::write_rejected::create_test_impl_write_rejected;

@@ -1,5 +1,5 @@
 [package]
-name = "io-rejected"
+name = "test-utils"
 version = "0.0.0"
 edition = "2021"
 license = "MIT"

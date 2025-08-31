@@ -55,6 +55,24 @@ macro_rules! _deku_ctx {
     };
 }
 
+macro_rules! _deku_ctx_type {
+    (data: u8, ctx: prime) => {
+        (Endian, VecLayout)
+    };
+
+    ( data: str, ctx: prime) => {
+        (Endian, VecLayout, (Encoding, StringLayout))
+    };
+
+    (data: u8, ctx: alt) => {
+        (Endian, VecLayout)
+    };
+
+    ( data: str, ctx: alt) => {
+        (Endian, (VecLayout, (Encoding, StringLayout)))
+    };
+}
+
 /// Match value for all supported errors
 macro_rules! _match_error {
     (error: assertion) => {
@@ -83,6 +101,6 @@ macro_rules! _rejected_check {
 }
 
 pub(crate) use {
-    _ctx_endian, _data_convert, _data_type, _data_type_static, _deku_ctx, _match_error,
-    _rejected_check,
+    _ctx_endian, _data_convert, _data_type, _data_type_static, _deku_ctx,
+    _deku_ctx_type, _match_error, _rejected_check,
 };

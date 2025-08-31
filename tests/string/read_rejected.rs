@@ -16,7 +16,9 @@ use deku::reader::Reader;
 
 use data::layouts::*;
 use data::read_rejected::*;
-use deku_string::{Encoding, StringDeku};
+use deku_string::{Encoding, StringDeku, StringLayout};
+
+use test_utils::assert_model_read_error;
 
 use macros::misc::*;
 use macros::read_rejected::*;

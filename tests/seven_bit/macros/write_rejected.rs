@@ -16,15 +16,10 @@ macro_rules! create_test_impl_write_rejected {
                 #[case] raw_data_static: $underlying_type,
                 #[case] byte_breaks: u64,
             ) {
-                let raw_data: [<SevenBit $underlying_type: upper>] = raw_data_static.into();
+                let model: [<SevenBit $underlying_type: upper>] = raw_data_static.into();
 
-                let mut output = InvalidBufferType::new(byte_breaks);
-                let mut deku_writer = Writer::new(&mut output);
-
-                let value = raw_data
-                    .to_writer(&mut deku_writer, ())
-                    .expect_err("Error was expected, data has been written");
-                _rejected_check!(value, error: io);
+                let error = assert_model_write_error(model, (), byte_breaks);
+                _rejected_check!(error, error: io);
             }
         }
     };

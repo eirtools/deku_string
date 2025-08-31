@@ -19,7 +19,7 @@ use deku_string::{Encoding, StringDeku};
 
 use data::layouts::*;
 use data::write_rejected::*;
-use io_rejected::InvalidBufferType;
+use test_utils::assert_model_write_error;
 
 use macros::misc::*;
 use macros::write_rejected::*;

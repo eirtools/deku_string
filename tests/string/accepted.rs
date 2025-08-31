@@ -18,7 +18,9 @@ use deku::{DekuReader as _, DekuWriter as _, no_std_io};
 
 use data::accepted::*;
 use data::layouts::*;
-use deku_string::{Encoding, StringDeku};
+use deku_string::{Encoding, StringDeku, StringLayout};
+
+use test_utils::{assert_model_read_ctx, assert_model_write_ctx};
 
 use macros::accepted::*;
 use macros::misc::*;

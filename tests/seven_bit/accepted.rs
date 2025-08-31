@@ -17,6 +17,8 @@ use deku::{DekuReader as _, DekuWriter as _, no_std_io};
 use data::accepted::*;
 use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
+use test_utils::{assert_model_read_ctx, assert_model_write_ctx};
+
 use crate::macros::accepted::{
     create_test_impl_read_accepted, create_test_impl_rw_accepted,
     create_test_impl_write_accepted,
