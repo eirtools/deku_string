@@ -43,7 +43,7 @@ Tests for fails on value read from binary input. The read must return a predefin
 
 Constants are located in `data/read_rejected`
 
-There's only one input format defined: `S7_U<int_bits>_<case_id>`
+There's only one input format defined: `S7_U<int_bits>_<error>_<case_id>`
 
 == Write Rejected tests: write_rejected.rs
 

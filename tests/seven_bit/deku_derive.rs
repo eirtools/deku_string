@@ -1,29 +1,27 @@
-//! Integration test with Deku derives and example how to use.
 #![allow(
     clippy::tests_outside_test_module,
     reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
 )]
 
-use ::deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 use deku::{DekuContainerRead as _, DekuContainerWrite as _};
+use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 use rstest::rstest;
 
-#[allow(clippy::struct_field_names, reason = "Naming is hard")]
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)] // usual stuff
 #[derive(::deku::DekuRead, ::deku::DekuWrite)] // deku
-struct SampleModel {
-    value_u8: SevenBitU8,
-    value_u16: SevenBitU16,
-    value_u32: SevenBitU32,
-    value_u64: SevenBitU64,
-    value_u128: SevenBitU128,
+struct LayoutsTestModel {
+    uint8: SevenBitU8,
+    uint16: SevenBitU16,
+    uint32: SevenBitU32,
+    uint64: SevenBitU64,
+    uint128: SevenBitU128,
 }
 
 const EXPECTED_BYTES: &[u8; 5] = &[0; 5];
 
 #[rstest]
 fn write_model() {
-    let model = SampleModel::default();
+    let model = LayoutsTestModel::default();
 
     let value = model.to_bytes().expect("Unexpected error");
     assert_eq!(value, EXPECTED_BYTES);
@@ -31,10 +29,10 @@ fn write_model() {
 
 #[rstest]
 fn read_model() {
-    let expected_model = SampleModel::default();
+    let expected_model = LayoutsTestModel::default();
 
     let ((rest, size_left), value) =
-        SampleModel::from_bytes((EXPECTED_BYTES, 0)).expect("Unexpected error");
+        LayoutsTestModel::from_bytes((EXPECTED_BYTES, 0)).expect("Unexpected error");
 
     assert_eq!(value, expected_model);
     assert_eq!(size_left, 0);

@@ -1,5 +1,4 @@
-//! Implementations for `StringDeku`.
-use core::ops::DerefMut;
+//! Crate-related implementations for [`crate::StringDeku`].
 
 use crate::{
     InternalValue, StringDeku, serde_shim_implementation, std_shim_implementation,
@@ -26,7 +25,7 @@ impl InternalValue for StringDeku {
 }
 
 impl StringDeku {
-    /// Construct new `StringDeku`
+    /// Construct new [`StringDeku`] from [`&str`]-like.
     #[inline]
     #[must_use]
     pub fn new<T>(value: T) -> Self
@@ -34,13 +33,6 @@ impl StringDeku {
         T: AsRef<str>,
     {
         Self(value.as_ref().into())
-    }
-}
-
-impl DerefMut for StringDeku {
-    #[inline]
-    fn deref_mut(&mut self) -> &mut Self::Target {
-        self.internal_mut()
     }
 }
 
@@ -65,7 +57,7 @@ std_shim_implementation! {
 }
 
 #[cfg(test)]
-mod string_new_deref_impl {
+mod new_impl {
     use crate::StringDeku;
     use rstest::rstest;
 
@@ -75,13 +67,5 @@ mod string_new_deref_impl {
         let local: StringDeku = StringDeku::new(input);
 
         assert_eq!(input, local);
-    }
-
-    #[rstest]
-    fn deref_mut() {
-        let mut local: StringDeku = StringDeku::new("mut str");
-        let x = &mut *local;
-        x.make_ascii_uppercase();
-        assert_eq!("MUT STR", local);
     }
 }

@@ -1,4 +1,5 @@
-//! Common methods to implement Deku interfaces for buffers in this lib
+//! Common methods to implement Deku interfaces for buffers in this lib.
+
 use alloc::borrow::Cow;
 use alloc::format;
 

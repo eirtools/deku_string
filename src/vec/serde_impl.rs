@@ -1,4 +1,4 @@
-//! Serde implementations for `VecDeku`
+//! Serde implementations for `VecDeku`.
 use crate::{InternalValue as _, VecDeku};
 use alloc::vec::Vec;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};

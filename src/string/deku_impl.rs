@@ -1,4 +1,4 @@
-//! Deku implementation for `StringDeku`
+//! Deku-related implementation for [`crate::StringDeku`].
 use alloc::borrow::Cow;
 use alloc::string::String;
 use alloc::vec;
@@ -57,6 +57,7 @@ impl StringDeku {
             ),
         }
     }
+
     /// Write to a reader with context
     #[inline]
     fn to_writer_impl<W: no_std_io::Write + no_std_io::Seek>(
@@ -182,9 +183,11 @@ type ReadRequirements = (
     Limit<u32, fn(&u32) -> bool>,
 );
 
-/// Read limit and null placement requirements from layout and reader (if prefixed)
+/// Read limit and null placement requirements from layout and reader (if
+/// prefixed)
 ///
-/// Zero-ended gives another limit kind that based on size, thus result can't be just a size.
+/// Zero-ended gives another limit kind that based on size, thus result can't be
+/// just a size.
 #[inline]
 fn read_requirements<R: no_std_io::Read + no_std_io::Seek>(
     reader: &mut Reader<R>,
@@ -314,7 +317,8 @@ where
         } => {
             if !allow_no_null && first_null == size {
                 return Err(DekuError::Assertion(Cow::from(
-                    "String fills whole output buffer, while Null character must be written",
+                    "String fills whole output buffer, while Null character must be \
+                     written",
                 )));
             }
 

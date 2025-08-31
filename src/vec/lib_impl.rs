@@ -1,4 +1,4 @@
-//! Implementations for `VecDeku`.
+//! Crate-related implementations for [`crate::VecDeku`].
 use alloc::vec::Vec;
 
 use crate::InternalValue;

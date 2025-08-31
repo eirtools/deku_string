@@ -138,15 +138,15 @@ macro_rules! _create_test_impl_rw_accepted_impl{
 /// Generate data constant names
 macro_rules! _rw_accepted_naming_impl {
     (_in_, $layout:ident, $endian:ident, $data:ident, $case:ident) => {
-        paste! { [<$data:upper _ $case:upper _BUF>] }
+        paste! { [<$data:upper _ $case:upper _BUF_IN>] }
     };
 
     (_data_, $layout:ident, $endian:ident, $data:ident, $case:ident) => {
-        paste! { [<$data:upper _ $layout:upper _ $case:upper _ $endian:upper _BUF>] }
+        paste! { [<$data:upper _ $layout:upper _ $endian:upper _ $case:upper _BUF>] }
     };
 
     (in_data_in, $layout:ident, $endian:ident, $data:ident, $case:ident) => {
-        paste! { [<$data:upper _ $case:upper _BUF>] }
+        paste! { [<$data:upper _ $case:upper _BUF_IN>] }
     };
 
     (in_data_out, $layout:ident, $endian:ident, $data:ident, $case:ident) => {

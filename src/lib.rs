@@ -2,56 +2,23 @@
 #![deny(missing_docs)]
 #![deny(missing_debug_implementations)]
 
+//! Utility crate for [`Deku`] that provides convenient support for serializing and
+//! deserializing String and Vec in a variety of binary formats.
 //!
-//! Simple wrapper around String to implement `DekuReader` and `DekuWriter`
+//! Some notable features:
 //!
-//! This implementation requires following context:
-//!  * Endian — little or big
-//!  * Encoding — UTF-8, UTF-16 or UTF-32
-//!  * `StringLayout` — how string is represented in binary
+//! * StringDeku supports UTF-8, UTF-16 and UTF-32 encodings.
+//! * Multiple layout formats, such as .Net, Pascal and zero-ended.
+//! * Little and Big Endian support.
+//! * Dynamic read and write without additional temporary structs and operations.
+//! * No need to specify custom reader and writer functions.
+//! * Compatible with Deku's derive macros and custom readers/writers.
+//! * Supports `serde` and `defmt`.
 //!
-//! Pick your favorite combination
+//! Read specific struct for example usage.
 //!
-//! Example usage od `StringDeku` with UTF-8 strings:
-//!
-//! ```rust,ignore
-//! use ::deku_string::{StringDeku, Encoding, StringLayout, Size};
-//!
-//! #[derive(Debug, Clone, PartialEq, ::deku::DekuRead, ::deku::DekuWrite)]
-//! #[deku(endian = "little")]
-//! struct SampleModel {
-//!     // fixed length buffer, null character is required to be inside
-//!     // "012345678\x00" is allowed
-//!     // "0123456789" is NOT allowed
-//!     #[deku(ctx = "Encoding::Utf8, StringLayout::fixed_length(10)")]
-//!     fixed_value1: StringDeku,
-//!
-//!     // fixed length buffer, null byte is allowed to be inside,
-//!     // both "012345678\x00" and "0123456789" are allowed
-//!     #[deku(ctx = "Encoding::Utf8, StringLayout::FixedLength{size: 10, allow_no_null: true}")]
-//!     fixed_value2: StringDeku,
-//!
-//!     // length (1 byte) then string, null character is NOT allowed inside
-//!     // b"\0x501234"
-//!     #[deku(ctx = "Encoding::Utf8, StringLayout::LengthPrefix(Size::U8)")]
-//!     prefixed_u8: StringDeku,
-//!
-//!     // length (2 byte) then string, null character is NOT allowed inside
-//!     // b"\0x5\x0001234"
-//!     #[deku(ctx = "Encoding::Utf8, StringLayout::LengthPrefix(Size::U16)")]
-//!     prefixed_u16: StringDeku,
-//!
-//!     // length (4 byte) then string, null character is NOT allowed inside
-//!     // b"\0x5\x00\x00\x0001234"
-//!     #[deku(ctx = "Encoding::Utf8, StringLayout::LengthPrefix(Size::U32)")]
-//!     prefixed_u32: StringDeku,
-//!
-//!     // String with null byte at the end
-//!     // b"012345\x00"
-//!     #[deku(ctx = "Encoding::Utf8, StringLayout::ZeroEnded")]
-//!     zero_ended: StringDeku,
-//! }
-//! ```
+//! [`Deku`]: https://docs.rs/deku
+
 extern crate alloc;
 #[cfg(test)]
 extern crate std;
@@ -70,19 +37,21 @@ pub use seven_bit::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU
 pub use string::{Encoding, StringDeku, StringLayout};
 pub use vec::{VecDeku, VecLayout};
 
-/// Length prefix size
+/// Size encoding for length-prefixed [`StringDeku`] and [`VecDeku`]
 #[derive(Debug, Clone, Copy)]
 #[non_exhaustive]
 pub enum Size {
-    /// One byte
+    /// 1 byte to encode length.
     U8,
 
-    /// 2 bytes
+    /// 2 bytes to encode length.
     U16,
 
-    /// 4 bytes
+    /// 4 bytes to encode length.
     U32,
 
-    /// u16, 7bit encoded
+    /// 7bit encoded u32 to encode length (.Net style).
+    ///
+    /// See [`crate::SevenBitU32`] for details.
     U32_7Bit,
 }

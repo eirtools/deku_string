@@ -1,6 +1,6 @@
-//! `defmt` implementations for `StringDeku`.
+//! `defmt` implementations for [`crate::StringDeku`].
 //!
-//! it's more efficient than using `Display2Fmt`
+//! it's more efficient than using [`defmt::Display2Format`].
 use crate::StringDeku;
 use defmt::{Format, Formatter, write as defmt_write};
 

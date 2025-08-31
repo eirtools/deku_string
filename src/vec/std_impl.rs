@@ -1,4 +1,4 @@
-//! Standard library implementations for `VecDeku`.
+//! Standard library implementations for [`crate::VecDeku`].
 use core::cmp::Ordering;
 use core::fmt::{Debug, Formatter, Result as FmtResult};
 use core::hash::{Hash, Hasher};
@@ -12,7 +12,7 @@ impl<T> VecDeku<T>
 where
     T: Sized + Clone,
 {
-    /// Construct new `VecDeku` from a slice
+    /// Construct new [`crate::VecDeku`] from a slice.
     #[inline]
     pub fn new(data: &[T]) -> Self {
         Self(data.to_vec())
@@ -45,7 +45,6 @@ impl<T> Debug for VecDeku<T>
 where
     T: Sized + Clone + Debug,
 {
-    /// Formats as plain String
     #[inline]
     #[allow(
         clippy::min_ident_chars,

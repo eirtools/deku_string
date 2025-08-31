@@ -9,7 +9,7 @@ macro_rules! create_test_impl_read_rejected {
         paste! {
             #[rstest]
             $(
-            #[case::$case( &[<S7_ $underlying_type: upper _ $case: upper>] )]
+            #[case::$case( &[<S7_ $underlying_type: upper _ $error: upper _ $case: upper>] )]
             )+
             fn [<read_ $underlying_type _ $error _rejected>] (
                 #[case] raw_data: &[u8],

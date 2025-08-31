@@ -21,12 +21,12 @@ use deku_string::{StringDeku, VecDeku};
 use macros::misc::*;
 use macros::read_rejected::create_test_impl_read_rejected;
 
-create_test_impl_read_rejected!(fixed, (data),);
+create_test_impl_read_rejected!(fixed, (short_data),);
 
-create_test_impl_read_rejected!(prefix_u8, (prefix), (data),);
+create_test_impl_read_rejected!(prefix_u8, (short_data), (short_length),);
 
-create_test_impl_read_rejected!(prefix_u16, (prefix), (data),);
+create_test_impl_read_rejected!(prefix_u16, (short_data), (short_length),);
 
-create_test_impl_read_rejected!(prefix_u32, (prefix), (data),);
+create_test_impl_read_rejected!(prefix_u32, (short_data), (short_length),);
 
-create_test_impl_read_rejected!(prefix_u32_7bit, (prefix), (data),);
+create_test_impl_read_rejected!(prefix_u32_7bit, (short_data), (short_length),);

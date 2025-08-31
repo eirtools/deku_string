@@ -75,7 +75,7 @@ create_test_impl_read_rejected! {
 create_test_impl_read_rejected! {
     fixed_force_zero,
     error: assertion,
-    (no_zero_inside),
+    (no_null_inside),
 }
 
 create_test_impl_read_rejected! {
@@ -152,5 +152,5 @@ create_test_impl_read_rejected! {
     zero_ended,
     error: incomplete,
     (small_buffer),
-    (no_zero_inside),
+    (no_null_inside),
 }

@@ -8,50 +8,53 @@ mod deku_impl;
 mod lib_impl;
 mod std_impl;
 
-/// Simple wrapper around String to read and write with various layouts.
+/// Thin wrapper around [`alloc::string::String`] to read and write in various layouts.
 ///
-/// For example,
+/// It's designed to define supported layouts easy to read and easy to write without
+/// additional functions.
 ///
-/// * Fixed Length Layout represents a fixed amount of elements (bytes or words depending on encoding)
-///   to read and write
-/// * Length prefixed layout represent Pascal-like strings
-/// * Zero ended — C-like strings.
+/// Example usage of [`StringDeku`]:
 ///
-/// How it's different from using Deku directly?
+/// ```rust
+/// use deku_string::{Encoding, Size, StringDeku, StringLayout};
 ///
-/// * It's convenient way to create and maintain models:
-///    * no readers and writers,
-///    * no running `update` function, which may be forgotten
-/// * `StringDeku` implementation checks if there was no unexpected zero characters in the middle,
-///   which could be missed during decoding, resulting in a probably dangerous values.
+/// #[derive(Debug, Clone, PartialEq, deku::DekuRead, deku::DekuWrite)]
+/// #[deku(endian = "little")]
+/// struct SampleModel {
+///     #[deku(ctx = "Encoding::Utf8, StringLayout::fixed_length(10)")]
+///     fixed_length_string: StringDeku,
 ///
-/// While content is hidden, `to_string`, `into` and equality functions and operators provide
-/// convenient way to make operations easier.
+///     #[deku(ctx = "Encoding::Utf8, StringLayout::ZeroEnded")]
+///     ascii_like: StringDeku,
+/// }
+/// ```
 #[derive(Clone, Default, PartialEq, PartialOrd, Eq, Ord)]
 pub struct StringDeku(String);
 
-/// String variant to read and write
+/// Supported string binary layouts.
 #[derive(Debug, Clone, Copy)]
 #[non_exhaustive]
 pub enum StringLayout {
-    /// Fixed length string
+    /// Fixed length string.
+    ///
+    /// Output will be padded by `null` characters.
     FixedLength {
         /// How many (exact) items should be there.
         size: usize,
 
-        /// If null character absence is allowed in the buffer.
+        /// If `null` character absence is allowed in the buffer.
         allow_no_null: bool,
     },
 
-    /// String is prefixed by length value
+    /// String is prefixed by length value (Pascal-like).
     LengthPrefix(Size),
 
-    /// String is zero-ended. 1 byte for ASCII and UTF-8, 2 bytes for UTF-16
+    /// String is `null`-ended (C-like).
     ZeroEnded,
 }
 
 impl StringLayout {
-    /// Construct fixed length variant with given size and no null isn't allowed.
+    /// Construct fixed length layout with given size and no `null` allowed.
     #[inline]
     #[must_use]
     pub const fn fixed_length(size: usize) -> Self {
@@ -62,16 +65,16 @@ impl StringLayout {
     }
 }
 
-/// Encoding to use for read and write
+/// String encoding to use.
 #[derive(Debug, Clone, Copy)]
 #[non_exhaustive]
 pub enum Encoding {
-    /// UTF-8 encoded string
+    /// UTF-8 encoded string.
     Utf8,
 
-    /// UTF-16 character sequences
+    /// UTF-16 character sequences.
     Utf16,
 
-    /// UTF-32 character sequences
+    /// UTF-32 character sequences.
     Utf32,
 }

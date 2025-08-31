@@ -87,26 +87,3 @@ create_test_impl_write_rejected!(
     error: assertion,
     (too_big_data),
 );
-
-/*
-data size is 65K and there's no practical reason to test it, as result will be the same as u8 and u16.
-create_test_impl_write_rejected!(
-    prefix_u16,
-    data: u8,
-    error: assertion,
-    (too_big_data),
-);
-
-data size is 4GB and there's no practical reason to test it, as result will be the same as u8 and u16.
-create_test_impl_write_rejected!(
-    prefix_u32,
-    error: assertion,
-    (too_big_data),
-);
-
-create_test_impl_write_rejected!(
-    prefix_u32_7bit,
-    error: assertion,
-    (too_big_data),
-);
- */

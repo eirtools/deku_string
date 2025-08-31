@@ -50,24 +50,18 @@ create_test_impl_write_rejected! {
     prefix_u16,
     error: assertion,
     (zero_inside_str),
-    // it's not worth a while to test this due requirements to save 65K string in static data
-    // (too_big_data),
 }
 
 create_test_impl_write_rejected! {
     prefix_u32,
     error: assertion,
     (zero_inside_str),
-    // it's not worth a while to test this due requirements to save 4GB string in static data
-    // (too_big_data),
 }
 
 create_test_impl_write_rejected! {
     prefix_u32_7bit,
     error: assertion,
     (zero_inside_str),
-    // it's not worth a while to test this due requirements to save 4GB string in static data
-    // (too_big_data),
 }
 
 create_test_impl_write_rejected! {
@@ -126,5 +120,6 @@ create_test_impl_write_rejected! {
     zero_ended,
     error: io,
     (data),
+    (fixed_end),
     (suffix),
 }

@@ -47,8 +47,8 @@ NOTE: At the moment of writing it's possible to define only one
 Constants are located in `data/accepted`.
 
 .Naming convention
-* Input vector: `<data_type>_<case_id>_BUF`
-* Serialized bytes: `<data_type>_<layout>_<case_id>_<endian>_BUF`
+* Input vector: `<data_type>_<case_id>_BUF_IN`
+* Serialized bytes: `<data_type>_<layout>_<endian>_<case_id>_BUF`
 * Output vector (optional): `<data_type>_<case_id>_BUF_OUT`
 
 == Read Rejected tests: read_rejected.rs

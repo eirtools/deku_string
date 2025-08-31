@@ -4,11 +4,11 @@
 ///
 /// module is automatically guarded so no need to add additional gate.
 ///
-/// `module_name`: Module name produced
-/// `local_type`: Local type to create shims for. It must implement `InternalValue` trait.
-/// `test_input`: Plain value before serialization with `serde_json`
-/// `test_input_encoded`: Plain value after serialization with `serde_json`
-/// `test_input_encoded_invalid`: Plain value which would result to deserialization error
+/// * `module_name`: Module name produced.
+/// * `local_type`: Local type to create shims for.
+/// * `test_input`: Plain value before serialization with `serde_json`.
+/// * `test_input_encoded`: Plain value after serialization with `serde_json`.
+/// * `test_input_encoded_invalid`: Plain value for deserialization error test.
 macro_rules! serde_shim_implementation {
     (
         module_name: $module_name: ident,

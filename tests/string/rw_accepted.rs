@@ -4,7 +4,6 @@
     reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
 )]
 
-//!
 //! Accepted read and write tests for UTF-8 & UTF-16 strings
 mod data;
 mod macros;
@@ -42,7 +41,7 @@ create_test_impl_rw_accepted! {
     (empty, in_data_in),
     (valid, in_data_in),
     (zero_in_middle, in_data_out),
-    (no_zero_inside, in_data_in),
+    (no_null_inside, in_data_in),
 }
 
 create_test_impl_rw_accepted! {

@@ -1,6 +1,10 @@
-//! Common Deku implementation for 7-bit integers
+//! Common Deku-related implementation for 7-bit integers.
 
-/// Macro to provide deku implementation for 7-bit integers
+/// Macro to provide common deku implementation for 7-bit integers.
+///
+/// * `module_name`: module name to use.
+/// * `local_type` Type to generate deku implementation for.
+/// * `internal_type`: Actual wrapped type.
 macro_rules! int7bit_deku_shim_implementation {
     (
         module_name: $module_name: ident,
