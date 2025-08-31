@@ -18,17 +18,12 @@ macro_rules! create_test_impl_read_accepted {
                 #[case::$case(&$original_bytes, $underlying_value)]
             )+
             fn [<read_ $underlying_type _accepted>] (
-                #[case] raw_data: &[u8],
+                #[case] bytes: &[u8],
                 #[case] expected_value: $underlying_type,
             ) {
-                let mut cursor = std::io::Cursor::new(raw_data);
-                let mut deku_reader = Reader::new(&mut cursor);
+                let expected_model: [<SevenBit $underlying_type: upper>] = expected_value.into();
 
-                let value = [<SevenBit $underlying_type: upper>]
-                    ::from_reader_with_ctx(&mut deku_reader, ())
-                    .expect("Unable to read data: {err:#?}");
-
-                assert_eq!(value, expected_value);
+                assert_model_read_ctx::<[<SevenBit $underlying_type: upper>], ()>(bytes, &expected_model, ());
             }
         }
     };
@@ -55,21 +50,10 @@ macro_rules! create_test_impl_write_accepted {
             )+
             fn [<write_ $underlying_type _accepted>] (
                 #[case] input_value: $underlying_type,
-                #[case] expected_data: &[u8],
+                #[case] expected_bytes: &[u8],
             ) {
-                let raw_data: [<SevenBit $underlying_type: upper>] = input_value.into();
-
-                let mut output = Vec::new();
-                let mut cursor = no_std_io::Cursor::new(&mut output);
-                let mut deku_writer = Writer::new(&mut cursor);
-
-                match raw_data.to_writer(&mut deku_writer, ()){
-                    Err(err) => panic!("Unable to write data: {err:#?}"),
-                    Ok(()) => {
-                        deku_writer.finalize().unwrap();
-                        assert_eq!(output, expected_data);
-                    }
-                };
+                let model: [<SevenBit $underlying_type: upper>] = input_value.into();
+                assert_model_write_ctx(model, expected_bytes, ());
             }
         }
     };

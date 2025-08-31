@@ -57,5 +57,17 @@ macro_rules! _deku_ctx {
         (_ctx_endian!(endian: $endian), (_ctx_encoding!(encoding: $encoding), paste! { [<LAYOUT_ $layout: upper>] }))
     };
 }
+macro_rules! _deku_ctx_type {
+    (ctx: prime) => {
+        (Endian, Encoding, StringLayout)
+    };
 
-pub(crate) use {_ctx_encoding, _ctx_endian, _deku_ctx, _match_error, _rejected_check};
+    (ctx: alt) => {
+        (Endian, (Encoding, StringLayout))
+    };
+}
+
+pub(crate) use {
+    _ctx_encoding, _ctx_endian, _deku_ctx, _deku_ctx_type, _match_error,
+    _rejected_check,
+};

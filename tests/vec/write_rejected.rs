@@ -18,7 +18,7 @@ use data::layouts::*;
 use data::write_rejected::*;
 
 use deku_string::{StringDeku, VecDeku};
-use io_rejected::InvalidBufferType;
+use test_utils::assert_model_write_error;
 
 use macros::misc::*;
 use macros::write_rejected::{

@@ -3,7 +3,7 @@ macro_rules! _create_test_impl_write_rejected_size {
         paste! {[<IO_ $layout: upper _ $case: upper _SIZE>]}
     };
     (error: $error: ident, $layout: ident, $case: ident) => {
-        999999
+        u64::MAX
     };
 }
 
@@ -65,16 +65,11 @@ macro_rules! create_test_impl_write_rejected {
                 #[case] raw_data_static: &str,
                 #[case] byte_breaks: u64,
             ) {
-                let raw_data: StringDeku = raw_data_static.into();
-
-                let mut output = InvalidBufferType::new(byte_breaks);
-                let mut deku_writer = Writer::new(&mut output);
+                let model: StringDeku = raw_data_static.into();
                 let ctx = _deku_ctx!(ctx: $ctx, $endian, $encoding, $layout);
 
-                let value = raw_data
-                    .to_writer(&mut deku_writer, ctx)
-                    .expect_err("Error was expected, data has been written");
-                _rejected_check!(value, error: $error);
+                let error = assert_model_write_error(model, ctx, byte_breaks);
+                _rejected_check!(error, error: $error);
             }
         }
     };

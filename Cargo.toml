@@ -1,3 +1,11 @@
+[workspace]
+
+members = [".", "tests/test-utils"]
+
+[workspace.dependencies]
+deku = { version = "0.19.1", default-features = false, features = ["alloc"] }
+test-utils = { path = "tests/test-utils" }
+
 [package]
 name = "deku_string"
 version = "0.3.0"
@@ -12,7 +20,7 @@ exclude = ["/.github", "/examples", "/*.md"]
 rust-version = "1.81"
 
 [dependencies]
-deku = { version = "0.19.1", default-features = false, features = ["alloc"] }
+deku = { workspace = true }
 serde = { version = "1.0.219", optional = true }
 defmt = { version = "1.0.1", optional = true }
 
@@ -20,12 +28,12 @@ defmt = { version = "1.0.1", optional = true }
 rstest = { version = "0.26.1" }
 pastey = { version = "0.1.1" }
 serde_json = { version = "1.0.142" }
-io-rejected = { path = "tests/io-rejected" }
+test-utils = { workspace = true }
 defmt = { version = "1.0.1", features = ["unstable-test"] }
 
 [[test]]
 name = "str_rw_accepted"
-path = "tests/string/rw_accepted.rs"
+path = "tests/string/accepted.rs"
 
 [[test]]
 name = "str_read_rejected"
@@ -41,7 +49,7 @@ path = "tests/string/deku_derive.rs"
 
 [[test]]
 name = "seven_bit_rw_accepted"
-path = "tests/seven_bit/rw_accepted.rs"
+path = "tests/seven_bit/accepted.rs"
 
 [[test]]
 name = "seven_bit_read_rejected"
@@ -57,7 +65,7 @@ path = "tests/seven_bit/deku_derive.rs"
 
 [[test]]
 name = "vec_rw_accepted"
-path = "tests/vec/rw_accepted.rs"
+path = "tests/vec/accepted.rs"
 
 [[test]]
 name = "vec_read_rejected"

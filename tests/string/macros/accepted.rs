@@ -36,18 +36,16 @@ macro_rules! create_test_impl_read_accepted {
             #[case::$case($original_bytes, $string_value)]
             )+
             fn [<read_ $encoding _ $layout _ $endian _ctx_ $ctx _accepted>] (
-            #[case] raw_data: &[u8],
+            #[case] bytes: &[u8],
             #[case] expected_string: &str,
             ) {
-                let mut cursor = std::io::Cursor::new(raw_data);
-                let mut deku_reader = Reader::new(&mut cursor);
+                let expected_model = expected_string.into();
                 let ctx = _deku_ctx!(ctx: $ctx, $endian, $encoding, $layout);
 
-                let value = StringDeku
-                    ::from_reader_with_ctx(&mut deku_reader, ctx)
-                    .expect("Unable to read data: {err:#?}");
-
-                assert_eq!(value, expected_string);
+                assert_model_read_ctx::<
+                        StringDeku,
+                        _deku_ctx_type!(ctx: $ctx)>
+                        (bytes, &expected_model, ctx);
             }
         }
     };
@@ -92,22 +90,11 @@ macro_rules! create_test_impl_write_accepted {
             )+
             fn [<write_ $encoding _ $layout _ $endian _ctx_ $ctx _accepted>] (
                 #[case] string: &str,
-                #[case] expected_data: &[u8],
+                #[case] expected_bytes: &[u8],
             ) {
-                let raw_data: StringDeku = string.into();
-
-                let mut output = Vec::new();
-                let mut cursor = no_std_io::Cursor::new(&mut output);
-                let mut deku_writer = Writer::new(&mut cursor);
+                let model: StringDeku = string.into();
                 let ctx = _deku_ctx!(ctx: prime, $endian, $encoding, $layout);
-
-                match raw_data.to_writer(&mut deku_writer, ctx){
-                    Err(err) => panic!("Unable to write data: {err:#?}"),
-                    Ok(()) => {
-                        deku_writer.finalize().unwrap();
-                        assert_eq!(output, expected_data);
-                    }
-                };
+                assert_model_write_ctx(model, expected_bytes, ctx);
             }
         }
     };

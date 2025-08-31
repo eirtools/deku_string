@@ -3,12 +3,12 @@
     reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
 )]
 
-use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 use rstest::rstest;
+use test_utils::{assert_model_read, assert_model_write};
 
 #[derive(Default, Debug, Clone, PartialEq, PartialOrd)] // usual stuff
-#[derive(::deku::DekuRead, ::deku::DekuWrite)] // deku
+#[derive(deku::DekuRead, deku::DekuWrite)] // deku
 struct LayoutsTestModel {
     uint8: SevenBitU8,
     uint16: SevenBitU16,
@@ -23,18 +23,12 @@ const EXPECTED_BYTES: &[u8; 5] = &[0; 5];
 fn write_model() {
     let model = LayoutsTestModel::default();
 
-    let value = model.to_bytes().expect("Unexpected error");
-    assert_eq!(value, EXPECTED_BYTES);
+    assert_model_write(&model, EXPECTED_BYTES);
 }
 
 #[rstest]
 fn read_model() {
     let expected_model = LayoutsTestModel::default();
 
-    let ((rest, size_left), value) =
-        LayoutsTestModel::from_bytes((EXPECTED_BYTES, 0)).expect("Unexpected error");
-
-    assert_eq!(value, expected_model);
-    assert_eq!(size_left, 0);
-    assert_eq!(rest.len(), 0);
+    assert_model_read(EXPECTED_BYTES, &expected_model);
 }

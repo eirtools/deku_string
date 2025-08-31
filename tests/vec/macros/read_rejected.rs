@@ -23,16 +23,15 @@ macro_rules! create_test_impl_read_rejected {
             #[case::$case(paste!{[<incomplete:upper _ $layout:upper _ $endian:upper _ $case:upper>]})]
             )+
             fn [<read_ $data _ $layout _ $endian _ctx_ $ctx _assertion_rejected>] (
-                #[case] raw_data: &[u8],
+                #[case] bytes: &[u8],
             ) {
-                let mut cursor = std::io::Cursor::new(raw_data);
-                let mut deku_reader = Reader::new(&mut cursor);
                 let ctx = _deku_ctx!(data: $data, ctx: $ctx, $layout, $endian);
 
-                let value = <VecDeku<_data_type!(data: $data)>>
-                    ::from_reader_with_ctx(&mut deku_reader, ctx)
-                    .expect_err("Error was expected, data has been read");
-                _rejected_check!(value, error: incomplete)
+                let error = assert_model_read_error::<
+                        VecDeku<_data_type!(data: $data)>,
+                        _deku_ctx_type!(data: $data, ctx: $ctx)>
+                        (bytes, ctx);
+                _rejected_check!(error, error: incomplete)
             }
         }
     };

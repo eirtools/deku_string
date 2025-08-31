@@ -3,8 +3,8 @@
     reason = "<https://github.com/rust-lang/rust-clippy/issues/11024>"
 )]
 
-use deku::{DekuContainerRead as _, DekuContainerWrite as _};
 use deku_string::{Encoding, Size, StringDeku, StringLayout, VecDeku, VecLayout};
+use test_utils::{assert_model_read, assert_model_write};
 
 use rstest::rstest;
 
@@ -56,21 +56,15 @@ fn default_model() -> LayoutsTestModel {
 }
 
 #[rstest]
-#[case::sample(sample_model, EXPECTED_BYTES)]
-#[case::sample(default_model, EXPECTED_BYTES_DEFAULT)]
-fn write_model(#[case] model: fn() -> LayoutsTestModel, #[case] bytes: &[u8]) {
-    let result = model().to_bytes().expect("Unexpected error");
-    assert_eq!(result, bytes);
+#[case::sample(sample_model(), EXPECTED_BYTES)]
+#[case::sample(default_model(), EXPECTED_BYTES_DEFAULT)]
+fn write_model(#[case] model: LayoutsTestModel, #[case] expected_bytes: &[u8]) {
+    assert_model_write(&model, expected_bytes);
 }
 
 #[rstest]
-#[case::sample(sample_model, EXPECTED_BYTES)]
-#[case::sample(default_model, EXPECTED_BYTES_DEFAULT)]
-fn read_model(#[case] model: fn() -> LayoutsTestModel, #[case] bytes: &[u8]) {
-    let ((rest, size_left), value) =
-        LayoutsTestModel::from_bytes((bytes, 0)).expect("Unexpected error");
-
-    assert_eq!(value, model());
-    assert_eq!(size_left, 0);
-    assert_eq!(rest.len(), 0);
+#[case::sample(EXPECTED_BYTES, sample_model())]
+#[case::sample(EXPECTED_BYTES_DEFAULT, default_model())]
+fn read_model(#[case] bytes: &[u8], #[case] expected_model: LayoutsTestModel) {
+    assert_model_read(bytes, &expected_model);
 }

@@ -16,6 +16,8 @@ use deku::reader::Reader;
 use data::read_rejected::*;
 use deku_string::{SevenBitU8, SevenBitU16, SevenBitU32, SevenBitU64, SevenBitU128};
 
+use test_utils::assert_model_read_error;
+
 use crate::macros::misc::{_match_error, _rejected_check};
 use crate::macros::read_rejected::create_test_impl_read_rejected;
 

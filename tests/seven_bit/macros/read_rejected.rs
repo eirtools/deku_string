@@ -12,15 +12,10 @@ macro_rules! create_test_impl_read_rejected {
             #[case::$case( &[<S7_ $underlying_type: upper _ $error: upper _ $case: upper>] )]
             )+
             fn [<read_ $underlying_type _ $error _rejected>] (
-                #[case] raw_data: &[u8],
+                #[case] bytes: &[u8],
             ) {
-                let mut cursor = std::io::Cursor::new(raw_data);
-                let mut deku_reader = Reader::new(&mut cursor);
-
-                let value = [<SevenBit $underlying_type: upper>]
-                    ::from_reader_with_ctx(&mut deku_reader, ())
-                    .expect_err("Error was expected, data has been read");
-                _rejected_check!(value, error: $error)
+                let error = assert_model_read_error::<[<SevenBit $underlying_type: upper>], ()>(bytes, ());
+                _rejected_check!(error, error: $error)
             }
         }
     };
