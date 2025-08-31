@@ -4,6 +4,7 @@
 use crate::StringDeku;
 use defmt::{Format, Formatter, write as defmt_write};
 
+#[allow(clippy::missing_asserts_for_indexing, reason = "Defmt impl")]
 impl Format for StringDeku {
     #[inline]
     fn format(&self, fmt: Formatter) {

@@ -1,4 +1,8 @@
 //! Read/write 7-bit int as described in MSDN.
+#![cfg_attr(
+    feature = "defmt",
+    allow(clippy::missing_asserts_for_indexing, reason = "Defmt impl")
+)]
 
 mod deku_impl;
 mod lib_impl;
