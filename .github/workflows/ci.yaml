@@ -77,6 +77,9 @@ jobs:
       with:
         default-datasource: crate
 
+    - name: Run tests (docs only)
+      run: cargo test --doc
+
     - name: Run tests
       run: |
         cargo llvm-cov --no-report nextest --tests --lib -P ci
