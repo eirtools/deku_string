@@ -1,10 +1,10 @@
 [package]
 name = "deku_string"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
-description = "Encoding/decoding helpers for Deku, String, Vec in fixed, Pascal, .NET and C-style formats with length guarantee."
+description = "Encoding/decoding helpers for Deku. String and Vec in fixed, Pascal, .NET and C-style formats with length guarantee."
 repository = "https://github.com/eirtools/deku_string"
 keywords = ["deku", "binary", "serialization", "string", "no_std"]
 categories = ["encoding", "no-std", "parsing"]
