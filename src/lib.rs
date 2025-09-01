@@ -20,6 +20,9 @@
 //!
 //! [`Deku`]: https://docs.rs/deku
 
+#[cfg(target_pointer_width = "16")]
+compile_error!("Feel free to make a PR if you need this");
+
 extern crate alloc;
 #[cfg(test)]
 extern crate std;
