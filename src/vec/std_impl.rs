@@ -284,6 +284,8 @@ mod test {
 
     #[rstest]
     fn hash() {
+        extern crate std;
+
         use core::hash::{Hash, Hasher as _};
         use std::collections::hash_map::DefaultHasher;
 

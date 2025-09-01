@@ -1,4 +1,7 @@
 //! Common utility structures and functions designed for testing
+#![no_std]
+extern crate alloc;
+
 mod io;
 mod read;
 mod write;

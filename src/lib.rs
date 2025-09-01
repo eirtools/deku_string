@@ -24,8 +24,6 @@
 compile_error!("Feel free to make a PR if you need this");
 
 extern crate alloc;
-#[cfg(test)]
-extern crate std;
 
 mod common;
 mod seven_bit;

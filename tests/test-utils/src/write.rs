@@ -2,6 +2,7 @@
 #![allow(clippy::expect_used, reason = "Code is designed for testing")]
 #![allow(clippy::missing_panics_doc, reason = "Code is designed to panic")]
 
+use alloc::vec::Vec;
 use deku::no_std_io::Cursor;
 use deku::writer::Writer;
 use deku::{DekuContainerWrite, DekuError, DekuWriter};

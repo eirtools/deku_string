@@ -3,9 +3,7 @@
 #![allow(clippy::cast_sign_loss, reason = "Checked")]
 #![allow(clippy::cast_possible_truncation, reason = "usize <= u64")]
 
-use std::io::{ErrorKind, Result}; // Deku doesn't re-import these two.
-
-use deku::no_std_io::{Seek, SeekFrom, Write};
+use deku::no_std_io::{ErrorKind, Result, Seek, SeekFrom, Write};
 
 /// Write buffer which have only `byte_breaks` bytes to be written.
 ///
