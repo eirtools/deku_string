@@ -70,6 +70,6 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v5
     - name: Package
-      run: cargo publish --no-verify
+      run: cargo publish --no-verify --package deku_string
       env:
         CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
