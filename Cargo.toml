@@ -8,7 +8,7 @@ test-utils = { path = "tests/test-utils", version = "0.0.0" }
 
 [package]
 name = "deku_string"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
