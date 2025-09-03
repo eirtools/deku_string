@@ -25,6 +25,7 @@ external-default-features = "allow"
 highlight = "all"
 multiple-versions = "deny"
 wildcards = "deny"
+allow-wildcard-paths = true
 workspace-default-features = "allow"
 
 [sources]
