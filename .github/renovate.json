@@ -16,6 +16,12 @@
         "$reduce(\n    $each($, function($section) {\n        $each($section, function($v, $k) { \n            $type($v)= \"object\" ? {\n                \"depName\": $k,\n                \"currentValue\": $v.version,\n                \"datasource\": $v.datasource? $v.datasource: \"crate\",\n                \"versioning\": $v.versioning? $v.versioning: undefined\n            }: $type($v)= \"string\" ? {\n                \"depName\": $k,\n                \"currentValue\": $v\n            }: undefined\n        })\n    }),\n    $append\n)"
       ],
       "versioningTemplate": "semver"
+    },
+    {
+      "datasource": "crates.io",
+      "fileMatch": [
+        "^tests/.*/Cargo.toml"
+      ]
     }
   ],
   "enabled": true,
@@ -23,6 +29,14 @@
     "config:recommended"
   ],
   "osvVulnerabilityAlerts": true,
+  "packageRules": [
+    {
+      "matchDatasources": [
+        "crates.io"
+      ],
+      "rangeStrategy": "pin"
+    }
+  ],
   "pre-commit": {
     "enabled": true
   },
