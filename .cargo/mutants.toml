@@ -1,3 +1,6 @@
 additional_cargo_test_args = ["--profile=mutants"]
 test_tool = "nextest"
 all_features = true
+exclude_globs = [
+    "test-utils/**",
+]
