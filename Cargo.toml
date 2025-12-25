@@ -1,6 +1,6 @@
 [package]
 name = "deku_string"
-version = "0.4.1-0"
+version = "0.4.1-1"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
@@ -12,7 +12,7 @@ exclude = ["/.github", "/examples", "/*.md"]
 rust-version = "1.81"
 
 [dependencies]
-deku = { version = "0.19.1", default-features = false, features = ["alloc"] }
+deku = { version = "0.20.0", default-features = false, features = ["alloc"] }
 serde = { version = "1.0.219", optional = true }
 defmt = { version = "1.0.1", optional = true }
 
