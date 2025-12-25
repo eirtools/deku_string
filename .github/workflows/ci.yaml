@@ -163,7 +163,7 @@ jobs:
     - name: Generate relative diff
       if: ${{ github.ref != 'refs/heads/main' }}
       run: |
-        git diff origin/${{ github.base_ref }}...HEAD -- ':(exclude)tests/data/*' > git.diff
+        ./.github/scripts/mut_diff.sh
     - name: Cache Cargo
       uses: ./.github/actions/cache
     - name: Install CLI tools
