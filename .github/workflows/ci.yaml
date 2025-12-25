@@ -116,7 +116,7 @@ jobs:
     - uses: actions/download-artifact@v4
 
     - name: Report test results
-      uses: mikepenz/action-junit-report@v5
+      uses: mikepenz/action-junit-report@v6
       with:
         comment: true
         include_passed: true
