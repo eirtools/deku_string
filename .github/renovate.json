@@ -18,7 +18,7 @@
       "versioningTemplate": "semver"
     },
     {
-      "datasource": "crates.io",
+      "datasource": "crate",
       "fileMatch": [
         "^tests/.*/Cargo.toml"
       ]
@@ -32,7 +32,7 @@
   "packageRules": [
     {
       "matchDatasources": [
-        "crates.io"
+        "crate"
       ],
       "rangeStrategy": "pin"
     }
