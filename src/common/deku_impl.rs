@@ -1,6 +1,8 @@
 //! Common methods to implement Deku interfaces for buffers in this lib.
 
+#[cfg(feature = "descriptive-errors")]
 use alloc::borrow::Cow;
+#[cfg(feature = "descriptive-errors")]
 use alloc::format;
 
 use deku::ctx::Endian;
@@ -51,9 +53,17 @@ where
     };
 
     if length > max_size {
-        return Err(DekuError::Assertion(Cow::from(format!(
-            "Encoded data length cannot exceed {max_size} bytes"
-        ))));
+        #[cfg(feature = "descriptive-errors")]
+        {
+            return Err(DekuError::Assertion(Cow::from(format!(
+                "Encoded data length cannot exceed {max_size} bytes"
+            ))));
+        }
+
+        #[cfg(not(feature = "descriptive-errors"))]
+        {
+            return Err(DekuError::Assertion("Encoded data length cannot exceeded"));
+        }
     }
 
     #[allow(clippy::cast_possible_truncation, reason = "Checked above")]
@@ -84,9 +94,19 @@ where
 {
     let len = data.len();
     if len > size {
-        return Err(DekuError::Assertion(Cow::from(format!(
-            "Encoded data length cannot exceed {size} elements"
-        ))));
+        #[cfg(feature = "descriptive-errors")]
+        {
+            return Err(DekuError::Assertion(Cow::from(format!(
+                "Encoded data length cannot exceed {size} elements"
+            ))));
+        }
+
+        #[cfg(not(feature = "descriptive-errors"))]
+        {
+            return Err(DekuError::Assertion(
+                "Encoded data length cannot be exceeded",
+            ));
+        }
     }
 
     data.to_writer(writer, inner_ctx)?;
