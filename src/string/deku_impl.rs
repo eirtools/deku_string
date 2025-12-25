@@ -1,5 +1,4 @@
 //! Deku-related implementation for [`crate::StringDeku`].
-use alloc::borrow::Cow;
 use alloc::string::String;
 use alloc::vec;
 use alloc::vec::Vec;
@@ -262,16 +261,16 @@ where
         NullRequirement::Accepted => {}
         NullRequirement::Required => {
             if first_null == buf.len() {
-                return Err(DekuError::Assertion(Cow::from(
-                    "Null must be present in the buffer",
-                )));
+                return Err(DekuError::Assertion(
+                    "Null must be present in the buffer".into(),
+                ));
             }
         }
         NullRequirement::Rejected => {
             if first_null != buf.len() {
-                return Err(DekuError::Assertion(Cow::from(
-                    "Null must be present in the buffer",
-                )));
+                return Err(DekuError::Assertion(
+                    "Null must be present in the buffer".into(),
+                ));
             }
         }
     }
@@ -296,9 +295,9 @@ where
 
     let first_null: usize = buf.iter().position(|x| *x == zero).unwrap_or(buf.len());
     if first_null != buf.len() {
-        return Err(DekuError::Assertion(Cow::from(
-            "Null MUST NOT be present in the binary representation",
-        )));
+        return Err(DekuError::Assertion(
+            "Null MUST NOT be present in the binary representation".into(),
+        ));
     }
 
     match layout {
@@ -316,10 +315,11 @@ where
             allow_no_null,
         } => {
             if !allow_no_null && first_null == size {
-                return Err(DekuError::Assertion(Cow::from(
+                return Err(DekuError::Assertion(
                     "String fills whole output buffer, while Null character must be \
-                     written",
-                )));
+                     written"
+                        .into(),
+                ));
             }
 
             write_data_fixed_length(writer, buf, size, endian, &zero)
