@@ -67,6 +67,7 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v6
       with:
+        fetch-depth: ${{ github.ref == 'refs/heads/main' && 1 || 0 }}
         ref: ${{ github.event.inputs.source || github.ref || github.event.ref }}
 
     - name: Cache Cargo
@@ -78,7 +79,8 @@ jobs:
         default-datasource: crate
 
     - name: Run tests (docs only)
-      run: cargo test --doc
+      run: |
+        cargo test --doc
 
     - name: Run tests (no features)
       run: |
@@ -95,14 +97,20 @@ jobs:
         cargo llvm-cov report --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs --cobertura &
         wait $(jobs -p)
 
+    - name: Collect PR diff
+      if: ${{ github.ref != 'refs/heads/main' }}
+      run: |
+        ./.github/scripts/mut_diff.sh ${{ github.base_ref }}
+
     - name: Collect files
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
       run: |
-        mkdir coverage
+        mkdir -p coverage
         mv target/lcov.info coverage/
         mv target/lcov.xml coverage/
         mv target/nextest/ci/ci.xml coverage/
         mv target/nextest/ci-all/ci-all.xml coverage/
+        mv git.diff coverage/
 
     - name: Publish test results and coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
@@ -166,7 +174,6 @@ jobs:
     name: Run mutants tests
     permissions:
       contents: read
-      pull-requests: read  # Read diff PR
 
     needs: ci-build
     if: ${{ github.event.inputs.mutants_force || github.ref != 'refs/heads/main' }}
@@ -176,22 +183,24 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v6
       with:
-        fetch-depth: 0
         ref: ${{ github.event.inputs.source || github.ref || github.event.ref }}
-    - name: Generate relative diff
-      if: ${{ github.ref != 'refs/heads/main' }}
-      run: |
-        ./.github/scripts/mut_diff.sh
+    - uses: actions/download-artifact@v7
+      with:
+        name: coverage
+        path: coverage
+
     - name: Cache Cargo
       uses: ./.github/actions/cache
+
     - name: Install CLI tools
       uses: ./.github/actions/install-tools
       with:
         default-datasource: crate
+
     - name: Run cargo-mutants
       run: |
-        if [[ -f git.diff ]]; then
-          cargo mutants --colors=always -vV --in-diff git.diff;
+        if [[ -f coverage/git.diff ]]; then
+          cargo mutants --colors=always -vV --in-diff coverage/git.diff;
         else
           cargo mutants --colors=always -vV;
         fi

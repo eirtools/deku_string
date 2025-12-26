@@ -12,4 +12,7 @@ mutdiff() {
           | sed 's|^|:(exclude)|' )
 }
 
-mutdiff origin/main...HEAD --output=git.diff -- ':(exclude)tests/data/*' > /dev/null
+base_ref="${1:-main}"
+output_filename="${2:-git.diff}"
+
+mutdiff "origin/${base_ref}...HEAD" "--output=$output_filename" -- ':(exclude)tests/data/*' > /dev/null
