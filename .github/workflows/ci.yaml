@@ -119,7 +119,7 @@ jobs:
       pull-requests: write  # Comment PR
 
     needs: ci-build
-    if: ${{ false && (github.event_name == 'pull_request') && (success() || failure()) }}
+    if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
 
     runs-on: ubuntu-latest
     steps:
@@ -147,7 +147,7 @@ jobs:
       contents: read        # Read list of modified files
 
     needs: ci-build
-    if: ${{ false && (github.event_name == 'pull_request') && (success() || failure()) }}
+    if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
 
     runs-on: ubuntu-latest
     steps:
