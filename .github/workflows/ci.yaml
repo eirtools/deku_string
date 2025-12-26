@@ -80,9 +80,13 @@ jobs:
     - name: Run tests (docs only)
       run: cargo test --doc
 
-    - name: Run tests
+    - name: Run tests (no features)
       run: |
         cargo llvm-cov --no-report nextest --tests --lib -P ci
+
+    - name: Run tests (all features)
+      run: |
+        cargo llvm-cov --no-report nextest --tests --lib -P ci-all --all-features
 
     - name: Collect coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
@@ -91,15 +95,21 @@ jobs:
         cargo llvm-cov report --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs --cobertura &
         wait $(jobs -p)
 
+    - name: Collect files
+      if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
+      run: |
+        mkdir coverage
+        mv target/lcov.info coverage/
+        mv target/lcov.xml coverage/
+        mv target/nextest/ci/ci.xml coverage/
+        mv target/nextest/ci-all/ci-all.xml coverage/
+
     - name: Publish test results and coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
-        name: target
-        path: |
-          target/lcov.info
-          target/lcov.xml
-          target/nextest/ci/junit.xml
+        name: coverage
+        path: coverage
         compression-level: 9
         retention-days: 1
 
@@ -113,7 +123,10 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
+      with:
+        name: coverage
+        path: coverage
 
     - name: Report test results
       uses: mikepenz/action-junit-report@v6
@@ -121,7 +134,8 @@ jobs:
         comment: true
         include_passed: true
         report_paths: |
-          ${{ github.workspace }}/target/nextest/ci/junit.xml
+          ${{ github.workspace }}/coverage/ci.xml
+          ${{ github.workspace }}/coverage/ci-all.xml
         check_name: |
           Deku String
         annotate_only: true
@@ -137,12 +151,16 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
+      with:
+        name: coverage
+        path: coverage
+
     - name: Publish coverage report
       uses: orgoro/coverage@v3.2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        coverageFile: ${{ github.workspace }}/target/lcov.xml
+        coverageFile: ${{ github.workspace }}/coverage/lcov.xml
 
   build-mutants:
     name: Run mutants tests
@@ -173,7 +191,7 @@ jobs:
     - name: Run cargo-mutants
       run: |
         if [[ -f git.diff ]]; then
-          cargo mutants --colors=always --no-shuffle -vV --in-diff git.diff;
+          cargo mutants --colors=always -vV --in-diff git.diff;
         else
-          cargo mutants --colors=always ;
+          cargo mutants --colors=always -vV;
         fi

@@ -1,4 +1,6 @@
 #!/bin/sh
+# the output is `git diff` without moved and unchanged files.
+# For moved and changed files only diff is shown.
 # taken from https://stackoverflow.com/a/44394214
 
 mutdiff() {
