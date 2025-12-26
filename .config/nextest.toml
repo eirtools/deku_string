@@ -3,7 +3,11 @@ fail-fast = false
 threads-required = "num-cpus"
 
 [profile.ci.junit]
-path = "junit.xml"
+path = "ci.xml"
+report-name = "deku_string"
+
+[profile.ci-all.junit]
+path = "ci-all.xml"
 report-name = "deku_string"
 
 [profile.mutants]
