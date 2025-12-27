@@ -34,7 +34,7 @@ runs:
   using: composite
   steps:
   - name: Install cargo-binstall
-    uses: cargo-bins/cargo-binstall@v1.16.5
+    uses: cargo-bins/cargo-binstall@v1.16.6
 
   - name: Install tools from tools file using cargo-binstall
     shell: bash
