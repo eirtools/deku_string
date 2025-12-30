@@ -9,7 +9,7 @@ repository = "https://github.com/eirtools/deku_string"
 keywords = ["deku", "binary", "serialization", "string", "no_std"]
 categories = ["encoding", "no-std", "parsing"]
 exclude = ["/.github", "/examples", "/*.md"]
-rust-version = "1.81"
+rust-version = "1.82"
 
 [dependencies]
 deku = { version = "0.20.2", default-features = false, features = ["alloc"] }
