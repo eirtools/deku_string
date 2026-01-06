@@ -1,6 +1,6 @@
 [package]
 name = "deku_string"
-version = "0.4.1"
+version = "0.4.2-0"
 edition = "2021"
 license = "MIT"
 readme = "README.md"
@@ -19,7 +19,7 @@ defmt = { version = "1.0.1", optional = true }
 [dev-dependencies]
 rstest = { version = "0.26.1" }
 pastey = { version = "0.2.1" }
-serde_json = { version = "1.0.148" }
+serde_json = { version = "1.0.149" }
 test-utils = { path = "test-utils" }
 defmt = { version = "1.0.1", features = ["unstable-test"] }
 
