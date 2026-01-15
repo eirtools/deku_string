@@ -1,10 +1,10 @@
 [package]
 name = "test-utils"
-version = "0.0.0"
+version = "0.0.1-0"
 edition = "2021"
 license = "MIT"
 repository = "https://github.com/eirtools/deku_string"
 publish = false
 
 [dependencies]
-deku = { version = "0.20.2", default-features = false, features = ["alloc"] }
+deku = { version = "0.20.3", default-features = false, features = ["alloc"] }
