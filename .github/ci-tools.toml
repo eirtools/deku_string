@@ -1,5 +1,5 @@
 [tools]
-cargo-nextest = "0.9.124"
+cargo-nextest = "0.9.125"
 # cargo-machete = "0.6.0"
 fd-find = { version = "10.3.0", "versioning" = "cargo" }
 cargo-mutants = "26.1.2"
