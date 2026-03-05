@@ -114,7 +114,7 @@ jobs:
 
     - name: Publish test results and coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
-      uses: actions/upload-artifact@v6
+      uses: actions/upload-artifact@v7
       with:
         name: coverage
         path: coverage
