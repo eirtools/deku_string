@@ -40,6 +40,6 @@ repos:
   hooks:
   - id: taplo-format
 - repo: https://github.com/EmbarkStudios/cargo-deny
-  rev: 0.19.2
+  rev: 0.19.4
   hooks:
   - id: cargo-deny
