@@ -93,9 +93,8 @@ jobs:
     - name: Collect coverage
       if: ${{ (github.event_name == 'pull_request') && (success() || failure()) }}
       run: |
-        cargo llvm-cov report --output-path target/lcov.info --ignore-filename-regex=src/lib.rs --lcov &
-        cargo llvm-cov report --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs --cobertura &
-        wait $(jobs -p)
+        cargo llvm-cov report --output-path target/lcov.info --ignore-filename-regex=src/lib.rs --lcov
+        cargo llvm-cov report --output-path target/lcov.xml --ignore-filename-regex=src/lib.rs --cobertura
 
     - name: Collect PR diff
       if: ${{ github.ref != 'refs/heads/main' }}
