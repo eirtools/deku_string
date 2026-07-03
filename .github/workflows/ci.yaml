@@ -164,7 +164,7 @@ jobs:
         path: coverage
 
     - name: Publish coverage report
-      uses: orgoro/coverage@v3.2
+      uses: orgoro/coverage@v3.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         coverageFile: ${{ github.workspace }}/coverage/lcov.xml
